@@ -255,11 +255,19 @@ clock = { }
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
 clock.widget.text = os.date("%H:%M:%S") .. " (X) "
 clock.widget:buttons({
-    button({ }, 3, function () awful.menu.new({ id="clock", items= {{ "edit todo", editor.." ~/todo" },
-                                                                    { "edit alarms", editor.." "..alarmfile}} } ) 
+    button({ }, 3, function () awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
+                                                                       { "edit alarms", editor.." "..alarmfile}} } ) 
+                   end ), 
+    button({ }, 1, function ()
+                        for i = 1, #clock.alarms do
+                            naughty.notify({ text = clock.alarms[i]})
+                        end
+                        clock.alarms = { } 
                    end ) })
 
 clock.fulldate = false
+clock.alarms = { }
+
 function clock.update ()
     local date
     if not clock.fulldate then
@@ -274,11 +282,17 @@ function clock.update ()
         date = date .. "G) "
     end
     
+    if #clock.alarms > 0 then
+        date = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"..date.."</span>"
+    end
+    
     clock.widget.text = date
+    
     if os.date("%S") == "00" then
         for line in io.lines(alarmfile) do
             if string.find(line, os.date("%H:%M"), 1, true) then
                 naughty.notify({ text = line })
+                table.insert(clock.alarms, line)
             end
         end
     end
