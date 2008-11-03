@@ -1,0 +1,14 @@
+font          = monospace 8
+
+bg_normal     = #333333
+bg_focus      = #454545
+bg_urgent     = #ffd700
+
+fg_normal     = #999999
+fg_focus      = #ffffff
+fg_urgent     = #111111
+
+border_width  = 2
+border_normal = #000000
+border_focus  = #454545
+border_marked = #91231c
