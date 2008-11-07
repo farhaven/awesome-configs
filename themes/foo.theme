@@ -1,4 +1,5 @@
-font          = monospace 8
+# font          = monospace 8
+font          = fixed 9
 
 bg_normal     = #333333
 bg_focus      = #454545
