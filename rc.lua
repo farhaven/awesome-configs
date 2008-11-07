@@ -19,7 +19,6 @@ end
 -- {{{ Variable definitions
 -- {{{ theme setup
 theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo.theme"
-alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 -- }}}
 -- {{{ misc
 terminal = "urxvtc"
@@ -29,7 +28,6 @@ editor = "gvim"
 -- I remapped Caps Lock to Mod3 using the following commands for xmodmap:
 -- xmodmap -e "clear lock"
 -- xmodmap -e "add mod3 = Caps_Lock"
--- finally this utterly useless key found a new and good use :)
 modkey = "Mod3"
 -- }}} 
 -- {{{ layouts
@@ -51,8 +49,7 @@ layout_icons =
     ["floating"] = "o_O"
 }
 function getlayouticon(s)
-    local icon
-    icon = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"
+    local icon = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"
     icon = icon .. layout_icons[awful.layout.get(s)]
     icon = icon .. "</span>"
     return icon
@@ -69,7 +66,8 @@ floatings =
     ["xine"]    = true,
     ["xmessage"]= true,
     ["xnest"]   = true,
-    ["netzwerkprotokoll"] = true
+    ["netzwerkprotokoll"] = true,
+    ["event tester"] = true
 }
 -- }}}
 -- {{{ apptags
@@ -93,14 +91,15 @@ naughty.config.fg           = beautiful.fg_normal
 naughty.config.screen       = 1
 naughty.config.border_width = 2
 naughty.config.border_color = beautiful.fg_normal
+naughty.config.hover_timeout = 0.3
 -- }}}
 -- {{{ Tags
 tags = {}
 for s = 1, screen.count() do
         tags[s] = {}
         tags[s][1] = tag({ name = "WWW",   layout = layouts[3], mwfact = 0.7, nmaster = 1 }) 
-        tags[s][2] = tag({ name = "Term",  layout = layouts[5] }) 
-        tags[s][3] = tag({ name = "Misc",  layout = layouts[5] })
+        tags[s][2] = tag({ name = "Term",  layout = layouts[4] }) 
+        tags[s][3] = tag({ name = "Misc",  layout = layouts[4] })
         tags[s][4] = tag({ name = "Chat",  layout = layouts[1], mwfact = 0.7, nmaster = 1 })
         tags[s][5] = tag({ name = "Mail",  layout = layouts[3] })
         tags[s][6] = tag({ name = "Float", layout = layouts[6] })
@@ -135,12 +134,22 @@ end
 tb_prompt = widget({ type = "textbox", name = "tb_prompt", align = "left" })
 -- }}}
 -- {{{ battery
-tb_battery = widget({ type = "textbox", name = "tb_battery", align = "right" })
-function battmon()
-    battery_status = ""
+battmon = { }
+battmon.widget = widget({ type = "textbox", name = "tb_battery", align = "right" })
+battmon.widget:buttons({ button({ }, 1, battmon.start_charge)}) 
+-- {{{ update                                              
+function battmon.update()
+    local battery_status = ""
     if file_is_readable("/sys/devices/platform/smapi/BAT0/remaining_percent") then
         for line in io.lines("/sys/devices/platform/smapi/BAT0/remaining_percent") do
-            battery_status = battery_status .. line .. "% "
+            line = tonumber(line)
+            local color = "#FF0000"
+            if line > 20 and line < 40 then
+                color = "#00FFFF"
+            elseif line >= 40 then
+                color = "#00FF00"
+            end
+            battery_status = "<span color=\"" .. color .. "\">" .. line .. "%</span>"
         end
     end
     if file_is_readable("/sys/devices/platform/smapi/BAT0/state") then
@@ -166,76 +175,76 @@ function battmon()
     if battery_status == "" then
         battery_status = "tp_smapi not loaded"
     end
-    tb_battery.text = battery_status .. "|"
+    battmon.widget.text = battery_status .. "|"
 end
-awful.hooks.timer.register(60, battmon)
-battmon()
+-- }}}
+-- {{{ start charging
+function battmon.start_charge ()
+    awful.util.spawn("sudo su -c \"echo 80 > /sys/platform/devices/smapi/BAT0/start_charge_thresh\"")
+    battmon.update()
+end
+-- }}}
+awful.hooks.timer.register(60, battmon.update)
+battmon.update()
 -- }}}
 -- {{{ wlan
-pb_wlan                 = widget({ type = "progressbar", name = "pb_wlan", align = "right" })
-pb_wlan.width           = 8
-pb_wlan.height          = 0.80
-pb_wlan.border_padding  = 1
-pb_wlan.tick_count      = 0
-pb_wlan.vertical        = true
-pb_wlan:bar_properties_set("wlan", 
-                          { ["bg"] = beautiful.bg_normal,
-                            ["fg"] = "#FF0000",
-                            ["fg_center"] = "#FFFF00",
-                            ["fg_end"] = "#00FF00",
-                            ["fg_off"] = "#000000",
-                            ["border_color"] = beautiful.border_focus })
+tb_wlan = widget({ type = "textbox", name = "tb_wlan", align = "right" })
 function wireless()
     local device = "wlan0"
     if file_is_readable("/proc/net/wireless") then
-        link = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'"):read()
-        link = string.gsub(link, "[.]", "")
-        link = string.format("% 3d", link)
-
-        pb_wlan:bar_data_add("wlan", link)
+        local link = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'"):read()
+        link = tonumber(string.match(link, "(%d+)"))
+        local color = "#00FF00"
+        if link < 30 and link > 10 then
+            color = "#00FFFF"
+        elseif link <= 10 then
+            color = "#FF0000"
+        end
+        local status = ""
+        for i = 1, math.floor(link / 10) do
+            status = status .. "|"
+        end
+        for i = math.floor(link / 10) + 1, 10 do
+            status = status .. "-"
+        end
+        status = "-["..status.."]+"
+        tb_wlan.text = "<span color=\"" .. color .. "\">" .. status .. "</span>|"
     end
 end
 wireless()
 awful.hooks.timer.register(30, wireless)
 -- }}}
 -- {{{ volume
-pb_volume = widget({ type = "progressbar", name = "pb_volume", align = "right" })
-pb_volume:buttons({
+tb_volume = widget({ type = "textbox", name = "tb_volume", align = "right" })
+tb_volume:buttons({
     button({ }, 4, function () volume("up", pb_volume) end),
     button({ }, 5, function () volume("down", pb_volume) end),
     button({ }, 1, function () volume("mute", pb_volume) end)
 })
-pb_volume.width          = 8
-pb_volume.height         = 0.80
-pb_volume.border_padding = 1
-pb_volume.ticks_count    = 0
-pb_volume.vertical       = true
 
-pb_volume:bar_properties_set("vol", 
-    {   ["bg"] = beautiful.bg_normal,
-        ["fg"] = "#FF0000",
-        ["fg_center"] = "#FFFF00",
-        ["fg_end"] = "#00FF00",
-        ["fg_off"] = "#000000",
-        ["border_color"] = beautiful.border_focus
-     })
 function volume (mode)
     local cardid  = 0
     local channel = "Master"
     if mode == "update" then
         local status = io.popen("amixer -c " .. cardid .. " -- sget " .. channel):read("*all")
         
-        local volume = string.match(status, "(%d?%d?%d)%%")
-        volume = string.format("% 3d", volume)
+        local volume = tonumber(string.match(status, "(%d?%d?%d)%%"))
 
         status = string.match(status, "%[(o[^%]]*)%]")
 
+        local color = "#FF0000"
         if string.find(status, "on", 1, true) then
-            pb_volume:bar_properties_set("vol", {["bg"] = "#000000"})
-        else
-            pb_volume:bar_properties_set("vol", {["bg"] = beautiful.bg_focus})
+             color = "#00FF00"
         end
-        pb_volume:bar_data_add("vol", volume)
+        status = ""
+        for i = 1, math.floor(volume / 10) do
+            status = status .. "|"
+        end
+        for i = math.floor(volume / 10) + 1, 10 do
+            status = status .. "-"
+        end
+        status = "-[" ..status .. "]+"
+        tb_volume.text = "<span color=\"" .. color .. "\">" .. status .. "</span>|"
     elseif mode == "up" then
         awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+")
         volume("update")
@@ -251,12 +260,19 @@ volume("update")
 awful.hooks.timer.register(10, function () volume("update") end)
 -- }}}
 -- {{{ clock
+-- This widget has an alarmfile, which contains stuff to remember like this:
+-- 14:30 get pizza from oven
+-- These alarms (one per line) are shown with naughty. If one alarm is shown,
+-- the clock will change its colors to indicate that. If you then click on
+-- it, all alarms since the last click are shown.
+
 clock = { }
+clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
 clock.widget.text = os.date("%H:%M:%S") .. " (X) "
 clock.widget:buttons({
     button({ }, 3, function () awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
-                                                                       { "edit alarms", editor.." "..alarmfile}} } ) 
+                                                                       { "edit alarms", editor.." "..clock.alarmfile}} } ) 
                    end ), 
     button({ }, 1, function ()
                         for i = 1, #clock.alarms do
@@ -289,7 +305,7 @@ function clock.update ()
     clock.widget.text = date
     
     if os.date("%S") == "00" then
-        for line in io.lines(alarmfile) do
+        for line in io.lines(clock.alarmfile) do
             if string.find(line, os.date("%H:%M"), 1, true) then
                 naughty.notify({ text = line })
                 table.insert(clock.alarms, line)
@@ -303,7 +319,7 @@ function clock.widget.mouse_enter() clock.fulldate = true  end
 function clock.widget.mouse_leave() clock.fulldate = false end
 -- }}}
 -- {{{ layout box
-lb_layout = {}
+lb_layout = { }
 for s = 1, screen.count() do
     lb_layout[s] = widget({ type = "textbox", name = "lb_layout", align = "left" })
     lb_layout[s]:buttons({
@@ -325,11 +341,11 @@ for s = 1, screen.count() do
                                 tb_prompt,
                                 tl_tasklist[s],
                                 tb_spacer,
-                                pb_wlan,
+                                tb_wlan,
                                 tb_spacer,
-                                pb_volume,
+                                tb_volume,
                                 tb_spacer,
-                                tb_battery,
+                                battmon.widget,
                                 tb_spacer,
                                 clock.widget
                             }
@@ -370,6 +386,18 @@ keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
 keybinding({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end):add()
 keybinding({ modkey, "Mod1" }, "r", awesome.restart):add()
+
+-- hide / unhide current screens wibox
+keybinding({ modkey, "Mod1" }, "w", function ()
+                                        local w = wi_widgets[mouse.screen]
+                                        if w.screen then
+                                            w.screen = nil
+                                        else
+                                            w.screen = mouse.screen
+                                        end
+                                    end):add()
+-- }}}
+-- {{{ Prompts
 keybinding({ modkey }, "Return", function () 
             awful.prompt.run({ prompt = " $ " }, tb_prompt, awful.util.spawn, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
             end):add()
@@ -459,7 +487,7 @@ awful.hooks.manage.register(function (c)
 
     local target
     if apptags[inst] then
-           target = apptags[inst]
+        target = apptags[inst]
     elseif apptags[cls] then
         target = apptags[cls]
     elseif apptags[name] then
