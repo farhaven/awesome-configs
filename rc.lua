@@ -145,7 +145,7 @@ function battmon.update()
             line = tonumber(line)
             local color = "#FF0000"
             if line > 20 and line < 40 then
-                color = "#00FFFF"
+                color = "#FFFF00"
             elseif line >= 40 then
                 color = "#00FF00"
             end
@@ -155,7 +155,7 @@ function battmon.update()
     if file_is_readable("/sys/devices/platform/smapi/BAT0/state") then
         for line in io.lines("/sys/devices/platform/smapi/BAT0/state") do
             if not string.find(line, "discharging", 1, true) then
-                battery_status = battery_status .. line
+                battery_status = battery_status .. " " .. line
             end
         end
     end
@@ -195,8 +195,8 @@ function wireless()
         local link = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'"):read()
         link = tonumber(string.match(link, "(%d+)"))
         local color = "#00FF00"
-        if link < 30 and link > 10 then
-            color = "#00FFFF"
+        if link < 50 and link > 10 then
+            color = "#FFFF00"
         elseif link <= 10 then
             color = "#FF0000"
         end
