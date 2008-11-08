@@ -270,10 +270,10 @@ clock = { }
 clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
 clock.widget.text = os.date("%H:%M:%S") .. " (X) "
+clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
+                                                     { "edit alarms", editor.." "..clock.alarmfile}} } ) 
 clock.widget:buttons({
-    button({ }, 3, function () awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
-                                                                       { "edit alarms", editor.." "..clock.alarmfile}} } ) 
-                   end ), 
+    button({ }, 3, function () clock.menu:toggle() end ), 
     button({ }, 1, function ()
                         for i = 1, #clock.alarms do
                             naughty.notify({ text = clock.alarms[i]})
