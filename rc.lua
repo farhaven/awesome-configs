@@ -180,7 +180,7 @@ end
 -- }}}
 -- {{{ start charging
 function battmon.start_charge ()
-    awful.util.spawn("sudo su -c \"echo 80 > /sys/platform/devices/smapi/BAT0/start_charge_thresh\"")
+    awful.util.spawn('sudo su -c "echo 80 > /sys/platform/devices/smapi/BAT0/start_charge_thresh"')
     battmon.update()
 end
 -- }}}
@@ -212,7 +212,7 @@ function wireless()
     end
 end
 wireless()
-awful.hooks.timer.register(30, wireless)
+awful.hooks.timer.register(10, wireless)
 -- }}}
 -- {{{ volume
 tb_volume = widget({ type = "textbox", name = "tb_volume", align = "right" })
