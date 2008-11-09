@@ -144,7 +144,7 @@ function battmon.update()
         for line in io.lines("/sys/devices/platform/smapi/BAT0/remaining_percent") do
             line = tonumber(line)
             local color = "#FF0000"
-            if line > 20 and line < 40 then
+            if line > 35 and line < 60 then
                 color = "#FFFF00"
             elseif line >= 40 then
                 color = "#00FF00"

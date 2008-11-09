@@ -39,27 +39,22 @@ end
 -- }}}
 -- {{{ Widgets
 -- {{{ tag list
-tl_taglist = widget({ type = "taglist", name = "tl_taglist" })
-tl_taglist:buttons({
-	button({ }, 1, function (object, tag) awful.tag.viewonly(tag) end),
-	button({ }, 4, awful.tag.viewnext),
-	button({ }, 5, awful.tag.viewprev)
-})
-tl_taglist.label = awful.widget.taglist.label.all
+tl_taglist = { }
+for s = 1, screen.count() do
+    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
+                                            { button({ }, 4, awful.tag.viewnext),
+                                              button({ }, 5, awful.tag.viewprev) })
+end
 -- }}}
 -- {{{ task list
-tl_tasklist = widget({ type = "tasklist", name = "tl_tasklist" })
-tl_tasklist:buttons({
-	button({ }, 1, function (object, c) client.focus = c; c:raise() end)
-})
-tl_tasklist.label = awful.widget.tasklist.label.currenttags
+tl_tasklist = { }
+for s = 1, screen.count() do
+    tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, 
+                                               { button({ }, 1, function (object, c) client.focus = c; c:raise() end) })
+end
 -- }}}
 -- {{{ prompt
 tb_prompt = widget({ type = "textbox", name = "tb_prompt", align = "left" })
--- }}}
--- {{{ clock
-tb_clock = widget({ type = "textbox", name = "clock", align = "right" })
-tb_clock.text = " " .. os.date("%H:%M:%S") .. " (X) "
 -- }}}
 -- {{{ layout box
 lb_layout = {}
@@ -76,13 +71,13 @@ end
 wi_widgets = {}
 for s = 1, screen.count() do
 	wi_widgets[s] = wibox({ position = "top", name = "wi_widgets" .. s, fg = fg_normal, bg = bg_normal})
-    	wi_widgets[s]:widgets({
-		tl_taglist,
-    		lb_layout[s],
+    	wi_widgets[s].widgets = {
+		tl_taglist[s],
+        lb_layout[s],
 		tb_prompt,
 		tl_tasklist,
   		tb_clock
-	})
+	}
     	wi_widgets[s].screen = s
 end
 -- }}}
@@ -204,18 +199,6 @@ awful.hooks.arrange.register(function (screen)
         	local c = awful.client.focus.history.get(screen, 0)
         	if c then client.focus = c end
     	end
-end)
--- }}}
--- {{{ timer
-awful.hooks.timer.register(1, function ()
-	date = os.date("%H:%M:%S") .. " ("
-	if (os.date("%W") % 2) == 0 then
-		date = date .. "U) "
-	else
-		date = date .. "G) "
-	end
-	
-	tb_clock.text = date
 end)
 -- }}}
 -- }}}
