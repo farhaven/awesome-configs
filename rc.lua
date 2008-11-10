@@ -95,15 +95,20 @@ naughty.config.hover_timeout = 0.3
 -- }}}
 -- {{{ Tags
 tags = {}
+tags.config = {
+    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    { name = "Term", layout = layouts[4] },
+    { name = "Misc", layout = layouts[4] },
+    { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+    { name = "Mail",  layout = layouts[3] },
+    { name = "Float", layout = layouts[6] }
+}
+
 for s = 1, screen.count() do
         tags[s] = {}
-        tags[s][1] = tag({ name = "WWW",   layout = layouts[3], mwfact = 0.7, nmaster = 1 }) 
-        tags[s][2] = tag({ name = "Term",  layout = layouts[4] }) 
-        tags[s][3] = tag({ name = "Misc",  layout = layouts[4] })
-        tags[s][4] = tag({ name = "Chat",  layout = layouts[1], mwfact = 0.7, nmaster = 1 })
-        tags[s][5] = tag({ name = "Mail",  layout = layouts[3] })
-        tags[s][6] = tag({ name = "Float", layout = layouts[6] })
-
+        for i = 1, #(tags.config) do
+            tags[s][i] = tag(tags.config[i])
+        end
         for tagnumber = 1, #tags[s] do
             tags[s][tagnumber].screen = s
         end
