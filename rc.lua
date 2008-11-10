@@ -284,6 +284,7 @@ clock.widget:buttons({
 clock.fulldate = false
 clock.alarms = { }
 
+-- {{{ update
 function clock.update ()
     local date
     if not clock.fulldate then
@@ -313,6 +314,7 @@ function clock.update ()
         end
     end
 end
+-- }}}
 awful.hooks.timer.register(1, clock.update)
 
 function clock.widget.mouse_enter() clock.fulldate = true  end
@@ -329,6 +331,31 @@ for s = 1, screen.count() do
     lb_layout[s].text = getlayouticon(s)
 end
 -- }}}
+-- {{{ fish
+fish = { }
+fish.widget = widget({ type = "textbox", align = "right" })
+fish.state = 1
+fish.states = { "<°}))o»«", "<°)})o>«", "<°))}o»<" }
+fish.widget:buttons({
+    button({ }, 1, function () fish.fortune() end ) })
+
+function fish.fortune()
+    local fh = io.popen("fortune -n 100 -s")
+    local fortune = fh:read("*all")
+    fh:close()
+    naughty.notify({ text = fortune, timeout = 7 })
+end
+function fish.update()
+    local t = "<span color=\"#00FFFF\">"
+    t = t .. awful.util.escape(fish.states[fish.state])
+    t = t .. "</span>|"
+    fish.widget.text = t
+    fish.state = (fish.state + 1) % #(fish.states) + 1
+end
+fish.update()
+
+awful.hooks.timer.register(0.5, fish.update)
+-- }}}
 -- {{{ widget box
 wi_widgets = {}
 for s = 1, screen.count() do
@@ -340,6 +367,8 @@ for s = 1, screen.count() do
                                 lb_layout[s],
                                 tb_prompt,
                                 tl_tasklist[s],
+                                tb_spacer,
+                                fish.widget,
                                 tb_spacer,
                                 tb_wlan,
                                 tb_spacer,
