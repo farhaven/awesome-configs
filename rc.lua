@@ -121,7 +121,7 @@ tags.config = {
 function tags.add(screen, name, layout, mwfact, nmaster)
     local index = #(tags[screen])
     if index >= #(tags.config) then
-        if not name then name = "---" end
+        if not name then name = "unnamed" end
         if not layout then layout = layouts[3] end
     else
         if not name then name = tags.config[index + 1].name end
