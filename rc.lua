@@ -15,6 +15,19 @@ function file_is_readable(fname)
     return rv
 end
 -- }}}
+-- {{{ dump_table(t, depth)
+function dump_table(t, depth)
+    print("")
+    if not depth then depth = 0 end
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            dump_table(v)
+        else
+            print(tostring(v))
+        end
+    end
+end
+-- }}}
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
@@ -100,14 +113,90 @@ tags.config = {
     { name = "Term", layout = layouts[4] },
     { name = "Misc", layout = layouts[4] },
     { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "Mail",  layout = layouts[3] },
-    { name = "Float", layout = layouts[6] }
+    { name = "Mail", layout = layouts[3] },
+    { name = "Float",layout = layouts[6] }
 }
+
+-- {{{ tags.add(screen, name, layout, mwfact, nmaster)
+function tags.add(screen, name, layout, mwfact, nmaster)
+    local index = #(tags[screen])
+    if index >= #(tags.config) then
+        if not name then name = "foo" end
+        if not layout then layout = layouts[3] end
+    else
+        if not name then name = tags.config[index + 1].name end
+        if not layout then layout = tags.config[index + 1].layout end
+        if not mwfact then mwfact = tags.config[index + 1].mwfact end
+        if not nmaster then nmaster = tags.config[index + 1].nmaster end
+    end
+    local t = tag({ name = name, layout = layout, mwfact = mwfact, nmaster = nmaster })
+    t.screen = screen
+    table.insert(tags[screen], t)
+    awful.hooks.user.call("arrange", screen)
+end
+-- }}}
+-- {{{ tags.remove(screen)
+function tags.remove(screen)
+    if not screen then screen = mouse.screen end
+    if #tags[screen] <= 1 then return end
+    local tag = awful.tag.selected(screen)
+    for i = 1, #tags[screen] do
+        if tag == tags[screen][i] then
+            awful.tag.viewidx(1, screen)
+            tags[screen][i].screen = nil
+            table.remove(tags[screen], i)
+            awful.hooks.user.call("arrange", screen)
+            break
+        end
+    end
+end
+-- }}}
+-- {{{ tags.rename(screen, name)
+function tags.rename(screen, name)
+    if not screen then screen = mouse.screen end
+    local t = awful.tag.selected(screen)
+    if name then
+        t.name = name
+    else
+        t.name = t.name .. "_"
+        keygrabber.run(
+        function (mod, key)
+            if key:len() == 1 and t.name:len() <= 20 then
+                t.name = t.name:sub(1, t.name:len() - 1) .. key .. "_"
+            elseif key == "BackSpace" then
+                t.name = t.name:sub(1, t.name:len() - 2) .. "_"
+            elseif key == "Return" then
+                if t.name:len() > 1 then
+                    t.name = t.name:sub(1, t.name:len() - 1)
+                    return false
+                end
+            end
+            return true
+        end)
+    end
+    awful.hooks.user.call("tags", screen)
+end
+-- }}}
+-- {{{ tags.move(screen, idx)
+function tags.move(screen, idx)
+    dump_table(tags[screen])
+    local t = awful.tag.selected(screen)
+    for i = 1, #tags[screen] do
+        if t == tags[screen][i] then
+            table.remove(tags[screen], i)
+            table.insert(tags[screen], awful.util.cycle(#tags[screen], i + idx), t)
+            awful.hooks.user.call("tags", screen)
+            break
+        end
+    end
+    dump_table(tags[screen])
+end
+-- }}}
 
 for s = 1, screen.count() do
         tags[s] = {}
         for i = 1, #(tags.config) do
-            tags[s][i] = tag(tags.config[i])
+            tags.add(s, tags.config[i].name, tags.config[i].layout, tags.config[i].mwfact, tags.config[i].nmaster)
         end
         for tagnumber = 1, #tags[s] do
             tags[s][tagnumber].screen = s
@@ -415,6 +504,10 @@ end
 
 keybinding({ }, "XF86Back", awful.tag.viewprev):add()
 keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
+
+keybinding({ modkey }, "r", function () tags.rename(mouse.screen) end):add()
+keybinding({ modkey }, "d", function () tags.remove(mouse.screen) end):add()
+keybinding({ modkey }, "a", function () tags.add(mouse.screen) end):add()
 -- }}}
 -- {{{ Misc
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
@@ -528,7 +621,7 @@ awful.hooks.manage.register(function (c)
         target = apptags[inst]
     end
 
-    if target then
+    if target and tags[c.screen][target.tag] then
         awful.client.movetotag(tags[c.screen][target.tag], c)
     end
 
