@@ -121,7 +121,7 @@ tags.config = {
 function tags.add(screen, name, layout, mwfact, nmaster)
     local index = #(tags[screen])
     if index >= #(tags.config) then
-        if not name then name = "foo" end
+        if not name then name = "---" end
         if not layout then layout = layouts[3] end
     else
         if not name then name = tags.config[index + 1].name end
@@ -140,9 +140,14 @@ function tags.remove(screen)
     if not screen then screen = mouse.screen end
     if #tags[screen] <= 1 then return end
     local tag = awful.tag.selected(screen)
+    if #(tag:clients()) > 0 then return end
     for i = 1, #tags[screen] do
         if tag == tags[screen][i] then
-            awful.tag.viewidx(1, screen)
+            if i == #tags[screen] then
+                awful.tag.viewidx(-1, screen)
+            else
+                awful.tag.viewidx(1, screen)
+            end
             tags[screen][i].screen = nil
             table.remove(tags[screen], i)
             awful.hooks.user.call("arrange", screen)
