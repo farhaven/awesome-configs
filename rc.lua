@@ -90,7 +90,8 @@ apptags =
     ["claws-mail"]      = {tag = "Mail"},
     ["urxvt"]           = {tag = "Term"},
     ["firefox"]         = {tag = "WWW"},
-    ["gvim"]            = {tag = "Text"}
+    ["gvim"]            = {tag = "Text"},
+    ["xpdf"]            = {tag = "Misc"}
 }
 -- }}}
 -- }}}
@@ -109,8 +110,9 @@ naughty.config.hover_timeout = 0.3
 -- {{{ Tags
 tags = {}
 tags.config = {
-    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    { name = "Main", layout = layouts[5] },
     { name = "Term", layout = layouts[4] },
+    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
     { name = "Misc", layout = layouts[4] },
     { name = "Text", layout = layouts[4] },
     { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
@@ -136,24 +138,36 @@ function tags.add(screen, name, layout, mwfact, nmaster)
     awful.hooks.user.call("arrange", screen)
 end
 -- }}}
--- {{{ tags.remove(screen)
-function tags.remove(screen)
+-- {{{ tags.remove(screen, idx)
+function tags.remove(screen, idx)
     if not screen then screen = mouse.screen end
     if #tags[screen] <= 1 then return end
-    local tag = awful.tag.selected(screen)
+    local tag
+    if not idx then tag = awful.tag.selected(screen)
+    else tag = tags[screen][idx] end
+
     if #(tag:clients()) > 0 then return end
     for i = 1, #tags[screen] do
         if tag == tags[screen][i] then
-            if i == #tags[screen] then
-                awful.tag.viewidx(-1, screen)
-            else
-                awful.tag.viewidx(1, screen)
+            if tag == awful.tag.selected(screen) then
+                if i == #tags[screen] then
+                    awful.tag.viewidx(-1, screen)
+                else
+                    awful.tag.viewidx(1, screen)
+                end
             end
             tags[screen][i].screen = nil
             table.remove(tags[screen], i)
             awful.hooks.user.call("arrange", screen)
             break
         end
+    end
+end
+-- }}}
+-- {{{ tags.clean(screen)
+function tags.clean(screen)
+    for i = #(tags[screen]), 1, -1 do
+        tags.remove(screen, i)
     end
 end
 -- }}}
@@ -169,7 +183,7 @@ function tags.rename(screen, name)
         function (mod, key)
             if key:len() == 1 and t.name:len() <= 20 then
                 t.name = t.name:sub(1, t.name:len() - 1) .. key .. "_"
-            elseif key == "BackSpace" then
+            elseif key == "BackSpace" and t.name:len() > 1 then
                 t.name = t.name:sub(1, t.name:len() - 2) .. "_"
             elseif key == "Return" then
                 if t.name:len() > 1 then
@@ -193,7 +207,30 @@ function tags.name2index(screen, name)
     return 0
 end
 -- }}}
-
+-- {{{ tags.tag2index(screen, tag)
+function tags.tag2index(screen, tag)
+    for i = 1, #(tags[screen]) do
+        if tags[screen][i] == tag then
+            return i
+        end
+    end
+    return 0
+end
+-- }}}
+-- {{{ tags.moveto(idx, c)
+function tags.moveto(idx, c)
+    if not c then c = client.focus end
+    if not c then return end
+    awful.client.movetotag(tags[c.screen][idx])
+end
+-- }}}
+-- {{{ tags.movetorel(idx, c)
+function tags.movetorel(idx, c)
+    if not c then c = client.focus end
+    if not c then return end
+    awful.client.movetotag(tags[c.screen][awful.util.cycle(#(tags[c.screen]), tags.tag2index(c.screen, awful.tag.selected(c.screen)) + idx)])
+end
+-- }}}
 for s = 1, screen.count() do
         tags[s] = {}
         tags.add(s, tags.config[1].name, tags.config[1].layout, tags.config[1].mwfact, tags.config[1].nmaster)
@@ -477,12 +514,7 @@ end
 -- }}}
 -- {{{ Key bindings
 -- {{{ Tags
-keynumber = 0
-for s = 1, screen.count() do
-       keynumber = math.min(9, math.max(#tags[s], keynumber));
-end
-
-for i = 1, keynumber do
+for i = 1, 9 do
     keybinding({ modkey }, i,
         function ()
             local screen = mouse.screen
@@ -491,14 +523,7 @@ for i = 1, keynumber do
             end
         end):add()
 
-    keybinding({ modkey, "Mod1" }, i,
-           function ()
-               if client.focus then
-                   if tags[client.focus.screen][i] then
-                       awful.client.movetotag(tags[client.focus.screen][i])
-                   end
-            end
-        end):add()
+    keybinding({ modkey, "Mod1" }, i, function () tags.moveto(i) end):add()
 end
 
 keybinding({ }, "XF86Back", awful.tag.viewprev):add()
@@ -507,6 +532,10 @@ keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
 keybinding({ modkey }, "r", function () tags.rename(mouse.screen) end):add()
 keybinding({ modkey }, "d", function () tags.remove(mouse.screen) end):add()
 keybinding({ modkey }, "a", function () tags.add(mouse.screen) end):add()
+keybinding({ modkey }, "s", function () tags.clean(mouse.screen) end):add()
+
+keybinding({ modkey, "Mod1" }, "XF86Back", function () tags.movetorel(-1) end):add()
+keybinding({ modkey, "Mod1" }, "XF86Forward", function () tags.movetorel(1) end):add()
 -- }}}
 -- {{{ Misc
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
@@ -622,11 +651,18 @@ awful.hooks.manage.register(function (c)
 
     if target then
         local idx = tags.name2index(c.screen, target.tag)
-        print(idx)
         if idx ~= 0 then
             awful.client.movetotag(tags[c.screen][idx])
         else
-            tags.add(c.screen, target.tag)
+            local created = false
+            for i = 1, #(tags.config) do
+                if tags.config[i].name == target.tag then
+                    tags.add(c.screen, tags.config[i].name, tags.config[i].layout, tags.config[i].mwfact, tags.config[i].nmaster)
+                    created = true
+                    break
+                end
+            end
+            if not created then tags.add(c.screen, target.tag) end
             awful.client.movetotag(tags[c.screen][#(tags[c.screen])])
         end
     end
