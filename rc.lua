@@ -85,12 +85,12 @@ floatings =
 -- }}}
 -- {{{ apptags
 apptags =
-{   ["urxvt.weechat"]   = {tag = 4},
-    ["urxvt.cmus"]      = {tag = 3},
-    ["claws-mail"]      = {tag = 5},
-    ["urxvt"]           = {tag = 2},
-    ["firefox"]         = {tag = 1},
-    ["gvim"]            = {tag = 3}
+{   ["urxvt.weechat"]   = {tag = "Chat"},
+    ["urxvt.cmus"]      = {tag = "Music"},
+    ["claws-mail"]      = {tag = "Mail"},
+    ["urxvt"]           = {tag = "Term"},
+    ["firefox"]         = {tag = "WWW"},
+    ["gvim"]            = {tag = "Text"}
 }
 -- }}}
 -- }}}
@@ -112,6 +112,7 @@ tags.config = {
     { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
     { name = "Term", layout = layouts[4] },
     { name = "Misc", layout = layouts[4] },
+    { name = "Text", layout = layouts[4] },
     { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
     { name = "Mail", layout = layouts[3] },
     { name = "Float",layout = layouts[6] }
@@ -182,27 +183,20 @@ function tags.rename(screen, name)
     awful.hooks.user.call("tags", screen)
 end
 -- }}}
--- {{{ tags.move(screen, idx)
-function tags.move(screen, idx)
-    dump_table(tags[screen])
-    local t = awful.tag.selected(screen)
-    for i = 1, #tags[screen] do
-        if t == tags[screen][i] then
-            table.remove(tags[screen], i)
-            table.insert(tags[screen], awful.util.cycle(#tags[screen], i + idx), t)
-            awful.hooks.user.call("tags", screen)
-            break
+-- {{{ tags.name2index(screen, name)
+function tags.name2index(screen, name)
+    for i = 1, #(tags[screen]) do
+        if tags[screen][i].name == name then
+            return i
         end
     end
-    dump_table(tags[screen])
+    return 0
 end
 -- }}}
 
 for s = 1, screen.count() do
         tags[s] = {}
-        for i = 1, #(tags.config) do
-            tags.add(s, tags.config[i].name, tags.config[i].layout, tags.config[i].mwfact, tags.config[i].nmaster)
-        end
+        tags.add(s, tags.config[1].name, tags.config[1].layout, tags.config[1].mwfact, tags.config[1].nmaster)
         for tagnumber = 1, #tags[s] do
             tags[s][tagnumber].screen = s
         end
@@ -626,8 +620,15 @@ awful.hooks.manage.register(function (c)
         target = apptags[inst]
     end
 
-    if target and tags[c.screen][target.tag] then
-        awful.client.movetotag(tags[c.screen][target.tag], c)
+    if target then
+        local idx = tags.name2index(c.screen, target.tag)
+        print(idx)
+        if idx ~= 0 then
+            awful.client.movetotag(tags[c.screen][idx])
+        else
+            tags.add(c.screen, target.tag)
+            awful.client.movetotag(tags[c.screen][#(tags[c.screen])])
+        end
     end
 
     c.honorsizehints = true
