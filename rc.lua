@@ -91,7 +91,8 @@ apptags =
     ["urxvt"]           = {tag = "Term"},
     ["firefox"]         = {tag = "WWW"},
     ["gvim"]            = {tag = "Text"},
-    ["xpdf"]            = {tag = "Misc"}
+    ["xpdf"]            = {tag = "Misc"},
+    ["wicd-client.py"]  = {tag = "Wicd"}
 }
 -- }}}
 -- }}}
@@ -119,10 +120,9 @@ tags.config = {
     { name = "Mail", layout = layouts[3] },
     { name = "Float",layout = layouts[6] }
 }
-
--- {{{ tags.add(screen, name, layout, mwfact, nmaster)
-function tags.add(screen, name, layout, mwfact, nmaster)
-    local index = #(tags[screen])
+-- {{{ tags.add(scr, name, layout, mwfact, nmaster)
+function tags.add(scr, name, layout, mwfact, nmaster)
+    local index = #(tags[scr])
     if index >= #(tags.config) then
         if not name then name = "unnamed" end
         if not layout then layout = layouts[3] end
@@ -133,32 +133,34 @@ function tags.add(screen, name, layout, mwfact, nmaster)
         if not nmaster then nmaster = tags.config[index + 1].nmaster end
     end
     local t = tag({ name = name, layout = layout, mwfact = mwfact, nmaster = nmaster })
-    t.screen = screen
-    table.insert(tags[screen], t)
-    awful.hooks.user.call("arrange", screen)
+    t.screen = scr
+    table.insert(tags[scr], t)
+    awful.hooks.user.call("arrange", scr)
 end
 -- }}}
--- {{{ tags.remove(screen, idx)
-function tags.remove(screen, idx)
-    if not screen then screen = mouse.screen end
-    if #tags[screen] <= 1 then return end
+-- {{{ tags.remove(scr, idx)
+function tags.remove(scr, idx)
+    if not scr then scr = mouse.scr end
+    if #tags[scr] <= 1 then return end
     local tag
-    if not idx then tag = awful.tag.selected(screen)
-    else tag = tags[screen][idx] end
+    if not idx then tag = awful.tag.selected(scr)
+    else tag = tags[scr][idx] end
 
     if #(tag:clients()) > 0 then return end
-    for i = 1, #tags[screen] do
-        if tag == tags[screen][i] then
-            if tag == awful.tag.selected(screen) then
-                if i == #tags[screen] then
-                    awful.tag.viewidx(-1, screen)
+    for i = 1, #tags[scr] do
+        if tag == tags[scr][i] then
+            if tag == awful.tag.selected(scr) then
+                if i == #tags[scr] then
+                    awful.tag.viewidx(-1, scr)
                 else
-                    awful.tag.viewidx(1, screen)
+                    awful.tag.viewidx(1, scr)
                 end
             end
-            tags[screen][i].screen = nil
-            table.remove(tags[screen], i)
-            awful.hooks.user.call("arrange", screen)
+            tags[scr][i].scr = nil
+            table.remove(tags[scr], i)
+            screen[scr]:tags(tags[scr])
+            awful.hooks.user.call("tags", scr)
+            awful.hooks.user.call("arrange", scr)
             break
         end
     end
@@ -229,6 +231,50 @@ function tags.movetorel(idx, c)
     if not c then c = client.focus end
     if not c then return end
     awful.client.movetotag(tags[c.screen][awful.util.cycle(#(tags[c.screen]), tags.tag2index(c.screen, awful.tag.selected(c.screen)) + idx)])
+end
+-- }}}
+-- {{{ tags.move(idx, screen)
+function tags.move(idx, scr)
+    if not s then scr = mouse.screen end
+    local t1 = awful.tag.selected(scr)
+    local i1 = tags.tag2index(scr, t1)
+    local i2 = (i1 + idx) % #(tags[scr])
+
+    tags[scr][i1] = tags[scr][i2]
+    tags[scr][i2] = t1
+
+    screen[scr]:tags(tags[scr])
+    awful.hooks.user.call("tags", scr)
+end
+-- }}}
+-- {{{ tags.movescreen(screen_target)
+function tags.movescreen(screen_target)
+    local screen_source = mouse.screen
+    if #(screen[screen_source]:tags()) <= 1 then return end
+    local t = awful.tag.selected(screen_source)
+    -- first, move all clients on the tag to the target screen and set the tag as their only tag
+    local clients = t:clients()
+    for i = 1, #clients do
+        clients[i].screen = screen_target
+        clients[i]:tags({ t })
+    end
+    t:clients(clients)
+
+    -- then, remove the tag from the source screens taglist
+    local index = tags.tag2index(screen_source, t)
+    tags.remove(screen_source, index)
+
+    -- insert the tag into target screens tag list
+    t.screen = screen_target
+    table.insert(tags[screen_target], t)
+
+    awful.hooks.user.call("arrange", screen_target)
+end
+-- }}}
+-- {{{ tags.movescreenrel(idx)
+function tags.movescreenrel(idx)
+    local index = awful.util.cycle(screen.count(), mouse.screen + idx)
+    tags.movescreen(index)
 end
 -- }}}
 for s = 1, screen.count() do
@@ -322,7 +368,9 @@ tb_wlan = widget({ type = "textbox", name = "tb_wlan", align = "right" })
 function wireless()
     local device = "wlan0"
     if file_is_readable("/proc/net/wireless") then
-        local link = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'"):read()
+        local fd = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'")
+        local link = fd:read()
+        fd:close()
         link = tonumber(string.match(link, "(%d+)"))
         local color = "#00FF00"
         if link < 50 and link > 10 then
@@ -356,7 +404,9 @@ function volume (mode)
     local cardid  = 0
     local channel = "Master"
     if mode == "update" then
-        local status = io.popen("amixer -c " .. cardid .. " -- sget " .. channel):read("*all")
+        local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
+        local status = fd:read("*all")
+        fd:close()
         
         local volume = tonumber(string.match(status, "(%d?%d?%d)%%"))
 
@@ -486,6 +536,9 @@ fish.update()
 
 awful.hooks.timer.register(0.5, fish.update)
 -- }}}
+-- {{{ systray
+st_systray = widget({ type = "systray", align = "right" })
+-- }}}
 -- {{{ widget box
 wi_widgets = {}
 for s = 1, screen.count() do
@@ -506,6 +559,7 @@ for s = 1, screen.count() do
                                 tb_spacer,
                                 battmon.widget,
                                 tb_spacer,
+                                s == 1 and st_systray or nil, 
                                 clock.widget
                             }
     wi_widgets[s].screen = s
@@ -534,8 +588,10 @@ keybinding({ modkey }, "d", function () tags.remove(mouse.screen) end):add()
 keybinding({ modkey }, "a", function () tags.add(mouse.screen) end):add()
 keybinding({ modkey }, "s", function () tags.clean(mouse.screen) end):add()
 
-keybinding({ modkey, "Mod1" }, "XF86Back", function () tags.movetorel(-1) end):add()
-keybinding({ modkey, "Mod1" }, "XF86Forward", function () tags.movetorel(1) end):add()
+keybinding({ modkey, "Mod1" }, "XF86Back", function () tags.move(-1) end):add()
+keybinding({ modkey, "Mod1" }, "XF86Forward", function () tags.move(1) end):add()
+keybinding({ modkey, "Mod1" }, "Left", function () tags.movetorel(-1) end):add()
+keybinding({ modkey, "Mod1" }, "Right", function () tags.movetorel(1) end):add()
 -- }}}
 -- {{{ Misc
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
