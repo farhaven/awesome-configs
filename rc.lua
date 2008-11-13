@@ -86,14 +86,14 @@ floatings =
 -- }}}
 -- {{{ apptags
 tagger.apptags =
-{   ["urxvt.weechat"]   = {tag = "Chat"},
-    ["urxvt.cmus"]      = {tag = "Music"},
-    ["claws-mail"]      = {tag = "Mail"},
-    ["urxvt"]           = {tag = "Term"},
-    ["firefox"]         = {tag = "WWW"},
-    ["gvim"]            = {tag = "Text"},
-    ["xpdf"]            = {tag = "Misc"},
-    ["wicd-client.py"]  = {tag = "Wicd"}
+{   ["urxvt.weechat"]   = "Chat",
+    ["urxvt.cmus"]      = "Music",
+    ["claws-mail"]      = "Mail",
+    ["urxvt"]           = "Term",
+    ["firefox"]         = "WWW",
+    ["gvim"]            = "Text",
+    ["xpdf"]            = "Misc",
+    ["wicd-client.py"]  = "Wicd"
 }
 -- }}}
 -- }}}
@@ -121,12 +121,8 @@ tagger.config = {
 }
 tags = { }
 for s = 1, screen.count() do
-        tagger.add(s, tagger.config[1].name, tagger.config[1].layout, tagger.config[1].mwfact, tagger.config[1].nmaster)
-        tags[s] = screen[s]:tags()
-        for tagnumber = 1, #tags[s] do
-            tags[s][tagnumber].screen = s
-        end
-        tags[s][1].selected = true
+    tagger.add(s, tagger.config[1].name, tagger.config[1].layout, tagger.config[1].mwfact, tagger.config[1].nmaster)
+    screen[s]:tags()[1].selected = true
 end
 -- }}}
 -- {{{ Widgets
@@ -539,17 +535,16 @@ awful.hooks.manage.register(function (c)
     end
 
     local target
-    local apptags = tagger.apptags
-    if apptags[inst] then
-        target = apptags[inst]
-    elseif apptags[cls] then
-        target = apptags[cls]
-    elseif apptags[name] then
-        target = apptags[inst]
+    if tagger.apptags[inst] then
+        target = tagger.apptags[inst]
+    elseif tagger.apptags[cls] then
+        target = tagger.apptags[cls]
+    elseif tagger.apptags[name] then
+        target = tagger.apptags[inst]
     end
 
     if target then
-        awful.client.movetotag(tagger.apptag(target.name, c.screen))
+        awful.client.movetotag(tagger.apptag(target, c.screen))
     end
 
     c.honorsizehints = true
