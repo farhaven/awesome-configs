@@ -99,7 +99,6 @@ tagger.apptags =
 -- }}}
 -- {{{ Initialization
 beautiful.init(theme_path)
-awful.beautiful.register(beautiful)
 -- }}}
 -- {{{ Naughty setup
 naughty.config.bg           = beautiful.bg_normal
@@ -122,7 +121,7 @@ tagger.config = {
 }
 tags = { }
 for s = 1, screen.count() do
-        tagger.add(s, tags.config[1].name, tags.config[1].layout, tags.config[1].mwfact, tags.config[1].nmaster)
+        tagger.add(s, tagger.config[1].name, tagger.config[1].layout, tagger.config[1].mwfact, tagger.config[1].nmaster)
         tags[s] = screen[s]:tags()
         for tagnumber = 1, #tags[s] do
             tags[s][tagnumber].screen = s
@@ -415,9 +414,8 @@ end
 for i = 1, 9 do
     keybinding({ modkey }, i,
         function ()
-            local scr = mouse.screen
-            if screen[scr]:tags()[i] then
-                   awful.tag.viewonly(screen[screen]:tags()[i])
+            if tagger.gettag(i) then
+                   awful.tag.viewonly(tagger.gettag(i))
             end
         end):add()
 
@@ -541,6 +539,7 @@ awful.hooks.manage.register(function (c)
     end
 
     local target
+    local apptags = tagger.apptags
     if apptags[inst] then
         target = apptags[inst]
     elseif apptags[cls] then
@@ -550,7 +549,7 @@ awful.hooks.manage.register(function (c)
     end
 
     if target then
-        awful.client.movetotag(tagger.apptag(target, c.screen))
+        awful.client.movetotag(tagger.apptag(target.name, c.screen))
     end
 
     c.honorsizehints = true
