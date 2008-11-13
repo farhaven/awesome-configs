@@ -238,7 +238,7 @@ function tags.move(idx, scr)
     if not s then scr = mouse.screen end
     local t1 = awful.tag.selected(scr)
     local i1 = tags.tag2index(scr, t1)
-    local i2 = (i1 + idx) % #(tags[scr])
+    local i2 = awful.util.cycle(#(tags[scr]), (i1 + idx))
 
     tags[scr][i1] = tags[scr][i2]
     tags[scr][i2] = t1
