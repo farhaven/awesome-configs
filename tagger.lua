@@ -3,6 +3,7 @@ local screen = screen
 local awful = require("awful")
 local table = table
 local tag = tag
+local mouse = mouse
 
 module("tagger")
 
@@ -26,7 +27,7 @@ function add(scr, name, layout, mwfact, nmaster)
     end
     local t = tag({ name = name, layout = layout, mwfact = mwfact, nmaster = nmaster })
     t.screen = scr
-    table.insert(tags[scr], t)
+    table.insert(tags, t)
     awful.hooks.user.call("arrange", scr)
 end
 -- }}}
@@ -160,12 +161,13 @@ function movescreen(scr_target)
     t:clients(clients)
 
     -- then, remove the tag from the source screens taglist
-    local index = tags.tag2index(scr_source, t)
-    tags.remove(scr_source, index)
+    local index = tag2index(scr_source, t)
+    remove(scr_source, index)
 
     -- insert the tag into target screens tag list
     t.screen = scr_target
-    table.insert(tags[scr_target], t)
+    local tags = screen[scr_target]:tags()
+    table.insert(tags, t)
 
     awful.hooks.user.call("arrange", scr_target)
 end
