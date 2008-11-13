@@ -4,6 +4,7 @@ local awful = require("awful")
 local table = table
 local tag = tag
 local mouse = mouse
+local client = client
 
 module("tagger")
 
@@ -95,7 +96,7 @@ function rename(scr, name)
 end
 -- }}}
 -- {{{ name2index(scr, name)
-function name2index(scr, name)
+local function name2index(scr, name)
     local tags = screen[scr]:tags()
     for i = 1, #tags do
         if tags[i].name == name then
@@ -106,7 +107,7 @@ function name2index(scr, name)
 end
 -- }}}
 -- {{{ tag2index(scr, tag)
-function tag2index(scr, tag)
+local function tag2index(scr, tag)
     local tags = screen[scr]:tags()
     for i = 1, #tags do
         if tags[i] == tag then
@@ -135,15 +136,15 @@ end
 -- {{{ move(idx, scr)
 function move(idx, scr)
     if not s then scr = mouse.screen end
-    local t1 = awful.tag.selected(scr)
-    local i1 = tags.tag2index(scr, t1)
-    local i2 = awful.util.cycle(#(tags[scr]), (i1 + idx))
     local tags = screen[scr]:tags()
+    local t1 = awful.tag.selected(scr)
+    local i1 = tag2index(scr, t1)
+    local i2 = awful.util.cycle(#tags, (i1 + idx))
 
-    tags[scr][i1] = tags[scr][i2]
-    tags[scr][i2] = t1
+    tags[i1] = tags[i2]
+    tags[i2] = t1
 
-    screen[scr]:tags(tags[scr])
+    screen[scr]:tags(tags)
     awful.hooks.user.call("tags", scr)
 end
 -- }}}
@@ -170,6 +171,7 @@ function movescreen(scr_target)
     table.insert(tags, t)
 
     awful.hooks.user.call("arrange", scr_target)
+    awful.tag.viewonly(tags[#tags])
 end
 -- }}}
 -- {{{ movescreenrel(idx)
@@ -201,5 +203,12 @@ function apptag(name, scr)
 
     local tags = screen[scr]:tags()
     return tags[#tags]
+end
+-- }}}
+-- {{{ gettag(idx, scr)
+function gettag(idx, scr)
+    if not scr then scr = mouse.screen end
+    local tags = screen[scr]:tags()
+    return tags[idx]
 end
 -- }}}
