@@ -1,3 +1,101 @@
+-- {{{ instructions
+--[[    Add a line like
+        require('tagger')
+        to the top of your rc.lua.
+
+        Then, set the list of your preferred tags like this:
+        tagger.config = {
+            { name = "Main", layout = layouts[5] },
+            { name = "Term", layout = layouts[4] },
+            { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+            { name = "Misc", layout = layouts[4] },
+            { name = "Text", layout = layouts[4] },
+            { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+            { name = "Mail", layout = layouts[3] },
+            { name = "Float",layout = layouts[6] }
+        }
+
+        Set the tags for your applications like this:
+        tagger.apptags =
+        {   ["urxvt.weechat"]   = "Chat",
+            ["urxvt.cmus"]      = "Music",
+            ["claws-mail"]      = "Mail",
+            ["urxvt"]           = "Term",
+            ["firefox"]         = "WWW",
+            ["gvim"]            = "Text",
+            ["xpdf"]            = "Misc",
+            ["wicd-client.py"]  = "Wicd"
+        }
+        As you can see, not all application tags need to be defined in tagger.config.
+        If a tag has no config, a standard tag with "tile" as it's layout and the name
+        you set in tagger.apptags is used.
+
+        You should change the section of your manage hook which moves clients to their
+        application tags to look like this:
+
+        local target
+        if tagger.apptags[inst] then
+            target = tagger.apptags[inst]
+        elseif tagger.apptags[cls] then
+            target = tagger.apptags[cls]
+        elseif tagger.apptags[name] then
+            target = tagger.apptags[inst]
+        end
+
+        if target then
+            awful.client.movetotag(tagger.apptag(target, c.screen))
+        end
+
+        This code creates a tag for the client if it doesn't already exist.
+
+        Please note that you should also change keybindings which operate on a certain tag
+        like this:
+
+        keybinding({ modkey }, i, function () awful.tag.viewonly(tags[mouse.screen][i]) end):add()
+        becomes:
+        keybinding({ modkey }, i, function () awful.tag.viewonly(tagger.gettag(i)) end):add()
+
+        The following functions are available for manipulating tags with tagger:
+        
+        add(screen, name, layout, mwfact, nmaster) - adds a tag with the given properties to the
+                                                     specified screen. If one of the last four 
+                                                     arguments is omitted, a standard value is
+                                                     assumed instead
+
+        remove(screen, index)                      - removes the tag with number index from screen,
+                                                     unless the tag has more than zero clients assigned
+                                                     or it is the last tag on screen
+
+        clean(screen)                              - removes all empty tags (i.e. tags with no assigned
+                                                     clients) from the specified screen
+
+        rename(screen, name)                       - renames the first selected tag on screen, if name is
+                                                     omitted, a keygrabber is started which lets you
+                                                     change the tags name directly with the keyboard
+
+        moveto(index, client)                      - moves the specified client to the tag with the specified
+                                                     index
+
+        movetorel(index, client)                   - behaves as moveto(index, client), except that index is
+                                                     relative to the first selected tag on the current screen
+                                                     positive values move the client to the right, negative
+                                                     values move the client to the left
+
+        movescreen(target)                         - moves the first selected tag on the currently focussed 
+                                                     screen to the screen with index tag. all clients on the moved
+                                                     tag get their tag table reset so that it contains only the
+                                                     moved tag and are moved to the target screen
+
+        movescreenrel(target)                      - behaves as movescreen(target), except index is relative to
+                                                     the currently focussed screen
+
+        apptag(name, screen)                       - if a tag with the specified name exists on the specified screen,
+                                                     it is returned, else a new tag is created with add(...), and
+                                                     also returned
+
+        gettag(index, screen)                      - returns the tag with the number index on the specified screen
+--]]
+-- }}}
 -- {{{ env
 local screen = screen
 local awful = require("awful")
@@ -180,7 +278,7 @@ function movescreenrel(idx)
     movescreen(index)
 end
 -- }}}
--- {{{ apptag(name)
+-- {{{ apptag(name, screen)
 function apptag(name, scr)
     if not scr then scr = mouse.screen end
     local idx = name2index(scr, name)
