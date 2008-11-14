@@ -103,6 +103,7 @@ local table = table
 local tag = tag
 local mouse = mouse
 local client = client
+local keygrabber = keygrabber
 
 module("tagger")
 
@@ -142,7 +143,7 @@ function remove(scr, idx)
     if #(tag:clients()) > 0 then return end
     for i = 1, #tags do
         if tag == tags[i] then
-            if tag == awful.tag.selected(scr) then
+            if tag.selected then
                 if i == #tags then
                     awful.tag.viewidx(-1, scr)
                 else
@@ -162,6 +163,7 @@ end
 -- {{{ clean(scr)
 function clean(scr)
     local tags = screen[scr]:tags()
+    if #tags <= 1 then return end
     for i = #tags, 1, -1 do
         remove(scr, i)
     end
@@ -261,11 +263,20 @@ function movescreen(scr_target)
 
     -- then, remove the tag from the source screens taglist
     local index = tag2index(scr_source, t)
-    remove(scr_source, index)
+    local tags = screen[scr_source]:tags()
+    if t.selected then
+        if index == #tags then
+            awful.tag.viewidx(-1, scr)
+        else
+            awful.tag.viewidx(1, scr)
+        end
+    end
+    table.remove(tags, index)
+    screen[scr_source]:tags(tags)
 
     -- insert the tag into target screens tag list
     t.screen = scr_target
-    local tags = screen[scr_target]:tags()
+    tags = screen[scr_target]:tags()
     table.insert(tags, t)
 
     awful.hooks.user.call("arrange", scr_target)
