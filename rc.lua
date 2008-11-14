@@ -2,7 +2,7 @@ require('awful')
 require('beautiful')
 require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
-require('tagger')
+require('tagger') -- dynamic tagging
 
 -- {{{ Misc functions
 -- {{{ file_is_readable(fname) checks whether file `fname' is readable
@@ -498,16 +498,18 @@ keybinding({ }, "XF86AudioMute", function () volume("mute", pb_volume) end):add(
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
+    c.opacity = 1
 end)
 -- }}}
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
+    c.opacity = 0.3
 end)
 -- }}}
--- {{{ mouse_enter
-awful.hooks.mouse_enter.register(function (c)
-    client.focus = c
+-- {{{ unmanage
+awful.hooks.unmanage.register(function (c)
+    tagger.clean(c.screen)
 end)
 -- }}}
 -- {{{ manage
@@ -557,6 +559,13 @@ awful.hooks.arrange.register(function (screen)
     if not client.focus then
         local c = awful.client.focus.history.get(screen, 0)
         if c then client.focus = c end
+    end
+end)
+-- }}}
+-- {{{ mouse_enter
+awful.hooks.mouse_enter.register(function (c)
+    if awful.client.focus.filter(c) then
+        client.focus = c
     end
 end)
 -- }}}
