@@ -29,6 +29,53 @@ function dump_table(t, depth)
     end
 end
 -- }}}
+-- {{{ smacktag
+smacktag = { }
+smacktag.interval = 0.01
+smacktag.x  = 0
+smacktag.sens = 10
+smacktag.stable = 0
+
+fh = io.open("/sys/devices/platform/hdaps/calibrate")
+cal = fh:read()
+fh:close()
+smacktag.calx = tonumber(cal:match("%((-?%d+).*"))
+
+function smacktag.getpos()
+    local fh = io.open("/sys/devices/platform/hdaps/position")
+    local pos = fh:read()
+    fh:close()
+
+    local rv = { }
+    rv[1] = tonumber(pos:match("%((-?%d+).*"))
+    rv[2] = tonumber(pos:match(".*(-?%d+)$"))
+    return rv
+end
+
+function smacktag.update()
+    local x, y, delta, adelta
+    x = smacktag.getpos()[1]
+    if x == 0 then return end
+
+    delta = x - smacktag.calx
+    adelta = math.abs(delta)
+
+    if adelta < 5 then
+        smacktag.stable = smacktag.stable + 1
+    end
+
+    if adelta > smacktag.sens and smacktag.stable > 30 then
+        smacktag.stable = 0
+        if delta < 0 then
+            awful.tag.viewnext()
+        else
+            awful.tag.viewprev()
+        end
+    end
+end
+
+awful.hooks.timer.register(smacktag.interval, smacktag.update)
+-- }}}
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
@@ -504,7 +551,7 @@ end)
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = 0.3
+    c.opacity = 0.5
 end)
 -- }}}
 -- {{{ unmanage
