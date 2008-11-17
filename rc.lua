@@ -74,7 +74,7 @@ function smacktag.update()
     end
 end
 
-awful.hooks.timer.register(smacktag.interval, smacktag.update)
+-- awful.hooks.timer.register(smacktag.interval, smacktag.update)
 -- }}}
 -- }}}
 -- {{{ Variable definitions
@@ -551,7 +551,7 @@ end)
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = 0.5
+    c.opacity = 0.6
 end)
 -- }}}
 -- {{{ unmanage
