@@ -289,30 +289,49 @@ function movescreenrel(idx)
     movescreen(index)
 end
 -- }}}
--- {{{ apptag(name, screen)
-function apptag(name, scr)
-    if not scr then scr = mouse.screen end
+-- {{{ apptag(client)
+function apptag(client)
+    local target
+    local inst  = client.name:lower()
+    local cls   = client.class:lower()
+    local name  = client.name:lower()
+
+    if apptags[inst] then
+        target = apptags[inst]
+    elseif apptags[cls] then
+        target = apptags[cls]
+    elseif apptags[name] then
+        target = apptags[inst]
+    end
+
+    if not target then return end
+
+    local scr = client.screen
     local idx = name2index(scr, name)
+    local tag
 
     if idx ~= 0 then
         local tags = screen[scr]:tags()
-        return tags[idx]
-    end
+        tag = tags[idx]
+    else
+        local created = false
 
-    local created = false
-
-    for i = 1, #config do
-        if config[i].name == name then
-            add(scr, config[i].name, config[i].layout, config[i].mwfact, config[i].nmaster)
-            created = true
-            break
+        for i = 1, #config do
+            if config[i].name == name then
+                add(scr, config[i].name, config[i].layout, config[i].mwfact, config[i].nmaster)
+                created = true
+                break
+            end
         end
-    end
-    if not created then add(scr, name) end
+        if not created then add(scr, name) end
 
-    local tags = screen[scr]:tags()
-    return tags[#tags]
+        local tags = screen[scr]:tags()
+        tag = tags[#tags]
+    end
+
+    awful.client.movetotag(tag)
 end
+awful.hooks.manage.register(apptag)
 -- }}}
 -- {{{ gettag(idx, scr)
 function gettag(idx, scr)

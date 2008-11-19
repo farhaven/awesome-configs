@@ -582,19 +582,6 @@ awful.hooks.manage.register(function (c)
         c.floating = floatings[name]
     end
 
-    local target
-    if tagger.apptags[inst] then
-        target = tagger.apptags[inst]
-    elseif tagger.apptags[cls] then
-        target = tagger.apptags[cls]
-    elseif tagger.apptags[name] then
-        target = tagger.apptags[inst]
-    end
-
-    if target then
-        awful.client.movetotag(tagger.apptag(target, c.screen))
-    end
-
     c.honorsizehints = true
     client.focus = c
     awful.client.setslave(c)
