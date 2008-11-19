@@ -101,9 +101,6 @@ local screen = screen
 local awful = require("awful")
 local table = table
 local pairs = pairs
-local print = print
-local type = type
-local tostring = tostring
 local tag = tag
 local mouse = mouse
 local client = client
@@ -115,25 +112,6 @@ apptags = { }
 config = {
     { name = "Main" }
 }
--- }}}
--- {{{ dump_table(t, depth)
-function dump_table(t, depth)
-    if not depth or depth == 0 then
-        print("")
-    end
-    if not depth then depth = 0 end
-    local prefix = ""
-    for i = 1, depth do
-        prefix = prefix .. " "
-    end
-    for k, v in pairs(t) do
-        if type(v) == "table" then
-            dump_table(v, depth + 1)
-        else
-            print(prefix .. tostring(v))
-        end
-    end
-end
 -- }}}
 -- {{{ add(scr, name, layout, mwfact, nmaster)
 function add(scr, name, layout, mwfact, nmaster)
