@@ -569,7 +569,6 @@ awful.hooks.manage.register(function (c)
 
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
-    client.focus = c
 
     local cls  = c.class:lower()
     local inst = c.instance:lower()
@@ -597,6 +596,7 @@ awful.hooks.manage.register(function (c)
     end
 
     c.honorsizehints = true
+    client.focus = c
     awful.client.setslave(c)
 end)
 -- }}}
