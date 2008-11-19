@@ -100,6 +100,10 @@
 local screen = screen
 local awful = require("awful")
 local table = table
+local pairs = pairs
+local print = print
+local type = type
+local tostring = tostring
 local tag = tag
 local mouse = mouse
 local client = client
@@ -111,6 +115,25 @@ apptags = { }
 config = {
     { name = "Main" }
 }
+-- }}}
+-- {{{ dump_table(t, depth)
+function dump_table(t, depth)
+    if not depth or depth == 0 then
+        print("")
+    end
+    if not depth then depth = 0 end
+    local prefix = ""
+    for i = 1, depth do
+        prefix = prefix .. " "
+    end
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            dump_table(v, depth + 1)
+        else
+            print(prefix .. tostring(v))
+        end
+    end
+end
 -- }}}
 -- {{{ add(scr, name, layout, mwfact, nmaster)
 function add(scr, name, layout, mwfact, nmaster)
@@ -289,48 +312,41 @@ function movescreenrel(idx)
     movescreen(index)
 end
 -- }}}
--- {{{ apptag(client)
-function apptag(client)
+-- {{{ apptag(c)
+function apptag(c)
     local target
-    local inst  = client.name:lower()
-    local cls   = client.class:lower()
-    local name  = client.name:lower()
-
-    if apptags[inst] then
-        target = apptags[inst]
-    elseif apptags[cls] then
-        target = apptags[cls]
-    elseif apptags[name] then
-        target = apptags[inst]
+    for k, v in pairs(apptags) do
+        if k:match(c.instance:lower())
+            or k:match(c.class:lower())
+            or k:match(c.name:lower()) then
+            target = v
+            break
+        end
     end
-
     if not target then return end
 
-    local name = target
-    local scr = client.screen
-    local idx = name2index(scr, name)
+    local scr = c.screen
+    local idx = name2index(scr, target)
     local tag
 
     if idx ~= 0 then
         local tags = screen[scr]:tags()
-        tag = tags[idx]
+        awful.client.movetotag(tags[idx], c)
     else
         local created = false
 
         for i = 1, #config do
-            if config[i].name == name then
-                add(scr, config[i].name, config[i].layout, config[i].mwfact, config[i].nmaster)
+            if config[i].name == target then
+                add(scr, target, config[i].layout, config[i].mwfact, config[i].nmaster)
                 created = true
                 break
             end
         end
-        if not created then add(scr, name) end
+        if not created then add(scr, target) end
 
         local tags = screen[scr]:tags()
-        tag = tags[#tags]
+        awful.client.movetotag(tags[#tags], c)
     end
-
-    awful.client.movetotag(tag)
 end
 awful.hooks.manage.register(apptag)
 -- }}}
