@@ -140,7 +140,7 @@ tagger.apptags =
     ["firefox"]         = "WWW",
     ["gvim"]            = "Text",
     ["xpdf"]            = "Misc",
-    ["wicd-client.py"]  = "Wicd"
+    ["wicd-client.py"]  = "Sys"
 }
 -- }}}
 -- }}}
@@ -335,14 +335,14 @@ awful.hooks.timer.register(10, function () volume("update") end)
 clock = { }
 clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
-clock.widget.text = os.date("%H:%M:%S") .. " (X) "
+clock.widget.text = os.date("%H:%M:%S (%W) ")
 clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
-                                                     { "edit alarms", editor.." "..clock.alarmfile}} } ) 
+                                                     { "edit alarms", editor.." "..clock.alarmfile }} } ) 
 clock.widget:buttons({
     button({ }, 3, function () clock.menu:toggle() end ), 
     button({ }, 1, function ()
-                        for i = 1, #clock.alarms do
-                            naughty.notify({ text = clock.alarms[i]})
+                        for k, v in pairs(clock.alarms) do
+                            naughty.notify({ text = v })
                         end
                         clock.alarms = { } 
                    end ) })
@@ -354,15 +354,9 @@ clock.alarms = { }
 function clock.update ()
     local date
     if not clock.fulldate then
-        date = os.date("%H:%M:%S")
+        date = os.date("%H:%M:%S (%W) ")
     else
         date = os.date()
-    end
-    date = date .. " ("
-    if (os.date("%W") % 2) == 0 then
-        date = date .. "U) "
-    else
-        date = date .. "G) "
     end
     
     if #clock.alarms > 0 then
@@ -373,7 +367,7 @@ function clock.update ()
     
     if os.date("%S") == "00" then
         for line in io.lines(clock.alarmfile) do
-            if string.find(line, os.date("%H:%M"), 1, true) then
+            if string.match(line, "^"..os.date("%H:%M")) then
                 naughty.notify({ text = line })
                 table.insert(clock.alarms, line)
             end
