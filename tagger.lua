@@ -306,6 +306,7 @@ function apptag(client)
 
     if not target then return end
 
+    local name = target
     local scr = client.screen
     local idx = name2index(scr, name)
     local tag
