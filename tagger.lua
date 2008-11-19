@@ -293,13 +293,12 @@ end
 -- {{{ apptag(c)
 function apptag(c)
     local target
-    for k, v in pairs(apptags) do
-        if k:match(c.instance:lower())
-            or k:match(c.class:lower())
-            or k:match(c.name:lower()) then
-            target = v
-            break
-        end
+    if apptags[c.instance:lower()] then
+        target = apptags[c.instance:lower()]
+    elseif apptags[c.class:lower()] then
+        target = apptags[c.class:lower()]
+    elseif apptags[c.name:lower()] then
+            target = apptags[c.name:lower()]
     end
     if not target then return end
 

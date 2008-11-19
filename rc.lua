@@ -133,14 +133,14 @@ floatings =
 -- }}}
 -- {{{ apptags
 tagger.apptags =
-{   ["urxvt"]           = "Term",
-    ["urxvt%.weechat"]   = "Chat",
-    ["urxvt%.cmus"]      = "Music",
+{   ["urxvt.weechat"]   = "Chat",
+    ["urxvt.cmus"]      = "Music",
+    ["urxvt"]           = "Term",
     ["claws-mail"]      = "Mail",
     ["firefox"]         = "WWW",
     ["gvim"]            = "Text",
     ["xpdf"]            = "Misc",
-    ["wicd-client%.py"]  = "Wicd"
+    ["wicd-client.py"]  = "Wicd"
 }
 -- }}}
 -- }}}
