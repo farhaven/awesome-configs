@@ -554,11 +554,6 @@ awful.hooks.unfocus.register(function (c)
     c.opacity = 0.6
 end)
 -- }}}
--- {{{ unmanage
-awful.hooks.unmanage.register(function (c)
-    tagger.clean(c.screen)
-end)
--- }}}
 -- {{{ manage
 awful.hooks.manage.register(function (c)
     c:buttons({

@@ -325,7 +325,6 @@ function apptag(c)
         awful.client.movetotag(tags[#tags], c)
     end
 end
-awful.hooks.manage.register(apptag)
 -- }}}
 -- {{{ gettag(idx, scr)
 function gettag(idx, scr)
@@ -333,4 +332,10 @@ function gettag(idx, scr)
     local tags = screen[scr]:tags()
     return tags[idx]
 end
+-- }}}
+-- {{{ hooks
+awful.hooks.manage.register(apptag)
+awful.hooks.unmanage.register(function (c)
+    clean(c.screen)
+end)
 -- }}}
