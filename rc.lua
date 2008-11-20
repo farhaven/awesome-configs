@@ -20,11 +20,15 @@ end
 function dump_table(t, depth)
     print("")
     if not depth then depth = 0 end
+    local prefix = ""
+    for i = 1, depth do
+        prefix = prefix .. " "
+    end
     for k, v in pairs(t) do
         if type(v) == "table" then
-            dump_table(v)
+            dump_table(v, depth + 1)
         else
-            print(tostring(v))
+            print(prefix..tostring(v))
         end
     end
 end
