@@ -335,7 +335,7 @@ awful.hooks.timer.register(10, function () volume("update") end)
 clock = { }
 clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
-clock.widget.text = os.date("%H:%M:%S (%W) ")
+clock.widget.text = os.date("%H:%M:%S (") .. (tonumber(os.date("%W")) - 1)..") "
 clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
                                                      { "edit alarms", editor.." "..clock.alarmfile }} } ) 
 clock.widget:buttons({
@@ -354,7 +354,7 @@ clock.alarms = { }
 function clock.update ()
     local date
     if not clock.fulldate then
-        date = os.date("%H:%M:%S (%W) ")
+        date = os.date("%H:%M:%S (") .. (tonumber(os.date("%W")) - 1)..") "
     else
         date = os.date()
     end
@@ -552,8 +552,8 @@ end)
 awful.hooks.manage.register(function (c)
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
-        button({ modkey }, 1, function (c) c:mouse_move() end),
-        button({ modkey }, 3, function (c) c:mouse_resize() end)
+        button({ modkey }, 1, awful.mouse.client.move),
+        button({ modkey }, 3, awful.mouse.client.resize)
     })
 
     c.border_width = beautiful.border_width
