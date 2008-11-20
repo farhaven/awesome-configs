@@ -26,10 +26,9 @@ function dump_table(t, depth)
     end
     for k, v in pairs(t) do
         if type(v) == "table" then
-            print(prefix..tostring(k)..":")
             dump_table(v, depth + 1)
         else
-            print(prefix..tostring(v))
+            print(prefix..k.." "..tostring(v))
         end
     end
 end
