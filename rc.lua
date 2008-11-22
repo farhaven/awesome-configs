@@ -147,22 +147,6 @@ tagger.apptags =
     ["wicd-client.py"]  = "Sys"
 }
 -- }}}
--- {{{ xrandr screen list
-function xrandr_screens ()
-    local screens = { }
-    local scr_nr  = 1
-    local fh = io.popen("xrandr")
-    for line in fh:lines() do
-        if line:match("^[%a%d-]+ connected.*") then
-            local scr = line:match("^([%a%d-]+) connected.*")
-            screens[scr] = scr_nr
-            scr_nr = scr_nr + 1
-        end
-    end
-    fh:close()
-    return screens
-end
--- }}}
 -- }}}
 -- {{{ Initialization
 beautiful.init(theme_path)
