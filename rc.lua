@@ -148,17 +148,20 @@ tagger.apptags =
 }
 -- }}}
 -- {{{ xrandr screen list
-xrandr_screens = { }
-fh = io.popen("xrandr")
-xrandr_scr = 1
-for line in fh:lines() do
-    if line:match("^[%a%d-]+ connected.*") then
-        local scr = line:match("^([%a%d-]+) connected.*")
-        xrandr_screens[scr] = xrandr_scr
-        xrandr_scr = xrandr_scr + 1
+function xrandr_screens ()
+    local screens = { }
+    local scr_nr  = 1
+    local fh = io.popen("xrandr")
+    for line in fh:lines() do
+        if line:match("^[%a%d-]+ connected.*") then
+            local scr = line:match("^([%a%d-]+) connected.*")
+            screens[scr] = scr_nr
+            scr_nr = scr_nr + 1
+        end
     end
+    fh:close()
+    return screens
 end
-fh:close()
 -- }}}
 -- }}}
 -- {{{ Initialization
