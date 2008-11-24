@@ -68,25 +68,31 @@ level_xy(60, 60, 1)
 
 -- {{{ set up player
 local player = {50, 50, 200}
-function trace(x, y, dir, dist)
-    if not dist then dist = 0 end
+function trace(x, y, dir)
+    dir = dir - 30
+    local dist = 0
+    while true do
+        if x <= 0 or y <= 0 then
+            return -1
+        end
+        if x >= 100 or y >= 100 then
+            return -1
+        end
 
-    if (x <= 0) or (y <= 0) then
-        return 0
-    end
-    if (x >= 100) or (y >= 100) then
-        return 0
-    end
+        if level_xy(x, y) > 0 then
+            return dist
+        end
 
-    local r = level_xy(x, y)
-    if r > 0 then
-        return dist
+        local xx = x + math.floor(math.sin(math.rad(dir)))
+        local yy = y + math.floor(math.cos(math.rad(dir)))
+
+        if xx == x and yy == y then
+            return -1
+        end
+        x = xx
+        y = yy
+        dist = dist + 1
     end
-    
-    local xx, yy
-    xx = round(math.sin(math.rad(dir))) + x
-    yy = round(math.cos(math.rad(dir))) + y
-    return trace(xx, yy, dir, dist + 1)
 end
 -- }}}
 
@@ -118,11 +124,11 @@ clear(cr)
 -- {{{ trace
 function update()
     clear(cr)
-    for i = 1, 100, 0.5 do
+    for i = 1, 100 do
         local dir = (player[3] + i - 50) % 360
 
         local value = trace(player[1], player[2], dir)
-        if value  > 0 then
+        if value >= 0 then
             local r = round((100 - value) / 2)
             local y1 = r
             local y2 = 100 - r

@@ -575,9 +575,8 @@ awful.hooks.manage.register(function (c)
         c.floating = floatings[name]
     end
 
-    c.honorsizehints = true
     client.focus = c
-    awful.client.setslave(c)
+    c.honorsizehints = true
 end)
 -- }}}
 -- {{{ arrange
