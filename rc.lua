@@ -574,6 +574,7 @@ awful.hooks.arrange.register(function (screen)
         local c = awful.client.focus.history.get(screen, 0)
         if c then client.focus = c end
     end
+    awful.layout.arrange.tile(screen, "top")
 end)
 -- }}}
 -- {{{ mouse_enter
