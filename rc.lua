@@ -2,7 +2,7 @@ require('awful')
 require('beautiful')
 require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
-require('tagger') -- dynamic tagging
+require('shifty')
 
 -- {{{ Misc functions
 -- {{{ file_is_readable(fname) checks whether file `fname' is readable
@@ -114,40 +114,13 @@ layout_icons =
     ["floating"] = "o_O"
 }
 function getlayouticon(s)
+    if not awful.layout.get(s) then return "   " end
     local icon = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"
     icon = icon .. layout_icons[awful.layout.get(s)]
     icon = icon .. "</span>"
     return icon
 end
 -- }}} 
--- {{{ floatings
-floatings =
-{   ["mplayer"] = true,
-    ["gimp"]    = true,
-    ["xcalc"]   = true,
-    ["xdialog"] = true,
-    ["nitrogen"]= true,
-    ["zsnes"]   = true,
-    ["xine"]    = true,
-    ["xmessage"]= true,
-    ["xnest"]   = true,
-    ["netzwerkprotokoll"] = true,
-    ["event tester"] = true
-}
--- }}}
--- {{{ apptags
-tagger.apptags =
-{   ["urxvt.weechat"]   = "Chat",
-    ["urxvt.cmus"]      = "Music",
-    ["urxvt"]           = "Term",
-    ["claws-mail"]      = "Mail",
-    ["firefox"]         = "WWW",
-    ["dillo"]           = "WWW",
-    ["gvim"]            = "Text",
-    ["xpdf"]            = "Misc",
-    ["wicd-client.py"]  = "Sys"
-}
--- }}}
 -- }}}
 -- {{{ Initialization
 beautiful.init(theme_path)
@@ -160,22 +133,44 @@ naughty.config.border_width = 2
 naughty.config.border_color = beautiful.fg_normal
 naughty.config.hover_timeout = 0.3
 -- }}}
+-- {{{ Shifty setup
 -- {{{ Tags
-tagger.config = {
-    { name = "Main", layout = layouts[5] },
-    { name = "Term", layout = layouts[4] },
-    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
-    { name = "Misc", layout = layouts[4] },
-    { name = "Text", layout = layouts[4] },
-    { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "Mail", layout = layouts[3] },
-    { name = "Float",layout = layouts[6] }
+shifty.config.tags = {
+    ["Main"]    = { layout = layouts[5] },
+    ["Term"]    = { layout = layouts[4] },
+    ["WWW"]     = { layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    ["Misc"]    = { layout = layouts[4] },
+    ["Text"]    = { layout = layouts[4] },
+    ["Chat"]    = { layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+    ["Mail"]    = { layout = layouts[3] },
 }
-tags = { }
-for s = 1, screen.count() do
-    tagger.add(s, tagger.config[1].name, tagger.config[1].layout, tagger.config[1].mwfact, tagger.config[1].nmaster)
-    screen[s]:tags()[1].selected = true
-end
+-- }}}
+-- {{{ Clients
+shifty.config.apps = {
+    -- {{{ floating setup
+    { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
+    { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
+    { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
+    --}}}
+    -- {{{ apptags
+    { match = { "urxvt.weechat" }, tag = "Chat" },
+    { match = { "urxvt.cmus" }, tag = "Music" },
+    { match = { "urxvt" }, tag = "Term" },
+    { match = { "Claws-mail" }, tag = "Mail" },
+    { match = { "Firefox", "dillo" }, tag = "WWW" },
+    { match = { "gvim" }, tag = "Text" },
+    { match = { "xpdf" }, tag = "Misc" },
+    { match = { "wicd-client.py" }, tag = "Sys" },
+    -- }}}
+}
+-- }}}
+-- {{{ Defaults
+shifty.config.defaults = {
+    layout = "tile",
+    run = function (tag) naughty.notify({ text = tag.name }) end,
+}
+-- }}}
+shifty.init()
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
@@ -185,10 +180,11 @@ tb_spacer.width = 3
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
-    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
-                                            { button({ }, 4, awful.tag.viewnext),
-                                              button({ }, 5, awful.tag.viewprev) })
+    tl_taglist[s] = shifty.taglist_new(s, shifty.taglist_label, 
+                                       { button({ }, 4, shifty.next),
+                                         button({ }, 5, shifty.prev) })
 end
+shifty.taglist = tl_taglist
 -- }}}
 -- {{{ task list
 tl_tasklist = { }
@@ -456,26 +452,28 @@ end
 for i = 1, 9 do
     keybinding({ modkey }, i,
         function ()
-            if tagger.gettag(i) then
-                   awful.tag.viewonly(tagger.gettag(i))
-            end
+            shifty.getpos(i, true)
         end):add()
 
-    keybinding({ modkey, "Mod1" }, i, function () tagger.moveto(i) end):add()
+    keybinding({ modkey, "Mod1" }, i, 
+        function ()
+            if client.focus then
+                awful.client.movetotag(shifty.getpos(i, true))
+            end
+        end):add()
 end
 
-keybinding({ }, "XF86Back", awful.tag.viewprev):add()
-keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
+keybinding({ }, "XF86Back", shifty.prev):add()
+keybinding({ }, "XF86Forward", shifty.next):add()
 
-keybinding({ modkey }, "r", function () tagger.rename(mouse.screen) end):add()
-keybinding({ modkey }, "d", function () tagger.remove(mouse.screen) end):add()
-keybinding({ modkey }, "a", function () tagger.add(mouse.screen) end):add()
-keybinding({ modkey }, "s", function () tagger.clean(mouse.screen) end):add()
+keybinding({ modkey }, "r", shifty.rename):add()
+keybinding({ modkey }, "d", shifty.del):add()
+keybinding({ modkey }, "a", shifty.add):add()
 
-keybinding({ modkey, "Mod1" }, "XF86Back", function () tagger.move(-1) end):add()
-keybinding({ modkey, "Mod1" }, "XF86Forward", function () tagger.move(1) end):add()
-keybinding({ modkey, "Mod1" }, "Left", function () tagger.movetorel(-1) end):add()
-keybinding({ modkey, "Mod1" }, "Right", function () tagger.movetorel(1) end):add()
+keybinding({ modkey, "Mod1" }, "XF86Back", shifty.shift_prev):add()
+keybinding({ modkey, "Mod1" }, "XF86Forward", shifty.shift_next):add()
+keybinding({ modkey, "Mod1" }, "Left", shifty.send_prev):add()
+keybinding({ modkey, "Mod1" }, "Right", shifty.send_next):add()
 -- }}}
 -- {{{ Misc
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
