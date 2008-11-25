@@ -563,18 +563,6 @@ awful.hooks.manage.register(function (c)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
-    local cls  = c.class:lower()
-    local inst = c.instance:lower()
-    local name = c.name:lower()
-    
-    if floatings[cls] then
-        c.floating = floatings[cls]
-    elseif floatings[inst] then
-        c.floating = floatings[inst]
-    elseif floatings[name] then
-        c.floating = floatings[name]
-    end
-
     client.focus = c
     c.honorsizehints = true
 end)

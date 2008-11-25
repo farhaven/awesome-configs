@@ -147,7 +147,11 @@ function add(args)
     spawn = args.spawn or preset.spawn
     run = args.run or preset.run or config.defaults.run
 
-    local tag = tag({ name = name, layout = layout, nmaster = nmaster, mwfact = mwfact, ncol = ncol })
+    local tag = tag(name)
+    tag.layout = layout
+    tag.nmaster = nmaster
+    tag.mwfact = mwfact
+    tag.ncol = ncol
 
     if position then
         for i, t in ipairs(tags[scr]) do
