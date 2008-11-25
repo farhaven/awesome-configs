@@ -493,7 +493,10 @@ keybinding({ modkey, "Mod1" }, "w", function ()
 -- }}}
 -- {{{ Prompts
 keybinding({ modkey }, "Return", function () 
-            awful.prompt.run({ prompt = " $ " }, tb_prompt, awful.util.spawn, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
+            awful.prompt.run({ prompt = " $ " }, tb_prompt, 
+                function (s)
+                    awful.util.spawn(s, mouse.screen)
+                end, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
             end):add()
 keybinding({ modkey, "Mod1" }, "Return", function ()
             awful.prompt.run({ prompt = " ? " }, tb_prompt, awful.util.eval, awful.prompt.bash, os.getenv("HOME") .. "/.cache/awesome/history_eval") 
