@@ -136,7 +136,6 @@ naughty.config.hover_timeout = 0.3
 -- {{{ Shifty setup
 -- {{{ Tags
 shifty.config.tags = {
-    ["Main"]    = { layout = layouts[5] },
     ["Term"]    = { layout = layouts[4] },
     ["WWW"]     = { layout = layouts[3], mwfact = 0.7, nmaster = 1 },
     ["Misc"]    = { layout = layouts[4] },
@@ -153,9 +152,9 @@ shifty.config.apps = {
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     --}}}
     -- {{{ apptags
+    { match = { "urxvt" }, tag = "Term" },
     { match = { "urxvt.weechat" }, tag = "Chat" },
     { match = { "urxvt.cmus" }, tag = "Music" },
-    { match = { "urxvt" }, tag = "Term" },
     { match = { "Claws-mail" }, tag = "Mail" },
     { match = { "Firefox", "dillo" }, tag = "WWW" },
     { match = { "gvim" }, tag = "Text" },
@@ -167,7 +166,6 @@ shifty.config.apps = {
 -- {{{ Defaults
 shifty.config.defaults = {
     layout = "tile",
-    run = function (tag) naughty.notify({ text = tag.name }) end,
 }
 -- }}}
 shifty.init()
@@ -452,7 +450,7 @@ end
 for i = 1, 9 do
     keybinding({ modkey }, i,
         function ()
-            shifty.getpos(i, true)
+            awful.tag.viewonly(shifty.tags[mouse.screen][i])
         end):add()
 
     keybinding({ modkey, "Mod1" }, i, 
