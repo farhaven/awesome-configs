@@ -142,6 +142,7 @@ tagger.apptags =
     ["urxvt"]           = "Term",
     ["claws-mail"]      = "Mail",
     ["firefox"]         = "WWW",
+    ["dillo"]           = "WWW",
     ["gvim"]            = "Text",
     ["xpdf"]            = "Misc",
     ["wicd-client.py"]  = "Sys"
