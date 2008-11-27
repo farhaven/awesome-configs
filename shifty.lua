@@ -23,15 +23,21 @@ local image = image
 local otable = otable
 local pairs = pairs
 local io = io
-
+local tostring = tostring
+local tonumber = tonumber
+local dbg = dbg
 module("shifty")
 
 tags = {}
+index_cache = {}
 config = {}
 config.tags = {}
 config.apps = {}
 config.defaults = {}
-config.guess = true
+config.guess_name = true
+config.guess_position = true
+config.remember_index = true
+
 for s = 1, screen.count() do tags[s] = {} end
 local data = otable()
 
@@ -67,7 +73,7 @@ end
 function next() viewidx(1) end
 function prev() viewidx(-1) end
 
-function rename(tag, prefix, no_selectall)
+function rename(tag, prefix, no_selectall, initial)
     local theme = beautiful.get()
     local scr = (tag and tag.screen) or mouse.screen or 1
     local t = tag or awful.tag.selected(scr)
@@ -89,10 +95,11 @@ function rename(tag, prefix, no_selectall)
         completion,
         awful.util.getdir("cache") .. "/history_tags", nil,
         function ()
-            if data[t].creating and t.name == before then
+            if initial and t.name == before then
                 del(t)
             else
-                data[t].creating = nil
+                data[t].initial = true
+                set(t)
             end
             awful.hooks.user.call("tags", scr)
         end
@@ -111,78 +118,123 @@ end
 function send_next() send(1) end
 function send_prev() send(-1) end
 
-function shift(idx)
-    local scr = mouse.screen or 1
-    local sel = awful.tag.selected(scr)
-    local sel_idx = tag2index(sel)
-    local target = awful.util.cycle(#tags[scr], sel_idx + idx)
-    table.remove(tags[scr], sel_idx)
-    table.insert(tags[scr], target, sel)
-    awful.hooks.user.call("tags", scr)
+function shift_next() set(awful.tag.selected(), { rel_index = 1 }) end
+function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
+
+function pos2idx(pos, scr)
+    local v = 1
+    if pos and scr then
+        for i = #tags[scr] , 1, -1 do
+            local t = tags[scr][i]
+            if data[t].position and data[t].position <= pos then v = i + 1; break end
+        end
+    end
+    return v
 end
 
-function shift_next() shift(1) end
-function shift_prev() shift(-1) end
+function set(t, args)
+    if not t then return end
+    if not args then args = {} end
+    local guessed_position = nil
+
+    -- get the name and preset
+    local name = args.name or t.name
+    local preset = config.tags[name] or {}
+
+    -- try to get position from then name
+    if not (args.position or preset.position) and config.guess_position then
+        local num = name:find('^[1-9]')
+        if num then guessed_position = tonumber(name:sub(1,1)) end
+    end
+
+    -- set tag attributes
+    t.layout = args.layout or preset.layout or config.defaults.layout
+    t.mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact or t.mwfact
+    t.nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
+    t.ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
+    t.screen = args.screen or preset.screen or t.screen or mouse.screen
+    t.name = name
+    data[t].matched = args.matched or data[t].matched
+    data[t].notext = args.notext or preset.notext or data[t].notext or config.defaults.notext
+    data[t].exclusive = args.exclusive or preset.exclusive or data[t].exclusive or config.defaults.exclusive
+    data[t].persist = args.persist or preset.persist or data[t].persist or config.defaults.persist
+    data[t].nopopup = args.nopopup or preset.nopopup or data[t].nopopup or config.defaults.nopopup
+    data[t].leave_kills = args.leave_kills or preset.leave_kills or data[t].leave_kills or config.defaults.leave_kills
+    data[t].solitary = args.solitary or preset.solitary or data[t].solitary or config.defaults.solitary
+    data[t].position = args.position or preset.position or guessed_position or data[t].position
+    local icon = args.icon or preset.icon or data[t].icon or config.defaults.icon
+    if icon then data[t].icon = image(icon) end
+
+    -- calculate desired taglist index
+    local index = args.index or preset.index or config.defaults.index
+    local rel_index = args.rel_index or preset.rel_index or config.defaults.rel_index
+    local sel = awful.tag.selected(t.screen)
+    local sel_idx = (sel and tag2index(sel)) or 0 --TODO: what happens with rel_idx if no tags selected
+    local t_idx = tag2index(t)
+    local limit = (not t_idx and #tags[t.screen] + 1) or #tags[t.screen]
+    local idx = nil
+
+    if rel_index then
+        idx = awful.util.cycle(limit, (t_idx or sel_idx) + rel_index)
+    elseif index then
+        idx = awful.util.cycle(limit, index)
+    elseif data[t].position then
+        idx = pos2idx(data[t].position, t.screen)
+        if t_idx and t_idx < idx then idx = idx - 1 end
+    elseif config.remember_index and index_cache[t.name] then
+        idx = index_cache[t.name]
+    elseif not t_idx then
+        idx = #tags[t.screen] + 1
+    end
+
+    -- if tag already in the table, remove it
+    if idx and t_idx then table.remove(tags[t.screen], t_idx) end
+
+    -- if we have an index, insert the notification
+    if idx then
+        index_cache[t.name] = idx
+        table.insert(tags[t.screen], idx, t)
+    end
+
+
+    -- if set()ting upon tag creation, spawn/run
+    if data[t].initial then
+        local spawn = args.spawn or preset.spawn
+        local run = args.run or preset.run or config.defaults.run
+        if spawn and not data[t].matched then awful.util.spawn(spawn, scr) end
+        if run then run(t) end
+        data[t].initial = nil
+    end
+
+    -- refresh taglist and return
+    awful.hooks.user.call("tags", t.screen)
+    return t
+end
 
 function add(args)
     if not args then args = {} end
+    local  scr = args.screen or mouse.screen --FIXME test handling of screen arg more
     local name = args.name or ( args.rename and args.rename .. "_" ) or "_" --FIXME: pretend prompt '_'
-    local layout, icon, notext, persist, mwfact, nmaster, ncol, position, nopopup, leave_kills, idx, scr = nil
-    local preset = config.tags[name] or {}
 
-    layout = args.layout or preset.layout or config.defaults.layout
-    icon = args.icon or preset.icon or config.defaults.icon
-    notext = args.notext or preset.notext or config.defaults.notext
-    persist = args.persist or preset.persist or config.defaults.persist
-    mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact
-    nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster
-    ncol = args.ncol or preset.ncol or config.defaults.ncol
-    scr = args.screen or preset.screen or mouse.screen or 1
-    position = args.position or preset.position
-    nopopup = args.nopopup or preset.nopopup or config.defaults.nopopup
-    leave_kills = args.leave_kills or preset.leave_kills or config.defaults.leave_kills
-    exclusive = args.exclusive or preset.exclusive or config.defaults.exclusive
-    solitary = args.solitary or preset.solitary or config.defaults.solitary
-    nextto = args.nextto or preset.nextto or config.defaults.nextto
-    spawn = args.spawn or preset.spawn
-    run = args.run or preset.run or config.defaults.run
+    -- initialize a new tag object and its data structure
+    local t = tag({ name = name, })
+    data[t] = {}
+    data[t].initial = true
 
-    local tag = tag(name)
-    tag.layout = layout
-    tag.nmaster = nmaster
-    tag.mwfact = mwfact
-    tag.ncol = ncol
+    -- apply tag settings
+    set(t, args)
 
-    if position then
-        for i, t in ipairs(tags[scr]) do
-            if not data[t].position or data[t].position > position then
-                idx = i
-                break
-            end
-        end
+    -- unless forbidden or if first tag on the screen, show the tag
+    if not (data[t].nopopup or args.noswitch) or #tags[scr] == 1 then awful.tag.viewonly(t) end
+
+    -- get the name or rename
+    if args.name then t.name = args.name
+    elseif args.position then rename(t, args.position .. ":", true, true)
+    else rename(t, "", nil, true)
     end
-    idx = idx or (#tags[scr] > 0 and nextto and tag2index(awful.tag.selected(scr)) + 1) or #tags[scr] + 1
 
-    data[tag] = {}
-    data[tag].position = position
-    data[tag].notext = notext
-    data[tag].persist = persist
-    data[tag].nopopup = nopopup
-    data[tag].leave_kills = leave_kills
-    data[tag].exclusive = exclusive
-    data[tag].solitary = solitary
-    if icon then data[tag].icon = image(icon) end
-
-    table.insert(tags[scr], idx, tag)
-    tags[scr][idx].screen = scr
-    if (not nopopup and not args.noswitch) or #tags[scr] == 1 then awful.tag.viewonly(tag) end
-    if args.rename or name == "_" then
-        data[tag].creating = true
-        rename(tag, args.rename, args.no_selectall)
-    end
-    if spawn then awful.util.spawn(spawn, scr) end
-    if run then run(tag) end
-    return tag
+    -- return the tag
+    return t
 end
 
 function del(tag)
@@ -191,6 +243,7 @@ function del(tag)
     local t = tag or sel
     local idx = tag2index(t)
     if #(t:clients()) > 0 then return end
+    index_cache[t.name] = idx
     table.remove(tags[scr], idx)
     data[t] = nil
     t.screen = nil
@@ -240,14 +293,14 @@ function match(c)
 
     -- if still unmatched, try guessing the tag
     if not target_name then
-        if config.guess and cls then target_name = cls:lower() else target_name = "new" end
+        if config.guess_name and cls then target_name = cls:lower() else target_name = "new" end
     end
 
     -- get/create target tag and move the client
     if target_name then
         target = name2tag(target_name, c.screen)
         if not target or (data[target].solitary and #target:clients() > 0 and not intrusive) then
-            target = add({ name = target_name, screen = c.screen, noswitch = true }) end
+            target = add({ name = target_name, noswitch = true, matched = true }) end
         awful.client.movetotag(target, c)
     end
 
@@ -403,7 +456,7 @@ function getpos(pos, switch)
     end
     if not v then
         for i, j in pairs(config.tags) do
-            if j.position == pos then v = add({ name = i, screen = j.screen, noswitch = not switch }) end
+            if j.position == pos then v = add({ name = i, position = pos, noswitch = not switch }) end
         end
     end
     if not v then
@@ -422,6 +475,22 @@ function init()
     for i, j in pairs(config.tags) do
         if j.init then add({ name = i, persist = true, screen = j.screen }) end
     end
+end
+
+function count(table, element)
+    local v = 0
+    for i, e in pairs(table) do
+        if element == e then v = v + 1 end
+    end
+    return v
+end
+
+function remove_dup(table)
+    local v = {}
+    for i, entry in ipairs(table) do
+        if count(v, entry) == 0 then v[#v+ 1] = entry end
+    end
+    return v
 end
 
 function completion(cmd, cur_pos, ncomp)
@@ -462,13 +531,35 @@ function completion(cmd, cur_pos, ncomp)
     end
 
     -- no matches
-    if #matches == 0 then return end
+    if #matches == 0 then return cmd, cur_pos end
+
+    -- remove duplicates
+    matches = remove_dup(matches)
 
     -- cycle
     while ncomp > #matches do ncomp = ncomp - #matches end
 
     -- return match and position
     return matches[ncomp], cur_pos
+end
+
+function info(t)
+    if not t then return end
+
+    local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
+        "  screen = " .. t.screen .. "\n" ..
+        "selected = " .. tostring(t.selected) .. "\n" ..
+        "  layout = " .. t.layout .. "\n" ..
+        "  mwfact = " .. t.mwfact .. "\n"  ..
+        " nmaster = " .. t.nmaster .. "\n" ..
+        "    ncol = " .. t.ncol .. "\n" ..
+        "#clients = " .. #t:clients() .. "\n"
+
+    for op, val in pairs(data[t]) do
+        v = v .. "\n" .. op .. " = " .. tostring(val)
+    end
+
+    return v
 end
 
 awful.hooks.tags.register(sweep)
