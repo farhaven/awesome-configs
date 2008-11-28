@@ -97,12 +97,10 @@ modkey = "Mod3"
 -- }}} 
 -- {{{ layouts
 layouts =
-{   "tile",
-    "tileleft",
-    "tilebottom",
-    "tiletop",
-    "fairh",
-    "floating"
+{   awful.layout.suit.tile,
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
 }
 layout_icons =
 {   ["tile"] = "[]=",
@@ -116,7 +114,7 @@ layout_icons =
 function getlayouticon(s)
     if not awful.layout.get(s) then return "   " end
     local icon = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"
-    icon = icon .. layout_icons[awful.layout.get(s)]
+    icon = icon .. layout_icons[awful.layout.getname(awful.layout.get(s))]
     icon = icon .. "</span>"
     return icon
 end
@@ -136,7 +134,7 @@ naughty.config.hover_timeout = 0.3
 -- {{{ Shifty setup
 -- {{{ Tags
 shifty.config.tags = {
-    ["Term"]    = { layout = layouts[4] },
+    ["Term"]    = { layout = layouts[4], ncols = 2 },
     ["WWW"]     = { layout = layouts[3], mwfact = 0.7, nmaster = 1 },
     ["Misc"]    = { layout = layouts[4] },
     ["Text"]    = { layout = layouts[4] },
@@ -456,7 +454,7 @@ for i = 1, 9 do
     keybinding({ modkey, "Mod1" }, i, 
         function ()
             if client.focus then
-                awful.client.movetotag(shifty.getpos(i, true))
+                awful.client.movetotag(shifty.tags[mouse.screen][i])
             end
         end):add()
 end
@@ -574,7 +572,6 @@ awful.hooks.arrange.register(function (screen)
         local c = awful.client.focus.history.get(screen, 0)
         if c then client.focus = c end
     end
-    awful.layout.arrange.tile(screen, "top")
 end)
 -- }}}
 -- {{{ mouse_enter
