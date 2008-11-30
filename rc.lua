@@ -101,6 +101,7 @@ layouts =
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
+    awful.layout.suit.floating,
 }
 layout_icons =
 {   ["tile"] = "[]=",
@@ -502,7 +503,7 @@ keybinding({ modkey, "Mod1" }, "c", function () client.focus:kill() end):add()
 
 keybinding({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end):add()
 keybinding({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end):add()
-keybinding({ modkey }, "Left", function () awful.client.swap(1) end):add()
+keybinding({ modkey }, "Left", function () awful.client.swap.byidx(1) end):add()
 keybinding({ modkey }, "Right", function () awful.client.movetoscreen() end):add()
 keybinding({ modkey }, "XF86Back",  function () 
                                         awful.screen.focus(1)
