@@ -217,9 +217,10 @@ function add(args)
     local name = args.name or ( args.rename and args.rename .. "_" ) or "_" --FIXME: pretend prompt '_'
 
     -- initialize a new tag object and its data structure
-    local t = tag({ name = name, })
+    local t = tag(name)
     data[t] = {}
     data[t].initial = true
+    t.screen = scr
 
     -- apply tag settings
     set(t, args)
@@ -300,7 +301,7 @@ function match(c)
     if target_name then
         target = name2tag(target_name, c.screen)
         if not target or (data[target].solitary and #target:clients() > 0 and not intrusive) then
-            target = add({ name = target_name, noswitch = true, matched = true }) end
+            target = add({ screen = c.screen, name = target_name, noswitch = true, matched = true }) end
         awful.client.movetotag(target, c)
     end
 
