@@ -101,6 +101,8 @@ layouts =
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal,
     awful.layout.suit.floating,
 }
 layout_icons =
@@ -149,6 +151,7 @@ shifty.config.apps = {
     { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
+    { match = { "pinentry", "VirtualBox" }, float = true },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = "Term" },
