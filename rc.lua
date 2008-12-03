@@ -2,7 +2,6 @@ require('awful')
 require('beautiful')
 require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
-require('shifty')
 
 -- {{{ Misc functions
 -- {{{ file_is_readable(fname) checks whether file `fname' is readable
@@ -134,43 +133,51 @@ naughty.config.border_width = 2
 naughty.config.border_color = beautiful.fg_normal
 naughty.config.hover_timeout = 0.3
 -- }}}
--- {{{ Shifty setup
+-- {{{ Tags & Clients
 -- {{{ Tags
-shifty.config.tags = {
-    ["Term"]    = { layout = layouts[4], ncols = 2 },
-    ["WWW"]     = { layout = layouts[3], mwfact = 0.7, nmaster = 1 },
-    ["Misc"]    = { layout = layouts[4] },
-    ["Text"]    = { layout = layouts[4] },
-    ["Chat"]    = { layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    ["Mail"]    = { layout = layouts[3] },
+config = { }
+config.tags = {
+    { name = "Term", layout = layouts[4], ncols = 2 },
+    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    { name = "Misc", layout = layouts[4] },
+    { name = "Text", layout = layouts[4] },
+    { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+    { name = "Mail", layout = layouts[3] },
 }
+tags = { }
+for s = 1, screen.count() do
+    tags[s] = { }
+    for i, v in ipairs(config.tags) do
+        tags[s][i] = tag(v.name)
+        tags[s][i].screen = s
+        awful.tag.setproperty(tags[s][i], "layout", v.layout)
+        awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
+        awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
+        awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
+    end
+    tags[s][1].selected = true
+end
 -- }}}
 -- {{{ Clients
-shifty.config.apps = {
+config.apps = {
     -- {{{ floating setup
     { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
-    { match = { "pinentry", "VirtualBox" }, float = true },
+    { match = { "pinentry", "virtualbox" }, float = true },
     --}}}
     -- {{{ apptags
-    { match = { "urxvt" }, tag = "Term" },
-    { match = { "urxvt.weechat" }, tag = "Chat" },
-    { match = { "urxvt.cmus" }, tag = "Music" },
-    { match = { "Claws-mail" }, tag = "Mail" },
-    { match = { "Firefox", "dillo" }, tag = "WWW" },
-    { match = { "gvim" }, tag = "Text" },
-    { match = { "xpdf" }, tag = "Misc" },
-    { match = { "wicd-client.py" }, tag = "Sys" },
+    { match = { "urxvt" }, tag = 1 },
+    { match = { "urxvt.weechat" }, tag = 5 },
+    { match = { "urxvt.cmus" }, tag = 3 },
+    { match = { "claws%-mail" }, tag = 6 },
+    { match = { "firefox", "dillo" }, tag = 2 },
+    { match = { "gvim" }, tag = 4 },
+    { match = { "xpdf" }, tag = 3 },
+    { match = { "wicd-client.py" }, tag = 3 },
     -- }}}
 }
 -- }}}
--- {{{ Defaults
-shifty.config.defaults = {
-    layout = "tile",
-}
--- }}}
-shifty.init()
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
@@ -180,11 +187,10 @@ tb_spacer.width = 3
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
-    tl_taglist[s] = shifty.taglist_new(s, shifty.taglist_label, 
-                                       { button({ }, 4, shifty.next),
-                                         button({ }, 5, shifty.prev) })
+    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
+                                             { button({ }, 4, awful.tag.viewnext),
+                                               button({ }, 5, awful.tag.viewprev) })
 end
-shifty.taglist = tl_taglist
 -- }}}
 -- {{{ task list
 tl_tasklist = { }
@@ -452,28 +458,19 @@ end
 for i = 1, 9 do
     keybinding({ modkey }, i,
         function ()
-            awful.tag.viewonly(shifty.tags[mouse.screen][i])
+            awful.tag.viewonly(tags[mouse.screen][i])
         end):add()
 
     keybinding({ modkey, "Mod1" }, i, 
         function ()
             if client.focus then
-                awful.client.movetotag(shifty.tags[mouse.screen][i])
+                awful.client.movetotag(tags[mouse.screen][i])
             end
         end):add()
 end
 
-keybinding({ }, "XF86Back", shifty.prev):add()
-keybinding({ }, "XF86Forward", shifty.next):add()
-
-keybinding({ modkey }, "r", shifty.rename):add()
-keybinding({ modkey }, "d", shifty.del):add()
-keybinding({ modkey }, "a", shifty.add):add()
-
-keybinding({ modkey, "Mod1" }, "XF86Back", shifty.shift_prev):add()
-keybinding({ modkey, "Mod1" }, "XF86Forward", shifty.shift_next):add()
-keybinding({ modkey, "Mod1" }, "Left", shifty.send_prev):add()
-keybinding({ modkey, "Mod1" }, "Right", shifty.send_next):add()
+keybinding({ }, "XF86Back", awful.tag.viewprev):add()
+keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
 -- }}}
 -- {{{ Misc
 keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
@@ -567,6 +564,24 @@ awful.hooks.manage.register(function (c)
 
     client.focus = c
     c.honorsizehints = true
+
+    local instance = c.instance:lower()
+    local class = c.class:lower()
+    local name = c.name:lower()
+
+    for k, v in pairs(config.apps) do
+        for j, m in pairs(v.match) do
+            if instance:match(m) or class:match(m) or name:match(m) then
+                if v.float then
+                    awful.client.floating.set(c, true)
+                end
+                if v.tag then
+                    awful.client.movetotag(tags[c.screen][v.tag], c)
+                end
+                break
+            end
+        end
+    end
 end)
 -- }}}
 -- {{{ arrange
