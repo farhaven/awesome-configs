@@ -115,10 +115,7 @@ layout_icons =
 }
 function getlayouticon(s)
     if not awful.layout.get(s) then return "   " end
-    local icon = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"
-    icon = icon .. layout_icons[awful.layout.getname(awful.layout.get(s))]
-    icon = icon .. "</span>"
-    return icon
+    return layout_icons[awful.layout.getname(awful.layout.get(s))]
 end
 -- }}} 
 -- }}}
@@ -174,7 +171,7 @@ config.apps = {
     { match = { "firefox", "dillo" }, tag = 2 },
     { match = { "gvim" }, tag = 4 },
     { match = { "xpdf" }, tag = 3 },
-    { match = { "wicd-client.py" }, tag = 3 },
+    { match = { "wicd%-client%.py" }, tag = 3 },
     -- }}}
 }
 -- }}}
@@ -367,7 +364,10 @@ function clock.update ()
     end
     
     if #clock.alarms > 0 then
-        date = "<bg color='" .. beautiful.bg_focus.."'/><span color='" .. beautiful.fg_focus .. "'>"..date.."</span>"
+        date = "<span color='" .. beautiful.fg_focus .. "'>"..date.."</span>"
+        clock.widget.bg = beautiful.bg_focus
+    else
+        clock.widget.bg = beautiful.bg_normal
     end
     
     clock.widget.text = date
@@ -489,10 +489,7 @@ keybinding({ modkey, "Mod1" }, "w", function ()
 -- }}}
 -- {{{ Prompts
 keybinding({ modkey }, "Return", function () 
-            awful.prompt.run({ prompt = " $ " }, tb_prompt, 
-                function (s)
-                    awful.util.spawn(s, mouse.screen)
-                end, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
+            awful.prompt.run({ prompt = " $ " }, tb_prompt, awful.util.spawn, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
             end):add()
 keybinding({ modkey, "Mod1" }, "Return", function ()
             awful.prompt.run({ prompt = " ? " }, tb_prompt, awful.util.eval, awful.prompt.bash, os.getenv("HOME") .. "/.cache/awesome/history_eval") 
@@ -556,6 +553,7 @@ awful.hooks.manage.register(function (c)
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
         button({ modkey }, 1, awful.mouse.client.move),
+        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag),
         button({ modkey }, 3, awful.mouse.client.resize)
     })
 
