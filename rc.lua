@@ -127,8 +127,8 @@ naughty.config.bg           = beautiful.bg_normal
 naughty.config.fg           = beautiful.fg_normal
 naughty.config.screen       = 1
 naughty.config.border_width = 2
-naughty.config.border_color = beautiful.fg_normal
-naughty.config.hover_timeout = 0.3
+naughty.config.presets.normal.border_color = beautiful.fg_normal
+naughty.config.presets.normal.hover_timeout = 0.3
 -- }}}
 -- {{{ Tags & Clients
 -- {{{ Tags
@@ -242,7 +242,7 @@ function battmon.update()
     battmon.widget.text = battery_status .. "|"
 end
 -- }}}
--- {{{ start charging
+-- {{{ detailed info
 function battmon.detail ()
     local fd = io.popen("acpitool")
     local d = fd:read("*all")
