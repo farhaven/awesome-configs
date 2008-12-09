@@ -202,7 +202,6 @@ tb_prompt = widget({ type = "textbox", name = "tb_prompt", align = "left" })
 -- {{{ battery
 battmon = { }
 battmon.widget = widget({ type = "textbox", name = "tb_battery", align = "right" })
-battmon.widget:buttons({ button({ }, 1, battmon.start_charge)}) 
 -- {{{ update                                              
 function battmon.update()
     local battery_status = ""
@@ -245,11 +244,14 @@ function battmon.update()
 end
 -- }}}
 -- {{{ start charging
-function battmon.start_charge ()
-    awful.util.spawn('sudo su -c "echo 80 > /sys/platform/devices/smapi/BAT0/start_charge_thresh"')
-    battmon.update()
+function battmon.detail ()
+    local fd = io.popen("acpitool")
+    local d = fd:read("*all")
+    fd:close()
+    naughty.notify({ text = d })
 end
 -- }}}
+battmon.widget:buttons({ button({ }, 1, battmon.detail)}) 
 awful.hooks.timer.register(60, battmon.update)
 battmon.update()
 -- }}}
