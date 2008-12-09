@@ -139,7 +139,7 @@ config.tags = {
     { name = "Misc", layout = layouts[4] },
     { name = "Text", layout = layouts[4] },
     { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "Mail", layout = layouts[3] },
+    { name = "Mail", layout = layouts[2] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -339,7 +339,6 @@ awful.hooks.timer.register(10, function () volume("update") end)
 clock = { }
 clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
 clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
-clock.widget.text = os.date("%H:%M:%S (") .. (tonumber(os.date("%W")) - 1)..") "
 clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
                                                      { "edit alarms", editor.." "..clock.alarmfile }} } ) 
 clock.widget:buttons({
@@ -349,6 +348,7 @@ clock.widget:buttons({
                             naughty.notify({ text = v })
                         end
                         clock.alarms = { } 
+                        clock.update()
                    end ) })
 
 clock.fulldate = false
@@ -358,7 +358,7 @@ clock.alarms = { }
 function clock.update ()
     local date
     if not clock.fulldate then
-        date = os.date("%H:%M:%S (") .. (tonumber(os.date("%W")) - 1)..") "
+        date = os.date("%H:%M (") .. (tonumber(os.date("%W")) - 1)..") "
     else
         date = os.date()
     end
@@ -372,20 +372,19 @@ function clock.update ()
     
     clock.widget.text = date
     
-    if os.date("%S") == "00" then
-        for line in io.lines(clock.alarmfile) do
-            if string.match(line, "^"..os.date("%H:%M")) then
-                naughty.notify({ text = line })
-                table.insert(clock.alarms, line)
-            end
+    for line in io.lines(clock.alarmfile) do
+        if string.match(line, "^"..os.date("%H:%M")) then
+            naughty.notify({ text = line })
+            table.insert(clock.alarms, line)
         end
     end
 end
 -- }}}
-awful.hooks.timer.register(1, clock.update)
+clock.update()
+awful.hooks.timer.register(60, clock.update)
 
-function clock.widget.mouse_enter() clock.fulldate = true  end
-function clock.widget.mouse_leave() clock.fulldate = false end
+function clock.widget.mouse_enter() clock.fulldate = true ; clock.update() end
+function clock.widget.mouse_leave() clock.fulldate = false; clock.update() end
 -- }}}
 -- {{{ layout box
 lb_layout = { }
