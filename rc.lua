@@ -139,7 +139,7 @@ config.tags = {
     { name = "Misc", layout = layouts[4] },
     { name = "Text", layout = layouts[4] },
     { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "Mail", layout = layouts[2] },
+    { name = "Mail", layout = layouts[1] },
 }
 tags = { }
 for s = 1, screen.count() do
