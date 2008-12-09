@@ -161,7 +161,7 @@ config.apps = {
     { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
-    { match = { "pinentry", "virtualbox" }, float = true },
+    { match = { "pinentry", "virtualbox", "wicd%-client%.py" }, float = true },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
@@ -171,7 +171,6 @@ config.apps = {
     { match = { "firefox", "dillo" }, tag = 2 },
     { match = { "gvim" }, tag = 4 },
     { match = { "xpdf" }, tag = 3 },
-    { match = { "wicd%-client%.py" }, tag = 3 },
     -- }}}
 }
 -- }}}
