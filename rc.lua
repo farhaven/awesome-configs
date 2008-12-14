@@ -349,7 +349,7 @@ clock.widget:buttons({
                             naughty.notify({ text = v })
                         end
                         clock.alarms = { } 
-                        clock.update()
+                        clock.widget.bg = beautiful.bg_normal
                    end ) })
 
 clock.fulldate = false
@@ -359,7 +359,7 @@ clock.alarms = { }
 function clock.update ()
     local date
     if not clock.fulldate then
-        date = os.date("%H:%M (") .. (tonumber(os.date("%W")) - 1)..") "
+        date = os.date("%H:%M (") .. (tonumber(os.date("%W")) + 1)..") "
     else
         date = os.date()
     end
@@ -376,7 +376,14 @@ function clock.update ()
     for line in io.lines(clock.alarmfile) do
         if string.match(line, "^"..os.date("%H:%M")) then
             naughty.notify({ text = line })
-            table.insert(clock.alarms, line)
+            local add = true
+            for _, v in pairs(clock.alarms) do
+                if v == line then
+                    add = false
+                    break
+                end
+            end
+            if add then table.insert(clock.alarms, line) end
         end
     end
 end
@@ -407,7 +414,8 @@ for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
                             name = "wi_widgets" .. s, 
                             fg = beautiful.fg_normal, 
-                            bg = beautiful.bg_normal })
+                            bg = beautiful.bg_normal
+                          })
     wi_widgets[s].widgets = {   tl_taglist[s],
                                 lb_layout[s],
                                 tb_prompt,
@@ -424,6 +432,9 @@ for s = 1, screen.count() do
                                 clock.widget
                             }
     wi_widgets[s].screen = s
+    wi_widgets[s]:buttons({
+        button({ modkey }, 1, awful.mouse.wibox.move)
+    })
 end
 -- }}}
 -- }}}
@@ -527,7 +538,7 @@ awful.hooks.manage.register(function (c)
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
         button({ modkey }, 1, awful.mouse.client.move),
-        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag),
+        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.border),
         button({ modkey }, 3, awful.mouse.client.resize)
     })
 
