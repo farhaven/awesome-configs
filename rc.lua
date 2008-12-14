@@ -403,6 +403,7 @@ for s = 1, screen.count() do
         button({ }, 3, function () awful.layout.inc(layouts, -1) end)
     })
     lb_layout[s].text = getlayouticon(s)
+    lb_layout[s].bg = beautiful.bg_focus
 end
 -- }}}
 -- {{{ systray
