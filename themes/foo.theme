@@ -16,3 +16,7 @@ border_marked = #91231c
 
 taglist_squares_sel = /usr/local/share/awesome/themes/default/taglist/squarefw.png
 taglist_squares_unsel = /usr/local/share/awesome/themes/default/taglist/squarew.png
+tasklist_floating_icon = @AWESOME_THEMES_PATH@/default/tasklist/floatingw.png
+
+titlebar_close_button_normal = @AWESOME_THEMES_PATH@/default/titlebar/close.png
+titlebar_close_button_focus = @AWESOME_THEMES_PATH@/default/titlebar/closer.png
