@@ -118,7 +118,8 @@ config.apps = {
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
-    { match = { "urxvt.weechat" }, tag = 5 },
+    { match = { "urxvt.irssi" }, tag = 5 },
+    { match = { "pidgin" }, tag = 5 },
     { match = { "urxvt.cmus" }, tag = 3 },
     { match = { "claws%-mail" }, tag = 6 },
     { match = { "firefox", "dillo" }, tag = 2 },
@@ -397,12 +398,12 @@ end
 -- {{{ Key bindings
 -- {{{ Tags
 for i = 1, 9 do
-    keybinding({ modkey }, i,
+    key({ modkey }, i,
         function ()
             awful.tag.viewonly(tags[mouse.screen][i])
         end):add()
 
-    keybinding({ modkey, "Mod1" }, i, 
+    key({ modkey, "Mod1" }, i, 
         function ()
             if client.focus then
                 awful.client.movetotag(tags[mouse.screen][i])
@@ -410,16 +411,16 @@ for i = 1, 9 do
         end):add()
 end
 
-keybinding({ }, "XF86Back", awful.tag.viewprev):add()
-keybinding({ }, "XF86Forward", awful.tag.viewnext):add()
+key({ }, "XF86Back", awful.tag.viewprev):add()
+key({ }, "XF86Forward", awful.tag.viewnext):add()
 -- }}}
 -- {{{ Misc
-keybinding({ modkey, "Mod1" }, "i", invaders.run):add()
-keybinding({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end):add()
-keybinding({ modkey, "Mod1" }, "r", awesome.restart):add()
+key({ modkey, "Mod1" }, "i", invaders.run):add()
+key({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end):add()
+key({ modkey, "Mod1" }, "r", awesome.restart):add()
 
 -- hide / unhide current screens wibox
-keybinding({ modkey, "Mod1" }, "w", function ()
+key({ modkey, "Mod1" }, "w", function ()
                                         local w = wi_widgets[mouse.screen]
                                         if w.screen then
                                             w.screen = nil
@@ -429,28 +430,28 @@ keybinding({ modkey, "Mod1" }, "w", function ()
                                     end):add()
 -- }}}
 -- {{{ Prompts
-keybinding({ modkey }, "Return", function () 
+key({ modkey }, "Return", function () 
             awful.prompt.run({ prompt = " $ " }, tb_prompt, awful.util.spawn, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
             end):add()
-keybinding({ modkey, "Mod1" }, "Return", function ()
+key({ modkey, "Mod1" }, "Return", function ()
             awful.prompt.run({ prompt = " ? " }, tb_prompt, awful.util.eval, awful.prompt.bash, os.getenv("HOME") .. "/.cache/awesome/history_eval") 
             end):add()
 -- }}}
 -- {{{ Client / Focus manipulation
-keybinding({ modkey, "Mod1" }, "c", function () client.focus:kill() end):add()
+key({ modkey, "Mod1" }, "c", function () client.focus:kill() end):add()
 
-keybinding({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end):add()
-keybinding({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end):add()
-keybinding({ modkey }, "Left", function () awful.client.swap.byidx(1) end):add()
-keybinding({ modkey }, "Right", function () awful.client.movetoscreen() end):add()
-keybinding({ modkey }, "XF86Back",  function () 
+key({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end):add()
+key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end):add()
+key({ modkey }, "Left", function () awful.client.swap.byidx(1) end):add()
+key({ modkey }, "Right", function () awful.client.movetoscreen() end):add()
+key({ modkey }, "XF86Back",  function () 
                                         awful.screen.focus(1)
                                         local coords = mouse.coords()
                                         coords['x'] = coords['x'] + 1
                                         coords['y'] = coords['y'] + 2
                                         mouse.coords(coords)
                                     end):add()
-keybinding({ modkey }, "XF86Forward",   function () 
+key({ modkey }, "XF86Forward",   function () 
                                             awful.screen.focus(-1) 
                                             local coords = mouse.coords()
                                             coords['x'] = coords['x'] + 1
@@ -459,21 +460,21 @@ keybinding({ modkey }, "XF86Forward",   function ()
                                         end):add()
 -- }}}
 -- {{{ Layout manipulation
-keybinding({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end):add()
-keybinding({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end):add()
-keybinding({ modkey }, " ", function () awful.layout.inc(layouts, 1) end):add()
+key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end):add()
+key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end):add()
+key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end):add()
 -- }}}
 -- {{{ Audio
 -- Control cmus
-keybinding({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end):add()
-keybinding({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end):add()
-keybinding({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end):add()
-keybinding({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end):add()
+key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end):add()
+key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end):add()
+key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end):add()
+key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end):add()
 
 -- Audio control
-keybinding({ }, "XF86AudioRaiseVolume", function () volume("up", pb_volume) end):add()
-keybinding({ }, "XF86AudioLowerVolume", function () volume("down", pb_volume) end):add()
-keybinding({ }, "XF86AudioMute", function () volume("mute", pb_volume) end):add()
+key({ }, "XF86AudioRaiseVolume", function () volume("up", pb_volume) end):add()
+key({ }, "XF86AudioLowerVolume", function () volume("down", pb_volume) end):add()
+key({ }, "XF86AudioMute", function () volume("mute", pb_volume) end):add()
 -- }}}
 -- }}}
 -- {{{ Hooks
