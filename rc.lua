@@ -210,35 +210,6 @@ battmon.widget:buttons({ button({ }, 1, battmon.detail)})
 awful.hooks.timer.register(60, battmon.update)
 battmon.update()
 -- }}}
--- {{{ wlan
-tb_wlan = widget({ type = "textbox", name = "tb_wlan", align = "right" })
-function wireless()
-    local device = "wlan0"
-    if file_is_readable("/proc/net/wireless") then
-        local fd = io.popen("grep -e \"" .. device .. "\" /proc/net/wireless | awk '{print $3}'")
-        local link = fd:read()
-        fd:close()
-        link = tonumber(string.match(link, "(%d+)"))
-        local color = "#00FF00"
-        if link < 50 and link > 10 then
-            color = "#FFFF00"
-        elseif link <= 10 then
-            color = "#FF0000"
-        end
-        local status = ""
-        for i = 1, math.floor(link / 10) do
-            status = status .. "|"
-        end
-        for i = math.floor(link / 10) + 1, 10 do
-            status = status .. "-"
-        end
-        status = "-["..status.."]+"
-        tb_wlan.text = "<span color=\"" .. color .. "\">" .. status .. "</span>|"
-    end
-end
-wireless()
-awful.hooks.timer.register(10, wireless)
--- }}}
 -- {{{ volume
 tb_volume = widget({ type = "textbox", name = "tb_volume", align = "right" })
 tb_volume:buttons({
@@ -378,8 +349,6 @@ for s = 1, screen.count() do
                                 tb_prompt,
                                 tl_tasklist[s],
                                 tb_spacer,
-                                tb_spacer,
-                                tb_wlan,
                                 tb_spacer,
                                 tb_volume,
                                 tb_spacer,
