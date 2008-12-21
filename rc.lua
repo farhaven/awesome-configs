@@ -349,12 +349,12 @@ for s = 1, screen.count() do
                                 tb_prompt,
                                 tl_tasklist[s],
                                 tb_spacer,
-                                tb_spacer,
                                 tb_volume,
                                 tb_spacer,
                                 battmon.widget,
                                 tb_spacer,
                                 s == 1 and st_systray or nil, 
+                                s == 1 and tb_spacer or nil,
                                 clock.widget
                             }
     wi_widgets[s].screen = s
