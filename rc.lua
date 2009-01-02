@@ -235,15 +235,7 @@ function volume (mode)
         if string.find(status, "on", 1, true) then
              color = "#00FF00"
         end
-        status = ""
-        for i = 1, math.floor(volume / 10) do
-            status = status .. "|"
-        end
-        for i = math.floor(volume / 10) + 1, 10 do
-            status = status .. "-"
-        end
-        status = "-[" ..status .. "]+"
-        tb_volume.text = "<span color=\"" .. color .. "\">" .. status .. "</span>|"
+        tb_volume.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", volume) .. "</span>|"
     elseif mode == "up" then
         awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+")
         volume("update")
