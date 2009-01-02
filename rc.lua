@@ -2,6 +2,7 @@ require('awful')
 require('beautiful')
 require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
+require('blast')
 
 -- {{{ Misc functions
 -- {{{ file_is_readable(fname) checks whether file `fname' is readable
@@ -337,6 +338,11 @@ end
 st_systray = widget({ type = "systray", align = "right" })
 -- }}}
 -- {{{ widget box
+local systrayscreen = 1
+if screen.count() > 1 then
+    systrayscreen = 2
+end
+
 wi_widgets = {}
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
@@ -353,8 +359,8 @@ for s = 1, screen.count() do
                                 tb_spacer,
                                 battmon.widget,
                                 tb_spacer,
-                                s == 1 and st_systray or nil, 
-                                s == 1 and tb_spacer or nil,
+                                s == systrayscreen and st_systray or nil, 
+                                s == systrayscreen and tb_spacer or nil,
                                 clock.widget
                             }
     wi_widgets[s].screen = s
@@ -384,6 +390,8 @@ key({ }, "XF86Back", awful.tag.viewprev):add()
 key({ }, "XF86Forward", awful.tag.viewnext):add()
 -- }}}
 -- {{{ Misc
+key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end):add()
+key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end):add()
 key({ modkey, "Mod1" }, "i", invaders.run):add()
 key({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end):add()
 key({ modkey, "Mod1" }, "r", awesome.restart):add()
@@ -460,7 +468,11 @@ awful.hooks.unfocus.register(function (c)
 end)
 -- }}}
 -- {{{ manage
-awful.hooks.manage.register(function (c)
+awful.hooks.manage.register(function (c, startup)
+    if not startup and awful.client.focus.filter(c) then
+        c.screen = mouse.screen
+    end
+
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
         button({ modkey }, 1, awful.mouse.client.move),
