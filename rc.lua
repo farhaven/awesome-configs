@@ -2,7 +2,6 @@ require('awful')
 require('beautiful')
 require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
-require('blast')
 
 -- {{{ Misc functions
 -- {{{ file_is_readable(fname) checks whether file `fname' is readable
@@ -33,10 +32,17 @@ function dump_table(t, depth)
     end
 end
 -- }}}
+-- {{{ getlayouticon(layout)
+function getlayouticon(s)
+    if not awful.layout.get(s) then return "   " end
+    return layout_icons[awful.layout.getname(awful.layout.get(s))]
+end
+-- }}}
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
 theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo.theme"
+beautiful.init(theme_path)
 -- }}}
 -- {{{ misc
 terminal = "urxvtc"
@@ -67,19 +73,12 @@ layout_icons =
     ["fairh"] = "[-]",
     ["floating"] = "o_O"
 }
-function getlayouticon(s)
-    if not awful.layout.get(s) then return "   " end
-    return layout_icons[awful.layout.getname(awful.layout.get(s))]
-end
 -- }}} 
--- }}}
--- {{{ Initialization
-beautiful.init(theme_path)
 -- }}}
 -- {{{ Naughty setup
 naughty.config.bg           = beautiful.bg_normal
 naughty.config.fg           = beautiful.fg_normal
-naughty.config.screen       = 1
+naughty.config.screen       = screen.count() == 2 and 2 or 1
 naughty.config.border_width = 2
 naughty.config.presets.normal.border_color = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
@@ -116,6 +115,7 @@ config.apps = {
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox", "wicd%-client%.py" }, float = true },
+    { match = { "linux_client" }, float = true },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
@@ -132,7 +132,10 @@ config.apps = {
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
-tb_spacer       = widget({ type = "textbox", name = "tb_spacer", align = "right" })
+tb_spacer       = widget({ type = "textbox",
+                           name = "tb_spacer",
+                           align = "right"
+                         })
 tb_spacer.width = 3
 -- }}}
 -- {{{ tag list
@@ -153,12 +156,18 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ prompt
-tb_prompt = widget({ type = "textbox", name = "tb_prompt", align = "left" })
+tb_prompt = widget({ type = "textbox",
+                     name = "tb_prompt",
+                     align = "left"
+                   })
 -- }}}
 -- {{{ battery
 battmon = { }
-battmon.widget = widget({ type = "textbox", name = "tb_battery", align = "right" })
--- {{{ update                                              
+battmon.widget = widget({ type = "textbox",
+                          name = "tb_battery",
+                          align = "right"
+                        })
+-- {{{ update
 function battmon.update()
     local battery_status = ""
     if file_is_readable("/sys/devices/platform/smapi/BAT0/remaining_percent") then
@@ -204,7 +213,9 @@ function battmon.detail ()
     local fd = io.popen("acpitool")
     local d = fd:read("*all")
     fd:close()
-    naughty.notify({ text = d })
+    naughty.notify({ text = d,
+                     screen = mouse.screen
+                   })
 end
 -- }}}
 battmon.widget:buttons({ button({ }, 1, battmon.detail)}) 
@@ -212,7 +223,10 @@ awful.hooks.timer.register(60, battmon.update)
 battmon.update()
 -- }}}
 -- {{{ volume
-tb_volume = widget({ type = "textbox", name = "tb_volume", align = "right" })
+tb_volume = widget({ type  = "textbox",
+                     name  = "tb_volume",
+                     align = "right"
+                   })
 tb_volume:buttons({
     button({ }, 4, function () volume("up", pb_volume) end),
     button({ }, 5, function () volume("down", pb_volume) end),
@@ -237,10 +251,10 @@ function volume (mode)
         end
         tb_volume.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", volume) .. "</span>|"
     elseif mode == "up" then
-        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+")
+        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%+")
         volume("update")
     elseif mode == "down" then
-        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-")
+        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%-")
         volume("update")
     else
         awful.util.spawn("amixer -c " .. cardid .. " sset " .. channel .. " toggle")
@@ -266,7 +280,9 @@ clock.widget:buttons({
     button({ }, 3, function () clock.menu:toggle() end ), 
     button({ }, 1, function ()
                         for k, v in pairs(clock.alarms) do
-                            naughty.notify({ text = v })
+                            naughty.notify({ text = v,
+                                             screen = mouse.screen
+                                           })
                         end
                         clock.alarms = { } 
                         clock.widget.bg = beautiful.bg_normal
@@ -295,7 +311,9 @@ function clock.update ()
     
     for line in io.lines(clock.alarmfile) do
         if string.match(line, "^"..os.date("%H:%M")) then
-            naughty.notify({ text = line })
+            naughty.notify({ text = line,
+                             screen = mouse.screen
+                           })
             local add = true
             for _, v in pairs(clock.alarms) do
                 if v == line then
@@ -317,7 +335,10 @@ function clock.widget.mouse_leave() clock.fulldate = false; clock.update() end
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
-    lb_layout[s] = widget({ type = "textbox", name = "lb_layout", align = "left" })
+    lb_layout[s] = widget({ type  = "textbox",
+                            name  = "lb_layout",
+                            align = "left"
+                          })
     lb_layout[s]:buttons({
         button({ }, 1, function () awful.layout.inc(layouts, 1) end),
         button({ }, 3, function () awful.layout.inc(layouts, -1) end)
@@ -327,7 +348,9 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ systray
-st_systray = widget({ type = "systray", align = "right" })
+st_systray = widget({ type  = "systray",
+                      align = "right"
+                    })
 -- }}}
 -- {{{ widget box
 local systrayscreen = 1
@@ -342,18 +365,18 @@ for s = 1, screen.count() do
                             fg = beautiful.fg_normal, 
                             bg = beautiful.bg_normal
                           })
-    wi_widgets[s].widgets = {   tl_taglist[s],
-                                lb_layout[s],
-                                tb_prompt,
-                                tl_tasklist[s],
-                                tb_spacer,
-                                tb_volume,
-                                tb_spacer,
-                                battmon.widget,
-                                tb_spacer,
-                                s == systrayscreen and st_systray or nil, 
-                                s == systrayscreen and tb_spacer or nil,
-                                clock.widget
+    wi_widgets[s].widgets = { tl_taglist[s],
+                              lb_layout[s],
+                              tb_prompt,
+                              tl_tasklist[s],
+                              tb_spacer,
+                              tb_volume,
+                              tb_spacer,
+                              battmon.widget,
+                              tb_spacer,
+                              s == systrayscreen and st_systray or nil, 
+                              s == systrayscreen and tb_spacer or nil,
+                              clock.widget
                             }
     wi_widgets[s].screen = s
     wi_widgets[s]:buttons({
@@ -363,88 +386,101 @@ end
 -- }}}
 -- }}}
 -- {{{ Key bindings
+globalkeys = { }
+clientkeys = { }
+
 -- {{{ Tags
 for i = 1, 9 do
-    key({ modkey }, i,
-        function ()
-            awful.tag.viewonly(tags[mouse.screen][i])
-        end):add()
+    table.insert(globalkeys, 
+        key({ modkey }, i,
+            function ()
+                awful.tag.viewonly(tags[mouse.screen][i])
+            end))
 
-    key({ modkey, "Mod1" }, i, 
-        function ()
-            if client.focus then
-                awful.client.movetotag(tags[mouse.screen][i])
-            end
-        end):add()
+    table.insert(globalkeys,
+        key({ modkey, "Mod1" }, i, 
+            function ()
+                if client.focus then
+                    awful.client.movetotag(tags[mouse.screen][i])
+                end
+            end))
 end
 
-key({ }, "XF86Back", awful.tag.viewprev):add()
-key({ }, "XF86Forward", awful.tag.viewnext):add()
+table.insert(globalkeys, key({ }, "XF86Back", awful.tag.viewprev))
+table.insert(globalkeys, key({ }, "XF86Forward", awful.tag.viewnext))
 -- }}}
 -- {{{ Misc
-key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end):add()
-key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end):add()
-key({ modkey, "Mod1" }, "i", invaders.run):add()
-key({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end):add()
-key({ modkey, "Mod1" }, "r", awesome.restart):add()
+table.insert(globalkeys, key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end))
+table.insert(globalkeys, key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "i", invaders.run))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "r", awesome.restart))
 
 -- hide / unhide current screens wibox
-key({ modkey, "Mod1" }, "w", function ()
-                                        local w = wi_widgets[mouse.screen]
-                                        if w.screen then
-                                            w.screen = nil
-                                        else
-                                            w.screen = mouse.screen
-                                        end
-                                    end):add()
+table.insert(globalkeys, key({ modkey, "Mod1" }, "w", function ()
+                                                          local w = wi_widgets[mouse.screen]
+                                                              if w.screen then
+                                                                  w.screen = nil
+                                                              else
+                                                                  w.screen = mouse.screen
+                                                              end
+                                                      end))
 -- }}}
 -- {{{ Prompts
-key({ modkey }, "Return", function () 
-            awful.prompt.run({ prompt = " $ " }, tb_prompt, awful.util.spawn, awful.completion.bash, os.getenv("HOME") .. "/.cache/awesome/history") 
-            end):add()
-key({ modkey, "Mod1" }, "Return", function ()
-            awful.prompt.run({ prompt = " ? " }, tb_prompt, awful.util.eval, awful.prompt.bash, os.getenv("HOME") .. "/.cache/awesome/history_eval") 
-            end):add()
+table.insert(globalkeys, key({ modkey }, "Return", function () awful.prompt.run({ prompt = " $ " },
+                                                        tb_prompt,
+                                                        awful.util.spawn,
+                                                        awful.completion.bash,
+                                                        os.getenv("HOME") .. "/.cache/awesome/history") 
+                                                   end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () awful.prompt.run({ prompt = " ? " },
+                                                                tb_prompt,
+                                                                awful.util.eval,
+                                                                awful.prompt.bash,
+                                                                os.getenv("HOME") .. "/.cache/awesome/history_eval") 
+                                                           end))
 -- }}}
 -- {{{ Client / Focus manipulation
-key({ modkey, "Mod1" }, "c", function () client.focus:kill() end):add()
+table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () client.focus:kill() end))
 
-key({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end):add()
-key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end):add()
-key({ modkey }, "Left", function () awful.client.swap.byidx(1) end):add()
-key({ modkey }, "Right", function () awful.client.movetoscreen() end):add()
-key({ modkey }, "XF86Back",  function () 
-                                        awful.screen.focus(1)
-                                        local coords = mouse.coords()
-                                        coords['x'] = coords['x'] + 1
-                                        coords['y'] = coords['y'] + 2
-                                        mouse.coords(coords)
-                                    end):add()
-key({ modkey }, "XF86Forward",   function () 
-                                            awful.screen.focus(-1) 
-                                            local coords = mouse.coords()
-                                            coords['x'] = coords['x'] + 1
-                                            coords['y'] = coords['y'] + 2
-                                            mouse.coords(coords)
-                                        end):add()
+table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end))
+table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end))
+table.insert(globalkeys, key({ modkey }, "Left", function () awful.client.swap.byidx(1) end))
+table.insert(globalkeys, key({ modkey }, "Right", function () awful.client.movetoscreen() end))
+table.insert(globalkeys, key({ modkey }, "XF86Back",  function () 
+                                                          awful.screen.focus(1)
+                                                          local coords = mouse.coords()
+                                                          coords['x'] = coords['x'] + 1
+                                                          coords['y'] = coords['y'] + 2
+                                                          mouse.coords(coords)
+                                                      end))
+table.insert(globalkeys, key({ modkey }, "XF86Forward",   function ()
+                                                              awful.screen.focus(-1) 
+                                                              local coords = mouse.coords()
+                                                              coords['x'] = coords['x'] + 1
+                                                              coords['y'] = coords['y'] + 2
+                                                              mouse.coords(coords)
+                                                          end))
 -- }}}
 -- {{{ Layout manipulation
-key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end):add()
-key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end):add()
-key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end):add()
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end))
+table.insert(globalkeys, key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end))
 -- }}}
 -- {{{ Audio
 -- Control cmus
-key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end):add()
-key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end):add()
-key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end):add()
-key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end):add()
+table.insert(globalkeys, key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end))
+table.insert(globalkeys, key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end))
+table.insert(globalkeys, key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end))
+table.insert(globalkeys, key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end))
 
 -- Audio control
-key({ }, "XF86AudioRaiseVolume", function () volume("up", pb_volume) end):add()
-key({ }, "XF86AudioLowerVolume", function () volume("down", pb_volume) end):add()
-key({ }, "XF86AudioMute", function () volume("mute", pb_volume) end):add()
+table.insert(globalkeys, key({ }, "XF86AudioRaiseVolume", function () volume("up", pb_volume) end))
+table.insert(globalkeys, key({ }, "XF86AudioLowerVolume", function () volume("down", pb_volume) end))
+table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume("mute", pb_volume) end))
 -- }}}
+
+root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
 -- {{{ focus
@@ -495,6 +531,8 @@ awful.hooks.manage.register(function (c, startup)
             end
         end
     end
+
+    c:keys(clientkeys)
 end)
 -- }}}
 -- {{{ arrange
