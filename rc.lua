@@ -292,7 +292,7 @@ clock.fulldate = false
 clock.alarms = { }
 
 -- {{{ update
-function clock.update ()
+function clock.update (alarms)
     local date
     if not clock.fulldate then
         date = os.date("%H:%M (") .. (tonumber(os.date("%W")) + 1)..") "
@@ -309,28 +309,31 @@ function clock.update ()
     
     clock.widget.text = date
     
-    for line in io.lines(clock.alarmfile) do
-        if string.match(line, "^"..os.date("%H:%M")) then
-            naughty.notify({ text = line,
-                             screen = mouse.screen
-                           })
-            local add = true
-            for _, v in pairs(clock.alarms) do
-                if v == line then
-                    add = false
-                    break
+    if alarms then
+        for line in io.lines(clock.alarmfile) do
+            if string.match(line, "^"..os.date("%H:%M")) then
+                naughty.notify({ text = line,
+                                 screen = mouse.screen
+                               })
+                local add = true
+                for _, v in pairs(clock.alarms) do
+                    if v == line then
+                        add = false
+                        break
+                    end
                 end
+                if add then table.insert(clock.alarms, line) end
             end
-            if add then table.insert(clock.alarms, line) end
         end
+        clock.update(false)
     end
 end
 -- }}}
-clock.update()
-awful.hooks.timer.register(60, clock.update)
+clock.update(true)
+awful.hooks.timer.register(60, function() clock.update(true) end)
 
-function clock.widget.mouse_enter() clock.fulldate = true ; clock.update() end
-function clock.widget.mouse_leave() clock.fulldate = false; clock.update() end
+function clock.widget.mouse_enter() clock.fulldate = true ; clock.update(false) end
+function clock.widget.mouse_leave() clock.fulldate = false; clock.update(false) end
 -- }}}
 -- {{{ layout box
 lb_layout = { }
