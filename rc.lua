@@ -87,12 +87,12 @@ naughty.config.presets.normal.hover_timeout = 0.3
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "Term", layout = layouts[4], ncols = 2 },
-    { name = "WWW",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
-    { name = "Misc", layout = layouts[4] },
-    { name = "Text", layout = layouts[4] },
-    { name = "Chat", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "Mail", layout = layouts[1] },
+    { name = "∑", layout = layouts[4], ncols = 2 },
+    { name = "∫",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    { name = "∏", layout = layouts[4] },
+    { name = "∞", layout = layouts[4] },
+    { name = "√", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+    { name = "⋀", layout = layouts[1] },
 }
 tags = { }
 for s = 1, screen.count() do
