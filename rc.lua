@@ -216,26 +216,50 @@ battmon.widget:buttons({ button({ }, 1, battmon.detail) })
 awful.hooks.timer.register(60, battmon.update)
 battmon.update()
 -- }}}
+-- {{{ wlan
+wireless = { }
+wireless.widget = widget({ type = "textbox", name = "tb_wlan", align = "right" })
+wireless.device = "wlan0"
+
+function wireless.update()
+    local fd = io.popen("grep -e \"" .. wireless.device .. "\" /proc/net/wireless | awk '{print $3}'")
+    if not fd then return end
+    local link = fd:read()
+    fd:close()
+    link = tonumber(string.match(link, "(%d+)"))
+    local color = "#00FF00"
+    if link < 50 and link > 10 then
+        color = "#FFFF00"
+    elseif link <= 10 then
+        color = "#FF0000"
+    end
+    wireless.widget.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", link) .. "</span>|"
+end
+wireless.update()
+awful.hooks.timer.register(10, wireless.update)
+--- }}}
 -- {{{ volume
-tb_volume = widget({ type  = "textbox",
+volume = { }
+volume.widget = widget({ type  = "textbox",
                      name  = "tb_volume",
                      align = "right"
                    })
-tb_volume:buttons({
-    button({ }, 4, function () volume("up", pb_volume) end),
-    button({ }, 5, function () volume("down", pb_volume) end),
-    button({ }, 1, function () volume("mute", pb_volume) end)
+volume.widget:buttons({
+    button({ }, 4, function () volume.update("up", pb_volume) end),
+    button({ }, 5, function () volume.update("down", pb_volume) end),
+    button({ }, 1, function () volume.update("mute", pb_volume) end)
 })
 
-function volume (mode)
+function volume.update(mode)
     local cardid  = 0
     local channel = "Master"
+    mode = mode or "update"
     if mode == "update" then
         local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
         local status = fd:read("*all")
         fd:close()
         
-        local volume = tonumber(string.match(status, "(%d?%d?%d)%%"))
+        local vol = tonumber(string.match(status, "(%d?%d?%d)%%"))
 
         status = string.match(status, "%[(o[^%]]*)%]")
 
@@ -243,20 +267,20 @@ function volume (mode)
         if string.find(status, "on", 1, true) then
              color = "#00FF00"
         end
-        tb_volume.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", volume) .. "</span>|"
+        volume.widget.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", vol) .. "</span>|"
     elseif mode == "up" then
         awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%+")
-        volume("update")
+        volume.update()
     elseif mode == "down" then
         awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%-")
-        volume("update")
+        volume.update()
     else
         awful.util.spawn("amixer -c " .. cardid .. " sset " .. channel .. " toggle")
-        volume("update")
+        volume.update()
     end
 end
-volume("update")
-awful.hooks.timer.register(10, function () volume("update") end)
+volume.update()
+awful.hooks.timer.register(10, function () volume.update() end)
 -- }}}
 -- {{{ clock
 -- This widget has an alarmfile, which contains stuff to remember like this:
@@ -367,7 +391,9 @@ for s = 1, screen.count() do
                               tb_prompt,
                               tl_tasklist[s],
                               tb_spacer,
-                              tb_volume,
+                              wireless.widget,
+                              tb_spacer,
+                              volume.widget,
                               tb_spacer,
                               battmon.widget,
                               tb_spacer,
