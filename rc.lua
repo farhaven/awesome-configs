@@ -498,9 +498,9 @@ table.insert(globalkeys, key({ }, "XF86AudioNext", function () awful.util.spawn(
 table.insert(globalkeys, key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end))
 
 -- Audio control
-table.insert(globalkeys, key({ }, "XF86AudioRaiseVolume", function () volume("up", pb_volume) end))
-table.insert(globalkeys, key({ }, "XF86AudioLowerVolume", function () volume("down", pb_volume) end))
-table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume("mute", pb_volume) end))
+table.insert(globalkeys, key({ }, "XF86AudioRaiseVolume", function () volume.update("up") end))
+table.insert(globalkeys, key({ }, "XF86AudioLowerVolume", function () volume.update("down") end))
+table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume.update("mute") end))
 -- }}}
 
 root.keys(globalkeys)
