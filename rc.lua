@@ -87,12 +87,12 @@ naughty.config.presets.normal.hover_timeout = 0.3
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "α", layout = layouts[4], ncols = 2 },
-    { name = "β",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
-    { name = "γ", layout = layouts[4] },
-    { name = "δ", layout = layouts[4] },
-    { name = "ε", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "ζ", layout = layouts[1] },
+    { name = "α", layout = layouts[4], ncols = 2, icon = "/usr/share/icons/gnome/32x32/apps/terminal.png" },
+    { name = "β", layout = layouts[3], mwfact = 0.7, nmaster = 1, icon = "/usr/share/icons/gnome/32x32/categories/applications-internet.png" },
+    { name = "γ", layout = layouts[4], icon = "/usr/share/icons/gnome/32x32/categories/applications-other.png" },
+    { name = "δ", layout = layouts[4], icon = "/usr/share/icons/gnome/32x32/apps/text-editor.png" },
+    { name = "ε", layout = layouts[1], mwfact = 0.7, nmaster = 1, icon = "/usr/share/icons/gnome/32x32/emotes/face-smile.png" },
+    { name = "ζ", layout = layouts[1], icon = "/usr/share/icons/gnome/32x32/actions/contact-new.png" },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -104,6 +104,7 @@ for s = 1, screen.count() do
         awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
         awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
         awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
+        awful.tag.setproperty(tags[s][i], "icon", v.icon)
     end
     tags[s][1].selected = true
 end
@@ -141,7 +142,7 @@ tb_spacer.width = 3
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
-    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
+    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.icons, 
                                              { button({ }, 4, awful.tag.viewnext),
                                                button({ }, 5, awful.tag.viewprev) })
 end
@@ -372,7 +373,7 @@ for s = 1, screen.count() do
                               tb_spacer,
                               s == systrayscreen and st_systray or nil, 
                               s == systrayscreen and tb_spacer or nil,
-                              clock.widget
+                              clock.widget,
                             }
     wi_widgets[s].screen = s
     wi_widgets[s]:buttons({
@@ -508,7 +509,7 @@ awful.hooks.manage.register(function (c, startup)
     c.border_color = beautiful.border_normal
 
     client.focus = c
-    c.honorsizehints = true
+    c.size_hints_honor = true
 
     local instance = c.instance:lower()
     local class = c.class:lower()
