@@ -87,12 +87,12 @@ naughty.config.presets.normal.hover_timeout = 0.3
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "∑", layout = layouts[4], ncols = 2 },
-    { name = "∫",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
-    { name = "∏", layout = layouts[4] },
-    { name = "∞", layout = layouts[4] },
-    { name = "√", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
-    { name = "⋀", layout = layouts[1] },
+    { name = "α", layout = layouts[4], ncols = 2 },
+    { name = "β",  layout = layouts[3], mwfact = 0.7, nmaster = 1 },
+    { name = "γ", layout = layouts[4] },
+    { name = "δ", layout = layouts[4] },
+    { name = "ε", layout = layouts[1], mwfact = 0.7, nmaster = 1 },
+    { name = "ζ", layout = layouts[1] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -170,41 +170,34 @@ battmon.widget = widget({ type = "textbox",
 -- {{{ update
 function battmon.update()
     local battery_status = ""
-    if file_is_readable("/sys/devices/platform/smapi/BAT0/remaining_percent") then
-        for line in io.lines("/sys/devices/platform/smapi/BAT0/remaining_percent") do
-            line = tonumber(line)
-            local color = "#FF0000"
-            if line > 35 and line < 60 then
-                color = "#FFFF00"
-            elseif line >= 40 then
-                color = "#00FF00"
-            end
-            battery_status = "<span color=\"" .. color .. "\">" .. line .. "%</span>"
-        end
+    local fd = io.popen("acpitool")
+    if not fd then 
+        battery.widget.text = "acpitool failed|"
+        return 
     end
-    if file_is_readable("/sys/devices/platform/smapi/BAT0/state") then
-        for line in io.lines("/sys/devices/platform/smapi/BAT0/state") do
-            if not string.find(line, "discharging", 1, true) then
-                battery_status = battery_status .. " " .. line
-            end
-        end
+
+    local data = fd:read("*all"):match("Battery #[1-9] *: ([^\n]*)")
+    fd:close()
+    local state = data:match("([%a]*),.*")
+    local charge = tonumber(data:match(".*, ([%d]?[%d]?[%d]%.[%d]?[%d]?)"))
+    local time = data:match(".*, ([%d][%d]:[%d][%d])")
+    
+    local color = "#FF0000"
+    if charge > 35 and charge < 60 then
+        color = "#FFFF00"
+    elseif charge >= 40 then
+        color = "#00FF00"
     end
-    if file_is_readable("/sys/devices/platform/smapi/BAT0/remaining_running_time") then
-        for line in io.lines("/sys/devices/platform/smapi/BAT0/remaining_running_time") do
-            if not string.find(line, "not", 1, true) then
-                minutes = line % 60
-                hours = math.floor(line / 60)
-                battery_status = battery_status .. " " .. hours .. ":" 
-                if minutes < 10 then
-                    battery_status = battery_status .. "0"
-                end
-                battery_status = battery_status    .. minutes 
-            end
-        end
+    battery_status = "<span color=\"" .. color .. "\">" .. charge .. "%</span>"
+
+    if state ~= "discharging" then
+        battery_status = battery_status .. " " .. state
     end
-    if battery_status == "" then
-        battery_status = "tp_smapi not loaded"
+
+    if time then
+        battery_status = battery_status .. " " .. time
     end
+
     battmon.widget.text = battery_status .. "|"
 end
 -- }}}
@@ -218,7 +211,7 @@ function battmon.detail ()
                    })
 end
 -- }}}
-battmon.widget:buttons({ button({ }, 1, battmon.detail)}) 
+battmon.widget:buttons({ button({ }, 1, battmon.detail) }) 
 awful.hooks.timer.register(60, battmon.update)
 battmon.update()
 -- }}}
