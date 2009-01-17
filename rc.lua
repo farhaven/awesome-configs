@@ -87,12 +87,12 @@ naughty.config.presets.normal.hover_timeout = 0.3
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "α", layout = layouts[4], ncols = 2, icon = "/usr/share/icons/gnome/32x32/apps/terminal.png" },
-    { name = "β", layout = layouts[3], mwfact = 0.7, nmaster = 1, icon = "/usr/share/icons/gnome/32x32/categories/applications-internet.png" },
-    { name = "γ", layout = layouts[4], icon = "/usr/share/icons/gnome/32x32/categories/applications-other.png" },
-    { name = "δ", layout = layouts[4], icon = "/usr/share/icons/gnome/32x32/apps/text-editor.png" },
-    { name = "ε", layout = layouts[1], mwfact = 0.7, nmaster = 1, icon = "/usr/share/icons/gnome/32x32/emotes/face-smile.png" },
-    { name = "ζ", layout = layouts[1], icon = "/usr/share/icons/gnome/32x32/actions/contact-new.png" },
+    { name = "α", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/apps/terminal.png") },
+    { name = "β", layout = layouts[3], icon = image("/usr/share/icons/gnome/32x32/categories/applications-internet.png") },
+    { name = "γ", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/categories/applications-other.png") },
+    { name = "δ", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/apps/text-editor.png") },
+    { name = "ε", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/emotes/face-smile.png") },
+    { name = "ζ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/actions/contact-new.png") },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -142,7 +142,7 @@ tb_spacer.width = 3
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
-    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.icons, 
+    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
                                              { button({ }, 4, awful.tag.viewnext),
                                                button({ }, 5, awful.tag.viewprev) })
 end
@@ -241,9 +241,9 @@ awful.hooks.timer.register(10, wireless.update)
 -- {{{ volume
 volume = { }
 volume.widget = widget({ type  = "textbox",
-                     name  = "tb_volume",
-                     align = "right"
-                   })
+                         name  = "tb_volume",
+                         align = "right"
+})
 volume.widget:buttons({
     button({ }, 4, function () volume.update("up", pb_volume) end),
     button({ }, 5, function () volume.update("down", pb_volume) end),
