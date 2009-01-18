@@ -143,7 +143,8 @@ tb_spacer.width = 3
 tl_taglist = { }
 for s = 1, screen.count() do
     tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
-                                             { button({ }, 4, awful.tag.viewnext),
+                                             { button({ }, 1, awful.tag.viewonly),
+                                               button({ }, 4, awful.tag.viewnext),
                                                button({ }, 5, awful.tag.viewprev) })
 end
 -- }}}
