@@ -57,12 +57,9 @@ modkey = "Mod3"
 -- {{{ layouts
 layouts =
 {   awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
     awful.layout.suit.floating,
+    awful.layout.suit.magnifier,
 }
 layout_icons =
 {   ["tile"] = "[]=",
@@ -71,7 +68,8 @@ layout_icons =
     ["tiletop"] = "[^]",
     ["fairv"] = "[|]",
     ["fairh"] = "[-]",
-    ["floating"] = "o_O"
+    ["floating"] = "o_O",
+    ["magnifier"] = "[o]",
 }
 -- }}} 
 -- }}}
@@ -87,10 +85,10 @@ naughty.config.presets.normal.hover_timeout = 0.3
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "α", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/apps/terminal.png") },
-    { name = "β", layout = layouts[3], icon = image("/usr/share/icons/gnome/32x32/categories/applications-internet.png") },
-    { name = "γ", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/categories/applications-other.png") },
-    { name = "δ", layout = layouts[4], icon = image("/usr/share/icons/gnome/32x32/apps/text-editor.png") },
+    { name = "α", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/apps/terminal.png") },
+    { name = "β", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/categories/applications-internet.png") },
+    { name = "γ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/categories/applications-other.png") },
+    { name = "δ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/apps/text-editor.png") },
     { name = "ε", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/emotes/face-smile.png") },
     { name = "ζ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/actions/contact-new.png") },
 }
@@ -570,7 +568,7 @@ end)
 -- }}}
 -- {{{ mouse_enter
 awful.hooks.mouse_enter.register(function (c)
-    if awful.client.focus.filter(c) then
+    if awful.client.focus.filter(c) and awful.layout.get(c.screen) ~= awful.layout.suit.magnifier then
         client.focus = c
     end
 end)
