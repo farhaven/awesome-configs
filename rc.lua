@@ -56,16 +56,18 @@ modkey = "Mod3"
 -- }}} 
 -- {{{ layouts
 layouts =
-{   awful.layout.suit.tile,
-    awful.layout.suit.tile.top,
+{   awful.layout.suit.vile,
+    awful.layout.suit.vile.left,
+    awful.layout.suit.vile.top,
+    awful.layout.suit.vile.bottom,
     awful.layout.suit.floating,
     awful.layout.suit.magnifier,
 }
 layout_icons =
-{   ["tile"] = "[]=",
-    ["tileleft"] = "=[]",
-    ["tilebottom"] = "[v]",
-    ["tiletop"] = "[^]",
+{   ["vile"] = "[]=",
+    ["vileleft"] = "=[]",
+    ["vilebottom"] = "[v]",
+    ["viletop"] = "[^]",
     ["fairv"] = "[|]",
     ["fairh"] = "[-]",
     ["floating"] = "o_O",
@@ -166,7 +168,12 @@ battmon = { }
 battmon.widget = widget({ type = "textbox",
                           name = "tb_battery",
                           align = "right"
-                        })
+})
+battmon.status = {
+    ["charged"] = "↯",
+    ["discharging"] = "▼",
+    ["charging"] = "▲"
+}
 -- {{{ update
 function battmon.update()
     local battery_status = ""
@@ -188,11 +195,7 @@ function battmon.update()
     elseif charge >= 40 then
         color = "#00FF00"
     end
-    battery_status = "<span color=\"" .. color .. "\">" .. charge .. "%</span>"
-
-    if state ~= "discharging" then
-        battery_status = battery_status .. " " .. state
-    end
+    battery_status = "<span color=\"" .. color .. "\">"..battmon.status[state].."</span> " .. charge .. "%"
 
     if time then
         battery_status = battery_status .. " " .. time
@@ -232,7 +235,7 @@ function wireless.update()
     elseif link <= 10 then
         color = "#FF0000"
     end
-    wireless.widget.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", link) .. "</span>|"
+    wireless.widget.text = "<span color=\"" .. color .. "\">♒</span> " .. string.format("%03d%%", link) .. "|"
 end
 wireless.update()
 awful.hooks.timer.register(10, wireless.update)
@@ -266,7 +269,7 @@ function volume.update(mode)
         if string.find(status, "on", 1, true) then
              color = "#00FF00"
         end
-        volume.widget.text = "<span color=\"" .. color .. "\">" .. string.format("%03d%%", vol) .. "</span>|"
+        volume.widget.text = "<span color=\"" .. color .. "\">☊</span> " .. string.format("%03d%%", vol) .. "|"
     elseif mode == "up" then
         awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%+")
         volume.update()
@@ -488,6 +491,9 @@ table.insert(globalkeys, key({ modkey }, "XF86Forward",   function ()
 table.insert(globalkeys, key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end))
 table.insert(globalkeys, key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end))
+
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end))
 -- }}}
 -- {{{ Audio
 -- Control cmus
