@@ -112,12 +112,12 @@ end
 -- {{{ Clients
 config.apps = {
     -- {{{ floating setup
-    { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
+    { match = { "gimp", "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
-    { match = { "linux_client" }, float = true },
-    { match = { "gnome%-mplayer" }, float = false },
+    { match = { "linux_client", "Open File" }, float = true },
+    { match = { "GNOME MPlayer" }, float = false },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
@@ -548,7 +548,7 @@ awful.hooks.manage.register(function (c, startup)
 
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
-            if instance:match(m) or class:match(m) or name:match(m) then
+            if name:match(m) or instance:match(m) or class:match(m) then
                 if v.float ~= nil then
                     awful.client.floating.set(c, v.float)
                 end
