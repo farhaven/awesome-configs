@@ -56,18 +56,18 @@ modkey = "Mod3"
 -- }}} 
 -- {{{ layouts
 layouts =
-{   awful.layout.suit.vile,
-    awful.layout.suit.vile.left,
-    awful.layout.suit.vile.top,
-    awful.layout.suit.vile.bottom,
+{   awful.layout.suit.tile,
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.top,
+    awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
     awful.layout.suit.magnifier,
 }
 layout_icons =
-{   ["vile"] = "[]=",
-    ["vileleft"] = "=[]",
-    ["vilebottom"] = "[v]",
-    ["viletop"] = "[^]",
+{   ["tile"] = "[]=",
+    ["tileleft"] = "=[]",
+    ["tilebottom"] = "[v]",
+    ["tiletop"] = "[^]",
     ["fairv"] = "[|]",
     ["fairh"] = "[-]",
     ["floating"] = "o_O",
@@ -115,13 +115,12 @@ config.apps = {
     { match = { "mplayer", "gimp", "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
-    { match = { "pinentry", "virtualbox", "wicd%-client%.py" }, float = true },
+    { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "linux_client" }, float = true },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
     { match = { "urxvt.irssi" }, tag = 5 },
-    { match = { "pidgin" }, tag = 5 },
     { match = { "urxvt.cmus" }, tag = 3 },
     { match = { "claws%-mail" }, tag = 6 },
     { match = { "firefox", "dillo" }, tag = 2 },
@@ -532,7 +531,7 @@ awful.hooks.manage.register(function (c, startup)
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
         button({ modkey }, 1, awful.mouse.client.move),
-        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.border),
+        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
         button({ modkey }, 3, awful.mouse.client.resize)
     })
 
