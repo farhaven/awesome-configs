@@ -117,6 +117,7 @@ config.apps = {
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "linux_client" }, float = true },
+    { match = { "gnome%-mplayer" }, float = false },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
@@ -548,8 +549,8 @@ awful.hooks.manage.register(function (c, startup)
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
             if instance:match(m) or class:match(m) or name:match(m) then
-                if v.float then
-                    awful.client.floating.set(c, true)
+                if v.float ~= nil then
+                    awful.client.floating.set(c, v.float)
                 end
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
