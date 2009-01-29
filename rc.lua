@@ -223,11 +223,11 @@ wireless.widget = widget({ type = "textbox", name = "tb_wlan", align = "right" }
 wireless.device = "wlan0"
 
 function wireless.update()
-    local fd = io.popen("grep -e \"" .. wireless.device .. "\" /proc/net/wireless | awk '{print $3}'")
+    local fd = io.open('/sys/class/net/'..wireless.device..'/wireless/link')
     if not fd then return end
     local link = fd:read()
     fd:close()
-    link = tonumber(string.match(link, "(%d+)"))
+    link = tonumber(link)
     local color = "#00FF00"
     if link < 50 and link > 10 then
         color = "#FFFF00"
