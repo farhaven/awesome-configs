@@ -1,6 +1,5 @@
 require('awful')
 require('beautiful')
-require('invaders') -- Space Invaders for Awesome
 require('naughty') -- Naughtyfications
 
 -- {{{ Misc functions
@@ -45,7 +44,7 @@ theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo.theme"
 beautiful.init(theme_path)
 -- }}}
 -- {{{ misc
-terminal = "urxvtc"
+terminal = "urxvt"
 editor = "gvim"
 
 -- Default modkey.
@@ -116,7 +115,7 @@ config.apps = {
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
-    { match = { "linux_client", "Open File" }, float = true },
+    { match = { "sauerbraten engine", "Open File" }, float = true },
     { match = { "GNOME MPlayer" }, float = false },
     --}}}
     -- {{{ apptags
@@ -437,8 +436,7 @@ table.insert(globalkeys, key({ }, "XF86Forward", awful.tag.viewnext))
 -- {{{ Misc
 table.insert(globalkeys, key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end))
 table.insert(globalkeys, key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "i", invaders.run))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () os.execute("xscreensaver-command -lock") end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.util.spawn("xtrlock") end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "r", awesome.restart))
 
 -- hide / unhide current screens wibox
@@ -555,7 +553,6 @@ awful.hooks.manage.register(function (c, startup)
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
                 end
-                break
             end
         end
     end
