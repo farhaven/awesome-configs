@@ -465,6 +465,7 @@ table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () awful.pro
 -- }}}
 -- {{{ Client / Focus manipulation
 table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () client.focus:kill() end))
+table.insert(globalkeys, key({ modkey }, "d", awful.client.floating.toggle))
 
 table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end))
 table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end))
