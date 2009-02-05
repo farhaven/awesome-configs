@@ -16,7 +16,6 @@ end
 -- }}}
 -- {{{ dump_table(t, depth)
 function dump_table(t, depth)
-    print("")
     if not depth then depth = 0 end
     local prefix = ""
     for i = 1, depth do
@@ -29,6 +28,7 @@ function dump_table(t, depth)
             print(prefix..k.." "..tostring(v))
         end
     end
+    print("")
 end
 -- }}}
 -- {{{ getlayouticon(layout)
@@ -380,6 +380,40 @@ if screen.count() > 1 then
     systrayscreen = 2
 end
 
+function widget_layout_test(widgets, bounds)
+    local geometries = { }
+    local pos = bounds
+
+    for k, v in ipairs(widgets) do
+        print(k, tostring(v))
+        if type(v) == "table" then
+            l = v[layout] or widget_layout_test
+            local g = widget_layout_test(v, { ["x"] = pos.x,
+                                              ["y"] = pos.y,
+                                              ["height"] = bounds.height - pos.y,
+                                              ["width"] = bounds.width - pos.x })
+            if #g > 0 then
+                pos.x = g[#g].x + g[#g].width
+                pos.y = g[#g].y + g[#g].height
+            end
+
+            for _, w in pairs(g) do
+                table.insert(geometries, w)
+            end
+        else
+            local g = { ["x"] = pos.x,
+                        ["y"] = pos.y,
+                        ["height"] = pos.height,
+                        ["width"] = 50 }
+            pos.x = pos.x + g.width
+            table.insert(geometries, g)
+        end
+    end
+
+    print(#geometries, "geometries calculated")
+    return geometries
+end
+
 wi_widgets = {}
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
@@ -401,6 +435,7 @@ for s = 1, screen.count() do
                               s == systrayscreen and st_systray or nil, 
                               s == systrayscreen and tb_spacer or nil,
                               clock.widget,
+                              ["layout"] = widget_layout_test,
                             }
     wi_widgets[s].screen = s
     wi_widgets[s]:buttons({
