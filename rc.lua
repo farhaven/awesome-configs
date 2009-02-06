@@ -28,7 +28,7 @@ end
 -- }}}
 -- }}}
 -- {{{ Client fading
-fading_out_clients = { }
+--[[ fading_out_clients = { }
 fading_in_clients = { }
 currently_fading = false
 
@@ -83,7 +83,9 @@ function fade_function()
         awful.hooks.timer.unregister(fade_function)
         currently_fading = false
     end
-end
+end --]]
+fade_in = fade_in or function (c) return end
+fade_out = fade_out or function(c) c:kill() end
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
