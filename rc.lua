@@ -3,17 +3,6 @@ require('beautiful')
 require('naughty') -- Naughtyfications
 
 -- {{{ Misc functions
--- {{{ file_is_readable(fname) checks whether file `fname' is readable
-function file_is_readable(fname)
-    local fh = io.open(fname)
-    local rv = false
-    if fh then
-        rv = true
-        fh:close()
-    end
-    return rv
-end
--- }}}
 -- {{{ dump_table(t, depth)
 function dump_table(t, depth)
     if not depth then depth = 0 end
@@ -76,14 +65,14 @@ end
 -- Callback function to fade a client
 function fade_function()
     for i, c in ipairs(fading_in_clients) do
-        if c.opacity < (c == client.focus and 1 or 0.6) then
+        if c.opacity ~= nil and c.opacity < (c == client.focus and 1 or 0.6) then
             c.opacity = c.opacity + 0.1
         else
             table.remove(fading_in_clients, i)
         end
     end
     for i, c in ipairs(fading_out_clients) do
-        if c.opacity > 0.1 then
+        if c.opacity ~= nil and c.opacity > 0.1 then
             c.opacity = c.opacity - 0.1
         else
             table.remove(fading_out_clients, i)
@@ -560,7 +549,7 @@ table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () awful.pro
 table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () fade_out(client.focus) end))
 table.insert(globalkeys, key({ modkey }, "d", awful.client.floating.toggle))
 
-table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1); client.focus:raise() end))
+table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1); if client.focus then client.focus:raise() end end))
 table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end))
 table.insert(globalkeys, key({ modkey }, "Left", function () awful.client.swap.byidx(1) end))
 table.insert(globalkeys, key({ modkey }, "Right", function () awful.client.movetoscreen() end))
@@ -671,6 +660,15 @@ end)
 awful.hooks.mouse_enter.register(function (c)
     if awful.client.focus.filter(c) and awful.layout.get(c.screen) ~= awful.layout.suit.magnifier then
         client.focus = c
+    end
+end)
+-- }}}
+-- {{{ property
+cmus_current = ""
+awful.hooks.property.register(function (c, prop)
+    if prop == "name" and c.instance == "urxvt.cmus" and not c.name:match("cmus") and cmus_current ~= c.name then
+        naughty.notify({ text = c.name, width = 350, timeout = 5 })
+        cmus_current = c.name
     end
 end)
 -- }}}
