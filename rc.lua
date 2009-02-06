@@ -520,7 +520,7 @@ table.insert(globalkeys, key({ }, "XF86Forward", awful.tag.viewnext))
 -- {{{ Misc
 table.insert(globalkeys, key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end))
 table.insert(globalkeys, key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.util.spawn("xtrlock") end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.util.spawn("sleep 0.1; xtrlock") end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "r", awesome.restart))
 
 -- hide / unhide current screens wibox
