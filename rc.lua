@@ -532,18 +532,38 @@ table.insert(globalkeys, key({ modkey, "Mod1" }, "w", function ()
                                                       end))
 -- }}}
 -- {{{ Prompts
-table.insert(globalkeys, key({ modkey }, "Return", function () awful.prompt.run({ prompt = " $ " },
-                                                        tb_prompt,
-                                                        awful.util.spawn,
-                                                        awful.completion.bash,
-                                                        os.getenv("HOME") .. "/.cache/awesome/history") 
-                                                   end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () awful.prompt.run({ prompt = " ? " },
-                                                                tb_prompt,
-                                                                awful.util.eval,
-                                                                awful.prompt.bash,
-                                                                os.getenv("HOME") .. "/.cache/awesome/history_eval") 
-                                                           end))
+table.insert(globalkeys, key({ modkey }, "Return", function () 
+    awful.prompt.run({ prompt = " $ " },
+        tb_prompt,
+        awful.util.spawn,
+        awful.completion.bash,
+        os.getenv("HOME") .. "/.cache/awesome/history"
+    ) 
+end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () 
+    awful.prompt.run({ prompt = " ? " },
+        tb_prompt,
+        awful.util.eval,
+        awful.prompt.bash,
+        os.getenv("HOME") .. "/.cache/awesome/history_eval"
+    ) 
+end))
+table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function() 
+    awful.prompt.run({ prompt = " > " },
+        tb_prompt,
+        function (s)
+            local txt = awful.util.pread(s.." 2>&1")
+            naughty.notify({
+                text = txt,
+                timeout = 0,
+                width = 470,
+                screen = screen.count()
+            })
+        end,
+        awful.completion.bash,
+        os.getenv("HOME") .. "/.cache/awesome/history_commands"
+    )
+end))
 -- }}}
 -- {{{ Client / Focus manipulation
 table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () fade_out(client.focus) end))
