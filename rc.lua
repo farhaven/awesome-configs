@@ -495,12 +495,17 @@ table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function()
         tb_prompt,
         function (s)
             local txt = awful.util.pread(s.." 2>&1")
+            txt = txt:sub(1, 2400)
+            txt = awful.util.escape(txt)
+            local h = naughty.config.presets.normal.height
+            naughty.config.presets.normal.height = 12
             naughty.notify({
                 text = txt,
                 timeout = 0,
                 width = 470,
-                screen = screen.count()
+                screen = screen.count(),
             })
+            naughty.config.presets.normal.height = h
         end,
         awful.completion.bash,
         os.getenv("HOME") .. "/.cache/awesome/history_commands"
