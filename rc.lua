@@ -28,7 +28,7 @@ end
 -- }}}
 -- }}}
 -- {{{ Client fading
---[[ fading_out_clients = { }
+fading_out_clients = { }
 fading_in_clients = { }
 currently_fading = false
 
@@ -48,6 +48,7 @@ function fade_out(c)
     end
 end
 
+--[[
 -- Client fade in
 function fade_in(c)
     for _, v in pairs(fading_in_clients) do
@@ -61,6 +62,7 @@ function fade_in(c)
         currently_fading = true
     end
 end
+--]]
 
 -- Callback function to fade a client
 function fade_function()
@@ -571,8 +573,8 @@ end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () fade_out(client.focus) end))
 table.insert(globalkeys, key({ modkey }, "d", awful.client.floating.toggle))
 
-table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1); if client.focus then client.focus:raise() end end))
-table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1);  client.focus:raise() end))
+table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end))
+table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1) end))
 table.insert(globalkeys, key({ modkey }, "Left", function () awful.client.swap.byidx(1) end))
 table.insert(globalkeys, key({ modkey }, "Right", function () awful.client.movetoscreen() end))
 table.insert(globalkeys, key({ modkey }, "XF86Back",  function () 
