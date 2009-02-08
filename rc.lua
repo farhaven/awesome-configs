@@ -27,68 +27,6 @@ function getlayouticon(s)
 end
 -- }}}
 -- }}}
--- {{{ Client fading
-fading_out_clients = { }
-fading_in_clients = { }
-currently_fading = false
-
--- Client Fade Out + Kill
-function fade_out(c)
-    for i = 1, #fading_out_clients do
-        if c == fading_out_clients[i] then
-            return
-        end
-    end
-
-    table.insert(fading_out_clients, c)
-    awful.client.focus.byidx(-1)
-    if currently_fading == false then
-        awful.hooks.timer.register(0.02, fade_function)
-        currently_fading = true
-    end
-end
-
---[[
--- Client fade in
-function fade_in(c)
-    for _, v in pairs(fading_in_clients) do
-        if c == v then return end
-    end
-    c.opacity = 0.1
-
-    table.insert(fading_in_clients, c)
-    if currently_fading == false then
-        awful.hooks.timer.register(0.02, fade_function)
-        currently_fading = true
-    end
-end
---]]
-
--- Callback function to fade a client
-function fade_function()
-    for i, c in ipairs(fading_in_clients) do
-        if c.opacity ~= nil and c.opacity < (c == client.focus and 1 or 0.6) then
-            c.opacity = c.opacity + 0.1
-        else
-            table.remove(fading_in_clients, i)
-        end
-    end
-    for i, c in ipairs(fading_out_clients) do
-        if c.opacity ~= nil and c.opacity > 0.1 then
-            c.opacity = c.opacity - 0.1
-        else
-            table.remove(fading_out_clients, i)
-            c:kill()
-        end
-    end
-    if (#fading_out_clients == 0) and (#fading_in_clients == 0) then
-        awful.hooks.timer.unregister(fade_function)
-        currently_fading = false
-    end
-end --]]
-fade_in = fade_in or function (c) return end
-fade_out = fade_out or function(c) c:kill() end
--- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
 theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo.theme"
@@ -570,7 +508,7 @@ table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function()
 end))
 -- }}}
 -- {{{ Client / Focus manipulation
-table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () fade_out(client.focus) end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end))
 table.insert(globalkeys, key({ modkey }, "d", awful.client.floating.toggle))
 
 table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end))
@@ -665,10 +603,6 @@ awful.hooks.manage.register(function (c, startup)
     end
 
     c:keys(clientkeys)
-
-    if not startup then
-        fade_in(c)
-    end
 end)
 -- }}}
 -- {{{ arrange
