@@ -116,6 +116,10 @@ config.apps = {
     { match = { "gvim" }, tag = 4 },
     { match = { "xpdf" }, tag = 3 },
     -- }}}
+    -- {{{ opacity
+    { match = { "urxvt" }, opacity_f = 0.85 },
+    { match = { "gimp" }, opacity = 1 },
+    -- }}}
 }
 -- }}}
 -- }}}
@@ -426,6 +430,7 @@ for s = 1, screen.count() do
                               clock.widget,
                               ["layout"] = widget_layout_test,
                             }
+
     wi_widgets[s].screen = s
     wi_widgets[s]:buttons({
         button({ modkey }, 1, awful.mouse.wibox.move)
@@ -562,13 +567,39 @@ root.keys(globalkeys)
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = 1
+    local name = c.name or ""
+    local instance = c.instance or ""
+    local class = c.class or ""
+    local o = 1
+    for k, v in pairs(config.apps) do
+        for j, m in pairs(v.match) do
+            if name:match(m) or instance:match(m) or class:match(m) then
+                if v.opacity_f then
+                    o = v.opacity_f
+                end
+            end
+        end
+    end
+    c.opacity = o
 end)
 -- }}}
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = 0.6
+    local name = c.name or ""
+    local instance = c.instance or ""
+    local class = c.class or ""
+    local o = 0.6
+    for k, v in pairs(config.apps) do
+       for j, m in pairs(v.match) do
+           if name:match(m) or instance:match(m) or class:match(m) then
+               if v.opacity then
+                   o = v.opacity
+               end
+           end
+       end
+    end
+    c.opacity = o
 end)
 -- }}}
 -- {{{ manage
@@ -630,7 +661,7 @@ end)
 cmus_current = ""
 awful.hooks.property.register(function (c, prop)
     if prop == "name" and c.instance == "urxvt.cmus" and not c.name:match("cmus") and cmus_current ~= c.name then
-        naughty.notify({ text = c.name, width = 350, timeout = 5, screen = mouse.screen})
+        naughty.notify({ text = awful.util.escape(c.name), width = 350, timeout = 5, screen = mouse.screen})
         cmus_current = c.name
     end
 end)
