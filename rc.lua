@@ -118,7 +118,7 @@ config.apps = {
     -- }}}
     -- {{{ opacity
     { match = { "urxvt" }, opacity_f = 0.85 },
-    { match = { "gimp" }, opacity = 1 },
+    { match = { "gimp", "^xv" }, opacity = 1, opacity_f = 1 },
     -- }}}
 }
 -- }}}
@@ -338,6 +338,9 @@ function clock.update (alarms)
             end
         end
         clock.update(false)
+    end
+    if tonumber(os.date("%H")) == 0 then
+        naughty.notify({ text = awful.util.pread("ddate"), width = 360 })
     end
 end
 -- }}}
