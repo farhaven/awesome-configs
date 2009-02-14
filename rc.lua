@@ -1,7 +1,6 @@
 require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
-require('freedesktop')
 
 -- {{{ Misc functions
 -- {{{ dump_table(t, depth)
@@ -371,14 +370,6 @@ st_systray = widget({ type  = "systray",
                       align = "right"
                     })
 -- }}}
--- {{{ menu
-local menu = { }
-menu.content = freedesktop.menu.root
-table.insert(menu.content, { "restart", awesome.restart })
-table.insert(menu.content, { "quit", awesome.quit })
-menu.menu = awful.menu.new({ items = menu.content, width = 150 })
-menu.widget = awful.widget.launcher({  image = beautiful.awesome_icon, menu = menu.menu })
--- }}}
 -- {{{ widget box
 local systrayscreen = 1
 if screen.count() > 1 then
@@ -389,7 +380,7 @@ function widget_layout_test(bounds, widgets)
     print("widget_layout_test -> enter")
     dump_table(widgets)
     print("widget_layout_test -> leave")
-    return 1
+    return { 1 }
 end
 
 wi_widgets = {}
@@ -399,8 +390,7 @@ for s = 1, screen.count() do
                             fg = beautiful.fg_normal, 
                             bg = beautiful.bg_normal
                           })
-    wi_widgets[s].widgets = { menu.widget,
-                              tl_taglist[s],
+    wi_widgets[s].widgets = { tl_taglist[s],
                               lb_layout[s],
                               tb_prompt,
                               tl_tasklist[s],
