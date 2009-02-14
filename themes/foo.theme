@@ -19,3 +19,9 @@ tasklist_floating_icon       = /usr/local/share/awesome/themes/default/tasklist/
 
 titlebar_close_button_normal = /usr/local/share/awesome/themes/default/titlebar/close.png
 titlebar_close_button_focus  = /usr/local/share/awesome/themes/default/titlebar/closer.png
+
+menu_submenu_icon = /usr/local/share/awesome/themes/default/submenu.png
+menu_height   = 15
+menu_width    = 100
+
+awesome_icon = /usr/local/share/awesome/icons/awesome16.png

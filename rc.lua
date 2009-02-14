@@ -1,6 +1,7 @@
 require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
+require('freedesktop')
 
 -- {{{ Misc functions
 -- {{{ dump_table(t, depth)
@@ -339,7 +340,7 @@ function clock.update (alarms)
         end
         clock.update(false)
     end
-    if tonumber(os.date("%H")) == 0 then
+    if os.date("%H%M") == "0000" then
         naughty.notify({ text = awful.util.pread("ddate"), width = 360 })
     end
 end
@@ -370,44 +371,25 @@ st_systray = widget({ type  = "systray",
                       align = "right"
                     })
 -- }}}
+-- {{{ menu
+local menu = { }
+menu.content = freedesktop.menu.root
+table.insert(menu.content, { "restart", awesome.restart })
+table.insert(menu.content, { "quit", awesome.quit })
+menu.menu = awful.menu.new({ items = menu.content, width = 150 })
+menu.widget = awful.widget.launcher({  image = beautiful.awesome_icon, menu = menu.menu })
+-- }}}
 -- {{{ widget box
 local systrayscreen = 1
 if screen.count() > 1 then
     systrayscreen = 2
 end
 
-function widget_layout_test(widgets, bounds)
-    local geometries = { }
-    local pos = bounds
-
-    for k, v in ipairs(widgets) do
-        print(k, tostring(v))
-        if type(v) == "table" then
-            l = v[layout] or widget_layout_test
-            local g = widget_layout_test(v, { ["x"] = pos.x,
-                                              ["y"] = pos.y,
-                                              ["height"] = bounds.height - pos.y,
-                                              ["width"] = bounds.width - pos.x })
-            if #g > 0 then
-                pos.x = g[#g].x + g[#g].width
-                pos.y = g[#g].y + g[#g].height
-            end
-
-            for _, w in pairs(g) do
-                table.insert(geometries, w)
-            end
-        else
-            local g = { ["x"] = pos.x,
-                        ["y"] = pos.y,
-                        ["height"] = pos.height,
-                        ["width"] = 50 }
-            pos.x = pos.x + g.width
-            table.insert(geometries, g)
-        end
-    end
-
-    print(#geometries, "geometries calculated")
-    return geometries
+function widget_layout_test(bounds, widgets)
+    print("widget_layout_test -> enter")
+    dump_table(widgets)
+    print("widget_layout_test -> leave")
+    return 1
 end
 
 wi_widgets = {}
@@ -417,7 +399,8 @@ for s = 1, screen.count() do
                             fg = beautiful.fg_normal, 
                             bg = beautiful.bg_normal
                           })
-    wi_widgets[s].widgets = { tl_taglist[s],
+    wi_widgets[s].widgets = { menu.widget,
+                              tl_taglist[s],
                               lb_layout[s],
                               tb_prompt,
                               tl_tasklist[s],
