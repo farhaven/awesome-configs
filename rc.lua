@@ -550,42 +550,18 @@ table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume.update("mu
 root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
+local opacities_focus = otable()
+local opacities_unfocus = otable()
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
-    local name = c.name or ""
-    local instance = c.instance or ""
-    local class = c.class or ""
-    local o = 1
-    for k, v in pairs(config.apps) do
-        for j, m in pairs(v.match) do
-            if name:match(m) or instance:match(m) or class:match(m) then
-                if v.opacity_f then
-                    o = v.opacity_f
-                end
-            end
-        end
-    end
-    c.opacity = o
+    c.opacity = opacities_focus[c] or 1
 end)
 -- }}}
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    local name = c.name or ""
-    local instance = c.instance or ""
-    local class = c.class or ""
-    local o = 0.6
-    for k, v in pairs(config.apps) do
-       for j, m in pairs(v.match) do
-           if name:match(m) or instance:match(m) or class:match(m) then
-               if v.opacity then
-                   o = v.opacity
-               end
-           end
-       end
-    end
-    c.opacity = o
+    c.opacity = opacities_unfocus[c] or 0.6
 end)
 -- }}}
 -- {{{ manage
@@ -604,7 +580,6 @@ awful.hooks.manage.register(function (c, startup)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
-    client.focus = c
     c.size_hints_honor = true
 
     local instance = c.instance:lower()
@@ -620,9 +595,16 @@ awful.hooks.manage.register(function (c, startup)
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
                 end
+                if v.opacity then
+                    opacities_unfocus[c] = v.opacity
+                end
+                if v.opacity_f then
+                    opacities_focus[c] = v.opacity_f
+                end
             end
         end
     end
+    client.focus = c
 
     c:keys(clientkeys)
 end)
