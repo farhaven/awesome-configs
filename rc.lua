@@ -20,6 +20,14 @@ function dump_table(t, depth)
     print("")
 end
 -- }}}
+-- {{{ dump_client(c)
+function dump_client(c)
+    local msg = "Name: "..(c.name or "").."\n"
+    msg = msg.. "Transient for: "..(tostring(c.transient_for or "")).."\n"
+
+    naughty.notify({ text = msg })
+end
+-- }}}
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
     if not awful.layout.get(s) then return "   " end
@@ -118,7 +126,7 @@ config.apps = {
     -- }}}
     -- {{{ opacity
     { match = { "urxvt" }, opacity_f = 0.85 },
-    { match = { "gimp", "^xv" }, opacity = 1, opacity_f = 1 },
+    { match = { "gimp", "^xv", "mplayer" }, opacity = 1, opacity_f = 1 },
     -- }}}
 }
 -- }}}
@@ -291,13 +299,17 @@ clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/
 clock.widget:buttons({
     button({ }, 3, function () clock.menu:toggle() end ), 
     button({ }, 1, function ()
-                        for k, v in pairs(clock.alarms) do
-                            naughty.notify({ text = v,
-                                             screen = mouse.screen
-                                           })
+                        if #(clock.alarms) > 0 then
+                            for k, v in pairs(clock.alarms) do
+                                naughty.notify({ text = v,
+                                                 screen = mouse.screen
+                                               })
+                            end
+                            clock.alarms = { }
+                            clock.widget.bg = beautiful.bg_normal
+                        else
+                            naughty.notify({ text = awful.util.pread("ddate"), width = 360 })
                         end
-                        clock.alarms = { } 
-                        clock.widget.bg = beautiful.bg_normal
                    end ) })
 
 clock.fulldate = false
@@ -338,9 +350,6 @@ function clock.update (alarms)
             end
         end
         clock.update(false)
-    end
-    if os.date("%H%M") == "0000" then
-        naughty.notify({ text = awful.util.pread("ddate"), width = 360 })
     end
 end
 -- }}}
