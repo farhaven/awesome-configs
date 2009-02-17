@@ -628,7 +628,7 @@ end)
 cmus_current = ""
 awful.hooks.property.register(function (c, prop)
     if prop == "name" and c.instance == "urxvt.cmus" and not c.name:match("cmus") and cmus_current ~= c.name then
-        naughty.notify({ text = awful.util.escape(c.name), width = 350, timeout = 5, screen = mouse.screen})
+        naughty.notify({ text = awful.util.escape(c.name:match("^(.*) %(.*%)$")), width = 350, timeout = 5, screen = mouse.screen})
         cmus_current = c.name
     end
 end)
