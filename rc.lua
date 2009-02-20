@@ -235,7 +235,7 @@ function wireless.update()
     elseif link <= 10 then
         color = "#FF0000"
     end
-    wireless.widget.text = "<span color=\"" .. color .. "\">♒</span> " .. string.format("%03d%%", link) .. "|"
+    wireless.widget.text = "<span color=\"" .. color .. "\">☢</span> " .. string.format("%03d%%", link) .. "|"
 end
 wireless.update()
 awful.hooks.timer.register(10, wireless.update)
@@ -321,7 +321,7 @@ function clock.update (alarms)
     if not clock.fulldate then
         date = os.date("%H:%M (") .. (tonumber(os.date("%W")) + 1)..") "
     else
-        date = os.date()
+        date = os.date() .. " "
     end
     
     if #clock.alarms > 0 then
@@ -331,7 +331,7 @@ function clock.update (alarms)
         clock.widget.bg = beautiful.bg_normal
     end
     
-    clock.widget.text = date
+    clock.widget.text = "<span color=\"#00FF00\">⚙</span> " .. date
     
     if alarms then
         for line in io.lines(clock.alarmfile) do
