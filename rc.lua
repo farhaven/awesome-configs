@@ -417,6 +417,7 @@ for s = 1, screen.count() do
                             }
 
     wi_widgets[s].screen = s
+    wi_widgets[s].opacity = 0.85
     wi_widgets[s]:buttons({
         button({ modkey }, 1, awful.mouse.wibox.move)
     })
@@ -450,16 +451,16 @@ table.insert(globalkeys, key({ }, "XF86Forward", awful.tag.viewnext))
 -- {{{ Misc
 table.insert(globalkeys, key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end))
 table.insert(globalkeys, key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.util.spawn("sleep 0.1; xtrlock") end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "r", awesome.restart))
 
 -- hide / unhide current screens wibox
 table.insert(globalkeys, key({ modkey, "Mod1" }, "w", function ()
                                                           local w = wi_widgets[mouse.screen]
-                                                              if w.screen then
-                                                                  w.screen = nil
+                                                              if w.visible then
+                                                                  w.visible = false
                                                               else
-                                                                  w.screen = mouse.screen
+                                                                  w.visible = true
                                                               end
                                                       end))
 -- }}}
