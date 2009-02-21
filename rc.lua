@@ -431,64 +431,46 @@ end
 -- }}}
 -- }}}
 -- {{{ Key bindings
-globalkeys = { }
-clientkeys = { }
-
--- {{{ Tags
-for i = 1, 9 do
-    table.insert(globalkeys, 
-        key({ modkey }, i,
-            function ()
-                awful.tag.viewonly(tags[mouse.screen][i])
-            end))
-
-    table.insert(globalkeys,
-        key({ modkey, "Mod1" }, i, 
-            function ()
-                if client.focus then
-                    awful.client.movetotag(tags[mouse.screen][i])
-                end
-            end))
-end
-
-table.insert(globalkeys, key({ }, "XF86Back", awful.tag.viewprev))
-table.insert(globalkeys, key({ }, "XF86Forward", awful.tag.viewnext))
--- }}}
--- {{{ Misc
-table.insert(globalkeys, key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end))
-table.insert(globalkeys, key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "r", awesome.restart))
+globalkeys = {
+    -- {{{ Tags
+    key({ }, "XF86Back", awful.tag.viewprev),
+    key({ }, "XF86Forward", awful.tag.viewnext),
+    -- }}}
+    -- {{{ Misc
+    key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
+    key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
+    key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
+    key({ modkey, "Mod1" }, "r", awesome.restart),
 
 -- hide / unhide current screens wibox
-table.insert(globalkeys, key({ modkey, "Mod1" }, "w", function ()
-                                                          local w = wi_widgets[mouse.screen]
-                                                              if w.visible then
-                                                                  w.visible = false
-                                                              else
-                                                                  w.visible = true
-                                                              end
-                                                      end))
+    key({ modkey, "Mod1" }, "w", function ()
+        local w = wi_widgets[mouse.screen]
+        if w.visible then
+            w.visible = false
+        else
+            w.visible = true
+        end
+    end),
 -- }}}
 -- {{{ Prompts
-table.insert(globalkeys, key({ modkey }, "Return", function () 
-    awful.prompt.run({ prompt = " $ " },
-        tb_prompt,
-        awful.util.spawn,
-        awful.completion.bash,
-        os.getenv("HOME") .. "/.cache/awesome/history"
-    ) 
-end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Return", function () 
-    awful.prompt.run({ prompt = " ? " },
-        tb_prompt,
-        awful.util.eval,
-        awful.prompt.bash,
-        os.getenv("HOME") .. "/.cache/awesome/history_eval"
-    ) 
-end))
-table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function() 
-    awful.prompt.run({ prompt = " > " },
+    key({ modkey }, "Return", function ()
+        awful.prompt.run({ prompt = " $ " },
+            tb_prompt,
+            awful.util.spawn,
+            awful.completion.bash,
+            os.getenv("HOME") .. "/.cache/awesome/history"
+        )
+    end),
+    key({ modkey, "Mod1" }, "Return", function ()
+        awful.prompt.run({ prompt = " ? " },
+            tb_prompt,
+            awful.util.eval,
+            awful.prompt.bash,
+            os.getenv("HOME") .. "/.cache/awesome/history_eval"
+        )
+    end),
+    key({ modkey, "Mod4" }, "Return", function()
+        awful.prompt.run({ prompt = " > " },
         tb_prompt,
         function (s)
             local txt = awful.util.pread(s.." 2>&1")
@@ -506,53 +488,74 @@ table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function()
         end,
         awful.completion.bash,
         os.getenv("HOME") .. "/.cache/awesome/history_commands"
-    )
-end))
+        )
+    end),
 -- }}}
 -- {{{ Client / Focus manipulation
-table.insert(globalkeys, key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end))
-table.insert(globalkeys, key({ modkey }, "d", awful.client.floating.toggle))
+    key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
+    key({ modkey }, "d", awful.client.floating.toggle),
 
-table.insert(globalkeys, key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end))
-table.insert(globalkeys, key({ modkey }, "Down", function () awful.client.focus.byidx(1) end))
-table.insert(globalkeys, key({ modkey }, "Left", function () awful.client.swap.byidx(1) end))
-table.insert(globalkeys, key({ modkey }, "Right", function () awful.client.movetoscreen() end))
-table.insert(globalkeys, key({ modkey }, "XF86Back",  function () 
-                                                          awful.screen.focus(1)
-                                                          local coords = mouse.coords()
-                                                          coords['x'] = coords['x'] + 1
-                                                          coords['y'] = coords['y'] + 2
-                                                          mouse.coords(coords)
-                                                      end))
-table.insert(globalkeys, key({ modkey }, "XF86Forward",   function ()
-                                                              awful.screen.focus(-1) 
-                                                              local coords = mouse.coords()
-                                                              coords['x'] = coords['x'] + 1
-                                                              coords['y'] = coords['y'] + 2
-                                                              mouse.coords(coords)
-                                                          end))
+    key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end),
+    key({ modkey }, "Down", function () awful.client.focus.byidx(1) end),
+    key({ modkey }, "Left", function () awful.client.swap.byidx(1) end),
+    key({ modkey }, "Right", function () awful.client.movetoscreen() end),
+    key({ modkey }, "XF86Back", function ()
+        awful.screen.focus(1)
+        local coords = mouse.coords()
+        coords['x'] = coords['x'] + 1
+        coords['y'] = coords['y'] + 2
+        mouse.coords(coords)
+    end),
+    key({ modkey }, "XF86Forward", function ()
+        awful.screen.focus(-1)
+        local coords = mouse.coords()
+        coords['x'] = coords['x'] + 1
+        coords['y'] = coords['y'] + 2
+        mouse.coords(coords)
+    end),
 -- }}}
 -- {{{ Layout manipulation
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end))
-table.insert(globalkeys, key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end))
+    key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
+    key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
+    key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end),
 
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end))
+    key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
+    key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
 -- }}}
 -- {{{ Audio
 -- Control cmus
-table.insert(globalkeys, key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end))
-table.insert(globalkeys, key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end))
-table.insert(globalkeys, key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end))
-table.insert(globalkeys, key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end))
+    key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end),
+    key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end),
+    key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end),
+    key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end),
 
 -- Audio control
-table.insert(globalkeys, key({ }, "XF86AudioRaiseVolume", function () volume.update("up") end))
-table.insert(globalkeys, key({ }, "XF86AudioLowerVolume", function () volume.update("down") end))
-table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume.update("mute") end))
+    key({ }, "XF86AudioRaiseVolume", function () volume.update("up") end),
+    key({ }, "XF86AudioLowerVolume", function () volume.update("down") end),
+    key({ }, "XF86AudioMute", function () volume.update("mute") end),
 -- }}}
+}
+-- {{{ Tags
+for i = 1, 9 do
+    table.insert(globalkeys,
+        key({ modkey }, i,
+            function ()
+                awful.tag.viewonly(tags[mouse.screen][i])
+            end))
 
+    table.insert(globalkeys,
+        key({ modkey, "Mod1" }, i,
+            function ()
+                if client.focus then
+                    awful.client.movetotag(tags[mouse.screen][i])
+                end
+            end))
+end
+-- }}}
+clientkeys = {
+    key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
+    key({ modkey }, "f",  awful.client.floating.toggle),
+}
 root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
