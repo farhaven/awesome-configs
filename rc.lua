@@ -79,7 +79,7 @@ naughty.config.border_width = 2
 naughty.config.presets.normal.border_color = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
 -- }}}
--- {{{ Tags & Clients
+-- {{{ Misc settings
 -- {{{ Tags
 config = { }
 config.tags = {
@@ -125,9 +125,15 @@ config.apps = {
     { match = { "xpdf" }, tag = 3 },
     -- }}}
     -- {{{ opacity
-    { match = { "urxvt" }, opacity_f = 0.85 },
-    { match = { "gimp", "^xv", "mplayer" }, opacity = 1, opacity_f = 1 },
+    { match = { "urxvt" }, opacity_f = 0.75 },
+    { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     -- }}}
+}
+-- }}}
+-- {{{ global settings
+config.global = {
+    ["opacity_f" ] = 1,
+    ["opacity_u" ] = 0.5
 }
 -- }}}
 -- }}}
@@ -493,7 +499,7 @@ table.insert(globalkeys, key({ modkey, "Mod4" }, "Return", function()
             naughty.notify({
                 text = txt,
                 timeout = 0,
-                width = 470,
+                width = 540,
                 screen = screen.count(),
             })
             naughty.config.presets.normal.height = h
@@ -550,18 +556,18 @@ table.insert(globalkeys, key({ }, "XF86AudioMute", function () volume.update("mu
 root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
-local opacities_focus = otable()
+local opacities_focus   = otable()
 local opacities_unfocus = otable()
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = opacities_focus[c] or 1
+    c.opacity = opacities_focus[c] or config.global.opacity_f
 end)
 -- }}}
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = opacities_unfocus[c] or 0.6
+    c.opacity = opacities_unfocus[c] or config.global.opacity_u
 end)
 -- }}}
 -- {{{ manage
@@ -595,7 +601,7 @@ awful.hooks.manage.register(function (c, startup)
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
                 end
-                if v.opacity then
+                if v.opacity_u then
                     opacities_unfocus[c] = v.opacity
                 end
                 if v.opacity_f then
