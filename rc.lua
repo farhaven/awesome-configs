@@ -605,7 +605,7 @@ awful.hooks.manage.register(function (c, startup)
                     awful.client.movetotag(tags[c.screen][v.tag], c)
                 end
                 if v.opacity_u then
-                    opacities_unfocus[c] = v.opacity
+                    opacities_unfocus[c] = v.opacity_u
                 end
                 if v.opacity_f then
                     opacities_focus[c] = v.opacity_f
