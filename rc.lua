@@ -125,7 +125,7 @@ config.apps = {
     { match = { "xpdf" }, tag = 3 },
     -- }}}
     -- {{{ opacity
-    { match = { "urxvt" }, opacity_f = 0.75 },
+    { match = { "urxvt" }, opacity_f = 0.85 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     -- }}}
 }
@@ -394,6 +394,7 @@ end
 function widget_layout_test(bounds, widgets)
     print("widget_layout_test -> enter")
     dump_table(widgets)
+    dump_table(bounds)
     print("widget_layout_test -> leave")
     return { 1 }
 end
@@ -555,6 +556,9 @@ end
 clientkeys = {
     key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
     key({ modkey }, "f",  awful.client.floating.toggle),
+
+    key({ modkey }, "j", function (c) c:lower() end),
+    key({ modkey }, "k", function (c) c:raise() end),
 }
 root.keys(globalkeys)
 -- }}}
@@ -564,13 +568,13 @@ local opacities_unfocus = otable()
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = opacities_focus[c] or config.global.opacity_f
+    c.opacity = opacities_focus[c]
 end)
 -- }}}
 -- {{{ unfocus
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = opacities_unfocus[c] or config.global.opacity_u
+    c.opacity = opacities_unfocus[c]
 end)
 -- }}}
 -- {{{ manage
@@ -594,6 +598,9 @@ awful.hooks.manage.register(function (c, startup)
     local instance = c.instance:lower()
     local class = c.class:lower()
     local name = c.name:lower()
+
+    opacities_unfocus[c] = config.global.opacity_u or 1
+    opacities_focus[c] = config.global.opacity_f or 1
 
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
