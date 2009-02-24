@@ -139,10 +139,11 @@ config.global = {
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
-tb_spacer       = widget({ type = "textbox",
-                           name = "tb_spacer",
-                           align = "right"
-                         })
+tb_spacer = widget({
+    type = "textbox",
+    name = "tb_spacer",
+    align = "right"
+})
 tb_spacer.width = 3
 -- }}}
 -- {{{ tag list
@@ -168,61 +169,6 @@ tb_prompt = widget({ type = "textbox",
                      name = "tb_prompt",
                      align = "left"
                    })
--- }}}
--- {{{ battery
-battmon = { }
-battmon.widget = widget({ type = "textbox",
-                          name = "tb_battery",
-                          align = "right"
-})
-battmon.status = {
-    ["charged"] = "↯",
-    ["discharging"] = "▼",
-    ["charging"] = "▲"
-}
--- {{{ update
-function battmon.update()
-    local battery_status = ""
-    local fd = io.popen("acpitool")
-    if not fd then 
-        battery.widget.text = "acpitool failed|"
-        return 
-    end
-
-    local data = fd:read("*all"):match("Battery #[1-9] *: ([^\n]*)")
-    fd:close()
-    local state = data:match("([%a]*),.*")
-    local charge = tonumber(data:match(".*, ([%d]?[%d]?[%d]%.[%d]?[%d]?)"))
-    local time = data:match(".*, ([%d][%d]:[%d][%d])")
-    
-    local color = "#FF0000"
-    if charge > 35 and charge < 60 then
-        color = "#FFFF00"
-    elseif charge >= 40 then
-        color = "#00FF00"
-    end
-    battery_status = "<span color=\"" .. color .. "\">"..battmon.status[state].."</span> " .. charge .. "%"
-
-    if time then
-        battery_status = battery_status .. " " .. time
-    end
-
-    battmon.widget.text = battery_status .. "|"
-end
--- }}}
--- {{{ detailed info
-function battmon.detail ()
-    local fd = io.popen("acpitool")
-    local d = fd:read("*all")
-    fd:close()
-    naughty.notify({ text = d,
-                     screen = mouse.screen
-                   })
-end
--- }}}
-battmon.widget:buttons({ button({ }, 1, battmon.detail) }) 
-awful.hooks.timer.register(60, battmon.update)
-battmon.update()
 -- }}}
 -- {{{ wlan
 wireless = { }
@@ -290,81 +236,6 @@ end
 volume.update()
 awful.hooks.timer.register(10, function () volume.update() end)
 -- }}}
--- {{{ clock
--- This widget has an alarmfile, which contains stuff to remember like this:
--- 14:30 get pizza from oven
--- These alarms (one per line) are shown with naughty. If one alarm is shown,
--- the clock will change its colors to indicate that. If you then click on
--- it, all alarms since the last click are shown.
-
-clock = { }
-clock.alarmfile = os.getenv("HOME") .. "/.config/awesome/alarms"
-clock.widget = widget({ type = "textbox", name = "clock", align = "right" })
-clock.menu = awful.menu.new({ id = "clock", items = {{ "edit todo", editor.." ~/todo" },
-                                                     { "edit alarms", editor.." "..clock.alarmfile }} } ) 
-clock.widget:buttons({
-    button({ }, 3, function () clock.menu:toggle() end ), 
-    button({ }, 1, function ()
-                        if #(clock.alarms) > 0 then
-                            for k, v in pairs(clock.alarms) do
-                                naughty.notify({ text = v,
-                                                 screen = mouse.screen
-                                               })
-                            end
-                            clock.alarms = { }
-                            clock.widget.bg = beautiful.bg_normal
-                        else
-                            naughty.notify({ text = awful.util.pread("ddate"), width = 360 })
-                        end
-                   end ) })
-
-clock.fulldate = false
-clock.alarms = { }
-
--- {{{ update
-function clock.update (alarms)
-    local date
-    if not clock.fulldate then
-        date = os.date("%H:%M (") .. (tonumber(os.date("%W")) + 1)..") "
-    else
-        date = os.date() .. " "
-    end
-    
-    if #clock.alarms > 0 then
-        date = "<span color='" .. beautiful.fg_focus .. "'>"..date.."</span>"
-        clock.widget.bg = beautiful.bg_focus
-    else
-        clock.widget.bg = beautiful.bg_normal
-    end
-    
-    clock.widget.text = "<span color=\"#00FF00\">⚙</span> " .. date
-    
-    if alarms then
-        for line in io.lines(clock.alarmfile) do
-            if string.match(line, "^"..os.date("%H:%M")) then
-                naughty.notify({ text = line,
-                                 screen = mouse.screen
-                               })
-                local add = true
-                for _, v in pairs(clock.alarms) do
-                    if v == line then
-                        add = false
-                        break
-                    end
-                end
-                if add then table.insert(clock.alarms, line) end
-            end
-        end
-        clock.update(false)
-    end
-end
--- }}}
-clock.update(true)
-awful.hooks.timer.register(60, function() clock.update(true) end)
-
-function clock.widget.mouse_enter() clock.fulldate = true ; clock.update(false) end
-function clock.widget.mouse_leave() clock.fulldate = false; clock.update(false) end
--- }}}
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
@@ -400,6 +271,11 @@ function widget_layout_test(bounds, widgets)
 end
 
 wi_widgets = {}
+
+require('obvious.clock')
+obvious.clock.set_editor("gvim")
+require('obvious.battery')
+
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
                             name = "wi_widgets" .. s, 
@@ -415,11 +291,11 @@ for s = 1, screen.count() do
                               tb_spacer,
                               volume.widget,
                               tb_spacer,
-                              battmon.widget,
+                              obvious.battery(),
                               tb_spacer,
                               s == systrayscreen and st_systray or nil, 
                               s == systrayscreen and tb_spacer or nil,
-                              clock.widget,
+                              obvious.clock(),
                               ["layout"] = widget_layout_test,
                             }
 
