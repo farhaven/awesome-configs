@@ -272,9 +272,8 @@ end
 
 wi_widgets = {}
 
-require('obvious.clock')
+require('obvious')
 obvious.clock.set_editor("gvim")
-require('obvious.battery')
 
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
