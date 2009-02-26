@@ -170,72 +170,6 @@ tb_prompt = widget({ type = "textbox",
                      align = "left"
                    })
 -- }}}
--- {{{ wlan
-wireless = { }
-wireless.widget = widget({ type = "textbox", name = "tb_wlan", align = "right" })
-wireless.device = "wlan0"
-
-function wireless.update()
-    local fd = io.open('/sys/class/net/'..wireless.device..'/wireless/link')
-    if not fd then return end
-    local link = fd:read()
-    fd:close()
-    link = tonumber(link)
-    local color = "#00FF00"
-    if link < 50 and link > 10 then
-        color = "#FFFF00"
-    elseif link <= 10 then
-        color = "#FF0000"
-    end
-    wireless.widget.text = "<span color=\"" .. color .. "\">☢</span> " .. string.format("%03d%%", link) .. "|"
-end
-wireless.update()
-awful.hooks.timer.register(10, wireless.update)
---- }}}
--- {{{ volume
-volume = { }
-volume.widget = widget({ type  = "textbox",
-                         name  = "tb_volume",
-                         align = "right"
-})
-volume.widget:buttons({
-    button({ }, 4, function () volume.update("up", pb_volume) end),
-    button({ }, 5, function () volume.update("down", pb_volume) end),
-    button({ }, 1, function () volume.update("mute", pb_volume) end)
-})
-
-function volume.update(mode)
-    local cardid  = 0
-    local channel = "Master"
-    mode = mode or "update"
-    if mode == "update" then
-        local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
-        local status = fd:read("*all")
-        fd:close()
-        
-        local vol = tonumber(string.match(status, "(%d?%d?%d)%%"))
-
-        status = string.match(status, "%[(o[^%]]*)%]")
-
-        local color = "#FF0000"
-        if string.find(status, "on", 1, true) then
-             color = "#00FF00"
-        end
-        volume.widget.text = "<span color=\"" .. color .. "\">☊</span> " .. string.format("%03d%%", vol) .. "|"
-    elseif mode == "up" then
-        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%+")
-        volume.update()
-    elseif mode == "down" then
-        awful.util.spawn("amixer -q -c " .. cardid .. " sset " .. channel .. " 0.5%-")
-        volume.update()
-    else
-        awful.util.spawn("amixer -c " .. cardid .. " sset " .. channel .. " toggle")
-        volume.update()
-    end
-end
-volume.update()
-awful.hooks.timer.register(10, function () volume.update() end)
--- }}}
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
@@ -262,18 +196,54 @@ if screen.count() > 1 then
     systrayscreen = 2
 end
 
-function widget_layout_test(bounds, widgets)
-    print("widget_layout_test -> enter")
-    dump_table(widgets)
-    dump_table(bounds)
-    print("widget_layout_test -> leave")
-    return { 1 }
+function widget_layout_test(bounds, widgets, screen)
+    local geometries = { }
+    local pos = bounds
+
+    for k, v in ipairs(widgets) do
+        if type(v) == "table" then
+            local l = v[layout] or widget_layout_test
+            local g = l({ ["x"] = pos.x,
+                          ["y"] = pos.y,
+                          ["height"] = bounds.height - pos.y,
+                          ["width"] = bounds.width - pos.x }, v)
+            if #g > 0 then
+                pos.x = g[#g].x + g[#g].width
+                pos.y = g[#g].y + g[#g].height
+            end
+
+            for _, w in pairs(g) do
+                table.insert(geometries, w)
+            end
+        else
+            local g = v:extents(screen)
+            if g.width > pos.width then g.width = pos.width end
+            if g.height > 0 then
+                g.height = pos.height
+            end
+            if v.resize and g.width > 0 then
+                g.width = g.height
+            end
+            g.y = pos.y
+            if v.align == "left" or v.align == "flex" then
+                g.x = pos.x
+                pos.x = pos.x + g.width
+            else
+                g.x = pos.width - g.width
+                pos.width = pos.width - g.width
+            end
+            table.insert(geometries, g)
+        end
+    end
+
+    return geometries
 end
 
 wi_widgets = {}
 
 require('obvious')
 obvious.clock.set_editor("gvim")
+obvious.wlan.set_device("wlan0")
 
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
@@ -285,16 +255,16 @@ for s = 1, screen.count() do
                               lb_layout[s],
                               tb_prompt,
                               tl_tasklist[s],
-                              tb_spacer,
-                              wireless.widget,
-                              tb_spacer,
-                              volume.widget,
+
+                              obvious.clock(),
+            --                  s == systrayscreen and tb_spacer or nil,
+            --                  s == systrayscreen and st_systray or nil, 
                               tb_spacer,
                               obvious.battery(),
                               tb_spacer,
-                              s == systrayscreen and st_systray or nil, 
-                              s == systrayscreen and tb_spacer or nil,
-                              obvious.clock(),
+                              obvious.volume_alsa(),
+                              tb_spacer,
+                              obvious.wlan(),
                               ["layout"] = widget_layout_test,
                             }
 
@@ -406,9 +376,9 @@ globalkeys = {
     key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end),
 
 -- Audio control
-    key({ }, "XF86AudioRaiseVolume", function () volume.update("up") end),
-    key({ }, "XF86AudioLowerVolume", function () volume.update("down") end),
-    key({ }, "XF86AudioMute", function () volume.update("mute") end),
+    key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise() end),
+    key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower() end),
+    key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute() end),
 -- }}}
 }
 -- {{{ Tags
