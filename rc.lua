@@ -196,49 +196,6 @@ if screen.count() > 1 then
     systrayscreen = 2
 end
 
-function widget_layout_test(bounds, widgets, screen)
-    local geometries = { }
-    local pos = bounds
-
-    for k, v in ipairs(widgets) do
-        if type(v) == "table" then
-            local l = v[layout] or widget_layout_test
-            local g = l({ ["x"] = pos.x,
-                          ["y"] = pos.y,
-                          ["height"] = bounds.height - pos.y,
-                          ["width"] = bounds.width - pos.x }, v)
-            if #g > 0 then
-                pos.x = g[#g].x + g[#g].width
-                pos.y = g[#g].y + g[#g].height
-            end
-
-            for _, w in pairs(g) do
-                table.insert(geometries, w)
-            end
-        else
-            local g = v:extents(screen)
-            if g.width > pos.width then g.width = pos.width end
-            if g.height > 0 then
-                g.height = pos.height
-            end
-            if v.resize and g.width > 0 then
-                g.width = g.height
-            end
-            g.y = pos.y
-            if v.align == "left" or v.align == "flex" then
-                g.x = pos.x
-                pos.x = pos.x + g.width
-            else
-                g.x = pos.width - g.width
-                pos.width = pos.width - g.width
-            end
-            table.insert(geometries, g)
-        end
-    end
-
-    return geometries
-end
-
 wi_widgets = {}
 
 require('obvious')
@@ -265,7 +222,7 @@ for s = 1, screen.count() do
                               obvious.volume_alsa(),
                               tb_spacer,
                               obvious.wlan(),
-                              ["layout"] = widget_layout_test,
+                              ["layout"] = awful.widget.layout.horizontal,
                             }
 
     wi_widgets[s].screen = s
