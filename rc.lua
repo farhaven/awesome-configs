@@ -222,7 +222,7 @@ for s = 1, screen.count() do
                               obvious.volume_alsa(),
                               tb_spacer,
                               obvious.wlan(),
-                              ["layout"] = awful.widget.layout.horizontal,
+                              ["layout"] = awful.widget.layout.horizontal.leftright,
                             }
 
     wi_widgets[s].screen = s
