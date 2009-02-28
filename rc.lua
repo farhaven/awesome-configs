@@ -394,7 +394,7 @@ awful.hooks.manage.register(function (c, startup)
     end
 
     c:buttons({
-        button({ }, 1, function (c) client.focus = c; c:raise() end),
+        button({ }, 1, function (c) client.focus = c end),
         button({ modkey }, 1, awful.mouse.client.move),
         button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
         button({ modkey }, 3, awful.mouse.client.resize)
