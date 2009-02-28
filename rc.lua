@@ -114,7 +114,7 @@ config.apps = {
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "sauerbraten engine", "Open File" }, float = true },
-    { match = { "GNOME MPlayer" }, float = false },
+    { match = { "gnome%-mplayer" }, float = true },
     --}}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
