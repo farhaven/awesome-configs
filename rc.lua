@@ -367,6 +367,7 @@ clientkeys = {
     key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
     key({ modkey }, "f",  awful.client.floating.toggle),
 
+    key({ modkey }, "a", function (c) c:tags(screen[c.screen]:tags()) end),
     key({ modkey }, "j", function (c) c:lower() end),
     key({ modkey }, "k", function (c) c:raise() end),
 }
