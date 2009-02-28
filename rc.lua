@@ -109,7 +109,7 @@ end
 -- {{{ Clients
 config.apps = {
     -- {{{ floating setup
-    { match = { "gimp", "xcalc", "xdialog" }, float = true },
+    { match = { "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
     { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
