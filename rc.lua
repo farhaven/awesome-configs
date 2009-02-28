@@ -38,7 +38,7 @@ end
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
-theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo.theme"
+theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo/foo.theme"
 beautiful.init(theme_path)
 -- }}}
 -- {{{ misc

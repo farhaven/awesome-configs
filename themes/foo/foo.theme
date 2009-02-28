@@ -18,7 +18,7 @@ border_focus  = #656565
 
 taglist_squares_sel          = /usr/local/share/awesome/themes/default/taglist/squarefw.png
 taglist_squares_unsel        = /usr/local/share/awesome/themes/default/taglist/squarew.png
-tasklist_floating_icon       = /usr/local/share/awesome/themes/default/tasklist/floatingw.png
+tasklist_floating_icon       = /home/gregor/.config/awesome/themes/foo/floatingw.png
 
 titlebar_close_button_normal = /usr/local/share/awesome/themes/default/titlebar/close.png
 titlebar_close_button_focus  = /usr/local/share/awesome/themes/default/titlebar/closer.png
