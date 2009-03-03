@@ -418,6 +418,7 @@ awful.hooks.manage.register(function (c, startup)
             if name:match(m) or instance:match(m) or class:match(m) then
                 if v.float ~= nil then
                     awful.client.floating.set(c, v.float)
+                    c:raise()
                 end
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
