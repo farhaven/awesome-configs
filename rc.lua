@@ -447,8 +447,11 @@ end)
 -- }}}
 -- {{{ mouse_enter
 awful.hooks.mouse_enter.register(function (c)
-    if awful.client.focus.filter(c) and awful.layout.get(c.screen) ~= awful.layout.suit.magnifier then
+    if awful.client.focus.filter(c) and (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or 
+        (client.focus.screen ~= c.screen and #(c:tags()[1]:clients()) == 1)) then
         client.focus = c
+    elseif awful.client.focus.filter(c) and awful.layout.get(c.screen) == awful.layout.suit.magnifier then
+        client.focus = awful.client.tiled(c.screen)[1]
     end
 end)
 -- }}}
