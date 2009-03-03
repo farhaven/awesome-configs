@@ -115,7 +115,7 @@ config.apps = {
     { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "sauerbraten engine", "Open File" }, float = true },
     { match = { "gnome%-mplayer" }, float = true },
-    --}}}
+    -- }}}
     -- {{{ apptags
     { match = { "urxvt" }, tag = 1 },
     { match = { "urxvt.irssi" }, tag = 5 },
@@ -264,6 +264,7 @@ globalkeys = {
     end),
 -- }}}
 -- {{{ Prompts
+    -- {{{ Run prompt
     key({ modkey }, "Return", function ()
         awful.prompt.run({ prompt = " $ " },
             tb_prompt,
@@ -272,6 +273,8 @@ globalkeys = {
             os.getenv("HOME") .. "/.cache/awesome/history"
         )
     end),
+    -- }}}
+    -- {{{ Lua prompt
     key({ modkey, "Mod1" }, "Return", function ()
         awful.prompt.run({ prompt = " ? " },
             tb_prompt,
@@ -280,6 +283,8 @@ globalkeys = {
             os.getenv("HOME") .. "/.cache/awesome/history_eval"
         )
     end),
+    -- }}}
+    -- {{{ Program read prompt
     key({ modkey, "Mod4" }, "Return", function()
         awful.prompt.run({ prompt = " > " },
         tb_prompt,
@@ -301,6 +306,7 @@ globalkeys = {
         os.getenv("HOME") .. "/.cache/awesome/history_commands"
         )
     end),
+    -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
     key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
