@@ -208,21 +208,26 @@ for s = 1, screen.count() do
                             fg = beautiful.fg_normal, 
                             bg = beautiful.bg_normal
                           })
-    wi_widgets[s].widgets = { tl_taglist[s],
-                              lb_layout[s],
-                              tb_prompt,
-                              tl_tasklist[s],
 
-                              obvious.clock(),
-            --                  s == systrayscreen and tb_spacer or nil,
-            --                  s == systrayscreen and st_systray or nil, 
-                              tb_spacer,
-                              obvious.battery(),
-                              tb_spacer,
-                              obvious.volume_alsa(),
-                              tb_spacer,
-                              obvious.wlan(),
-                              ["layout"] = awful.widget.layout.horizontal.leftright,
+    wi_widgets[s].widgets = {
+                                {
+                                    tl_taglist[s],
+                                    lb_layout[s],
+                                    tb_prompt,
+                                    tl_tasklist[s],
+                                    ["layout"] = awful.widget.layout.horizontal.leftright
+                                },
+                                {
+                                    obvious.wlan(),
+                                    tb_spacer,
+                                    obvious.volume_alsa(),
+                                    tb_spacer,
+                                    obvious.battery(),
+                                    tb_spacer,
+                                    obvious.clock(),
+                                    ["layout"] = awful.widget.layout.horizontal.rightleft,
+                                },
+                                ["layout"] = awful.widget.layout.horizontal.leftright
                             }
 
     wi_widgets[s].screen = s
