@@ -1,6 +1,7 @@
 require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
+require('obvious')
 
 -- {{{ Misc functions
 -- {{{ dump_table(t, depth)
@@ -198,7 +199,6 @@ end
 
 wi_widgets = {}
 
-require('obvious')
 obvious.clock.set_editor("gvim")
 obvious.wlan.set_device("wlan0")
 
