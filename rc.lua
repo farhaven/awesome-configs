@@ -265,7 +265,7 @@ globalkeys = {
         awful.prompt.run({ prompt = " $ " },
             tb_prompt,
             awful.util.spawn,
-            awful.completion.bash,
+            awful.completion.shell,
             os.getenv("HOME") .. "/.cache/awesome/history"
         )
     end),
@@ -294,7 +294,7 @@ globalkeys = {
             })
             naughty.config.presets.normal.height = h
         end,
-        awful.completion.bash,
+        awful.completion.shell,
         os.getenv("HOME") .. "/.cache/awesome/history_commands"
         )
     end),
