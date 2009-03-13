@@ -89,7 +89,7 @@ config.tags = {
     { name = "γ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/categories/applications-other.png") },
     { name = "δ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/apps/text-editor.png") },
     { name = "ε", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/emotes/face-smile.png") },
-    { name = "ζ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/actions/contact-new.png") },
+    { name = "ζ", layout = layouts[6], icon = image("/usr/share/icons/gnome/32x32/actions/contact-new.png") },
 }
 tags = { }
 for s = 1, screen.count() do
