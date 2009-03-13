@@ -13,8 +13,8 @@ fg_focus      = #ffffff
 fg_urgent     = #111111
 
 border_width  = 2
-border_normal = #333333
-border_focus  = #656565
+border_normal = #656565
+border_focus  = #1279bf
 
 taglist_squares_sel          = /usr/local/share/awesome/themes/default/taglist/squarefw.png
 taglist_squares_unsel        = /usr/local/share/awesome/themes/default/taglist/squarew.png
