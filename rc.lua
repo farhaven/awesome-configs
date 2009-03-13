@@ -412,9 +412,9 @@ awful.hooks.manage.register(function (c, startup)
 
     c.size_hints_honor = true
 
-    local instance = c.instance:lower()
-    local class = c.class:lower()
-    local name = c.name:lower()
+    local instance = c.instance:lower() or ""
+    local class = c.class:lower() or ""
+    local name = c.name:lower() or ""
 
     opacities_unfocus[c] = config.global.opacity_u or 1
     opacities_focus[c] = config.global.opacity_f or 1
