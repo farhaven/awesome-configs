@@ -440,6 +440,7 @@ awful.hooks.manage.register(function (c, startup)
     end
     client.focus = c
 
+    awful.placement.centered(c, c.transient_for)
     c:keys(clientkeys)
 end)
 -- }}}
