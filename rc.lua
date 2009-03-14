@@ -1,7 +1,7 @@
 require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
-require('obvious')
+require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 
 -- {{{ Misc functions
 -- {{{ dump_table(t, depth)
