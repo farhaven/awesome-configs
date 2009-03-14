@@ -441,6 +441,8 @@ awful.hooks.manage.register(function (c, startup)
     client.focus = c
 
     awful.placement.centered(c, c.transient_for)
+    awful.placement.no_offscreen(c)
+
     c:keys(clientkeys)
 end)
 -- }}}
