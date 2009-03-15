@@ -214,7 +214,6 @@ for s = 1, screen.count() do
                                     tl_taglist[s],
                                     lb_layout[s],
                                     tb_prompt,
-                                    tl_tasklist[s],
                                     ["layout"] = awful.widget.layout.horizontal.leftright
                                 },
                                 {
@@ -226,6 +225,10 @@ for s = 1, screen.count() do
                                     tb_spacer,
                                     obvious.clock(),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
+                                },
+                                {
+                                    tl_tasklist[s],
+                                    ["layout"] = awful.widget.layout.horizontal.flex
                                 },
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             }
