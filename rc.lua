@@ -76,7 +76,7 @@ layout_icons =
 naughty.config.bg           = beautiful.bg_normal
 naughty.config.fg           = beautiful.fg_normal
 naughty.config.screen       = screen.count() == 2 and 2 or 1
-naughty.config.border_width = 2
+naughty.config.border_width = 0
 naughty.config.presets.normal.border_color = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
 -- }}}
