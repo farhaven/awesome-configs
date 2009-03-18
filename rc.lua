@@ -289,18 +289,8 @@ globalkeys = {
         awful.prompt.run({ prompt = " > " },
         tb_prompt,
         function (s)
-            local txt = awful.util.pread(s.." 2>&1")
-            txt = txt:sub(1, 2400)
-            txt = awful.util.escape(txt)
-            local h = naughty.config.presets.normal.height
-            naughty.config.presets.normal.height = 12
-            naughty.notify({
-                text = txt,
-                timeout = 0,
-                width = 540,
-                screen = screen.count(),
-            })
-            naughty.config.presets.normal.height = h
+            local txt = awful.util.escape(awful.util.pread(s.." 2>&1"))
+            naughty.notify({ text = txt, timeout = 0, screen = mouse.screen })
         end,
         awful.completion.shell,
         os.getenv("HOME") .. "/.cache/awesome/history_commands"
