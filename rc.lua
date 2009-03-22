@@ -218,6 +218,8 @@ for s = 1, screen.count() do
                                     tb_spacer,
                                     obvious.battery(),
                                     tb_spacer,
+                                    s == screen.count() and st_systray,
+                                    s == screen.count() and tb_spacer,
                                     obvious.clock(),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
@@ -233,6 +235,7 @@ for s = 1, screen.count() do
     wi_widgets[s]:buttons({
         button({ modkey }, 1, awful.mouse.wibox.move)
     })
+    wi_widgets[s].ontop = false
 end
 -- }}}
 -- }}}
