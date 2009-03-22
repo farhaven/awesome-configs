@@ -143,7 +143,6 @@ config.global = {
 tb_spacer = widget({
     type = "textbox",
     name = "tb_spacer",
-    align = "right"
 })
 tb_spacer.width = 3
 -- }}}
@@ -168,7 +167,6 @@ end
 -- {{{ prompt
 tb_prompt = widget({ type = "textbox",
                      name = "tb_prompt",
-                     align = "left"
                    })
 -- }}}
 -- {{{ layout box
@@ -176,7 +174,6 @@ lb_layout = { }
 for s = 1, screen.count() do
     lb_layout[s] = widget({ type  = "textbox",
                             name  = "lb_layout",
-                            align = "left"
                           })
     lb_layout[s]:buttons({
         button({ }, 1, function () awful.layout.inc(layouts, 1) end),
@@ -187,9 +184,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ systray
-st_systray = widget({ type  = "systray",
-                      align = "right"
-                    })
+st_systray = widget({ type  = "systray" })
 -- }}}
 -- {{{ widget box
 local systrayscreen = 1
