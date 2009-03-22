@@ -126,7 +126,7 @@ config.apps = {
     { match = { "xpdf" }, tag = 3 },
     -- }}}
     -- {{{ opacity
-    { match = { "urxvt" }, opacity_f = 0.85 },
+    { match = { "xterm", "urxvt" }, opacity_f = 0.85 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     -- }}}
 }
