@@ -159,9 +159,35 @@ end
 tl_tasklist = { }
 for s = 1, screen.count() do
     tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, 
-                                               { button({ }, 1, function (object, c) client.focus = c; c:raise() end),
-                                                 button({ }, 3, function () awful.menu.clients({ width = 250 }) end),
-                                               })
+                                               {
+                                                    button({ }, 1, function (c)
+                                                        if not c:isvisible() then
+                                                            awful.tag.viewonly(c:tags()[1])
+                                                        end
+                                                        client.focus = c
+                                                        c:raise()
+                                                    end),
+                                                    button({ }, 3, function ()
+                                                        if instance then
+                                                            instance:hide()
+                                                            instance = nil
+                                                        else
+                                                            instance = awful.menu.clients({ width=250 })
+                                                        end
+                                                    end),
+                                                    button({ }, 4, function ()
+                                                        awful.client.focus.byidx(1)
+                                                        if client.focus then
+                                                            client.focus:raise()
+                                                        end
+                                                    end),
+                                                    button({ }, 5, function ()
+                                                        awful.client.focus.byidx(-1)
+                                                        if client.focus then
+                                                            client.focus:raise()
+                                                        end
+                                                    end)
+                                                })
 end
 -- }}}
 -- {{{ prompt
