@@ -111,7 +111,7 @@ config.apps = {
     -- {{{ floating setup
     { match = { "xcalc", "xdialog" }, float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
-    { match = { "xnest", "netzwerkprotokoll", "event tester" }, float = true },
+    { match = { "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "sauerbraten engine", "Open File" }, float = true },
     { match = { "gnome%-mplayer" }, float = true },
