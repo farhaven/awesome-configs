@@ -1,6 +1,3 @@
 [submodule "./obvious"]
 	path = ./obvious
 	url = /home/gregor/sourcecode/obvious/
-[submodule "freedesktop_git"]
-	path = freedesktop_git
-	url = git://github.com/terceiro/awesome-freedesktop
