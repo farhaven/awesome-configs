@@ -2,7 +2,6 @@ require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
-require('freedesktop.menu')
 
 -- {{{ Misc functions
 -- {{{ dump_table(t, depth)
@@ -213,28 +212,6 @@ end
 -- {{{ systray
 st_systray = widget({ type  = "systray" })
 -- }}}
--- {{{ Freedesktop.org Menu
-tb_freedesktop = widget({ type = "textbox" })
-tb_freedesktop.text = " MENU "
-me_freedesktop = freedesktop.menu.new()
-table.insert(me_freedesktop, {
-    "Awesome", {
-        { "Restart", awesome.restart },
-        { "Quit", awesome.quit }
-    }
-})
-me_freedesktop = awful.menu.new({
-    id = "freedesktop",
-    items = me_freedesktop,
-    width = 120,
-    keys = {
-        exec = "Right"
-    }
-})
-tb_freedesktop:buttons({
-    button({ }, 1, function () me_freedesktop:toggle(true) end)
-})
--- }}}
 -- {{{ widget box
 local systrayscreen = 1
 if screen.count() > 1 then
@@ -255,7 +232,6 @@ for s = 1, screen.count() do
 
     wi_widgets[s].widgets = {
                                 {
-                                    tb_freedesktop,
                                     tl_taglist[s],
                                     lb_layout[s],
                                     tb_prompt,
@@ -300,10 +276,6 @@ globalkeys = {
     key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
     key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
     key({ modkey, "Mod1" }, "r", awesome.restart),
-    key({ modkey }, "m", function ()
-        mouse.coords(screen[mouse.screen].workarea)
-        me_freedesktop:toggle(true)
-    end),
 
 -- hide / unhide current screens wibox
     key({ modkey, "Mod1" }, "w", function ()
