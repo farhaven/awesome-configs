@@ -221,7 +221,6 @@ end
 wi_widgets = {}
 
 obvious.clock.set_editor("gvim")
-obvious.wlan.set_device("wlan0")
 
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
@@ -238,8 +237,6 @@ for s = 1, screen.count() do
                                     ["layout"] = awful.widget.layout.horizontal.leftright
                                 },
                                 {
-                                    obvious.wlan(),
-                                    tb_spacer,
                                     obvious.volume_alsa(),
                                     tb_spacer,
                                     obvious.battery(),
