@@ -32,7 +32,7 @@ end
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
     if not awful.layout.get(s) then return "   " end
-    return "<span color='"..beautiful.fg_focus.."'>" .. layout_icons[awful.layout.getname(awful.layout.get(s))] .. "</span>"
+    return "<span color='"..beautiful.fg_focus.."'>" .. awful.util.escape(layout_icons[awful.layout.getname(awful.layout.get(s))]) .. "</span>"
 end
 -- }}}
 -- }}}
