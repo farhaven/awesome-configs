@@ -79,17 +79,18 @@ naughty.config.screen       = screen.count() == 2 and 2 or 1
 naughty.config.border_width = 2
 naughty.config.presets.normal.border_color = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
+naughty.config.presets.normal.opacity = 0.8
 -- }}}
 -- {{{ Misc settings
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "α", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/apps/terminal.png") },
-    { name = "β", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/categories/applications-internet.png") },
-    { name = "γ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/categories/applications-other.png") },
-    { name = "δ", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/apps/text-editor.png") },
-    { name = "ε", layout = layouts[1], icon = image("/usr/share/icons/gnome/32x32/emotes/face-smile.png") },
-    { name = "ζ", layout = layouts[6], icon = image("/usr/share/icons/gnome/32x32/actions/contact-new.png") },
+    { name = "α", layout = layouts[1] },
+    { name = "β", layout = layouts[1] },
+    { name = "γ", layout = layouts[1] },
+    { name = "δ", layout = layouts[1] },
+    { name = "ε", layout = layouts[1] },
+    { name = "ζ", layout = layouts[6] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -144,7 +145,7 @@ tb_spacer = widget({
     type = "textbox",
     name = "tb_spacer",
 })
-tb_spacer.width = 3
+tb_spacer.text = " "
 -- }}}
 -- {{{ tag list
 tl_taglist = { }
@@ -206,7 +207,7 @@ for s = 1, screen.count() do
         button({ }, 3, function () awful.layout.inc(layouts, -1) end)
     })
     lb_layout[s].text = getlayouticon(s)
-    lb_layout[s].bg = beautiful.bg_focus
+    lb_layout[s].bg = beautiful.bg_normal
 end
 -- }}}
 -- {{{ systray
@@ -258,6 +259,7 @@ for s = 1, screen.count() do
     wi_widgets[s]:buttons({
         button({ modkey }, 1, awful.mouse.wibox.move)
     })
+    wi_widgets[s]:geometry({ height = 16 })
     wi_widgets[s].ontop = false
 end
 -- }}}
