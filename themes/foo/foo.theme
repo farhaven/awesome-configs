@@ -1,7 +1,7 @@
 # font          = Monospace 8
-# font          = fixed 9
+font          = fixed 8
 # font          = Sans 8
-font          = Terminus 7
+# font          = Terminus 6
 # font          = FreeMono 9
 
 bg_normal     = #333333
