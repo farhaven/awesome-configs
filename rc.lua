@@ -233,6 +233,7 @@ for s = 1, screen.count() do
                                     ["layout"] = awful.widget.layout.horizontal.leftright
                                 },
                                 {
+                                    tb_spacer,
                                     obvious.volume_alsa(),
                                     tb_spacer,
                                     obvious.battery(),
