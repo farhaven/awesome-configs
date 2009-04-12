@@ -67,7 +67,7 @@ layout_icons =
     ["tiletop"] = "[^]",
     ["fairv"] = "[|]",
     ["fairh"] = "[-]",
-    ["floating"] = "o_O",
+    ["floating"] = "><>",
     ["magnifier"] = "[o]",
 }
 -- }}} 
