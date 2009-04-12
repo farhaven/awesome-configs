@@ -214,11 +214,6 @@ end
 st_systray = widget({ type  = "systray" })
 -- }}}
 -- {{{ widget box
-local systrayscreen = 1
-if screen.count() > 1 then
-    systrayscreen = 2
-end
-
 wi_widgets = {}
 
 obvious.clock.set_editor("gvim")
@@ -243,7 +238,6 @@ for s = 1, screen.count() do
                                     obvious.battery(),
                                     tb_spacer,
                                     s == screen.count() and st_systray,
-                                    s == screen.count() and tb_spacer,
                                     obvious.clock(),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
