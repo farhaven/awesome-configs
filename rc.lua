@@ -85,11 +85,11 @@ naughty.config.presets.normal.opacity = 0.8
 -- {{{ Tags
 config = { }
 config.tags = {
-    { name = "α", layout = layouts[1] },
-    { name = "β", layout = layouts[1] },
-    { name = "γ", layout = layouts[1] },
-    { name = "δ", layout = layouts[1] },
-    { name = "ε", layout = layouts[1] },
+    { name = "α", layout = layouts[3] },
+    { name = "β", layout = layouts[3] },
+    { name = "γ", layout = layouts[3] },
+    { name = "δ", layout = layouts[3] },
+    { name = "ε", layout = layouts[3] },
     { name = "ζ", layout = layouts[6] },
 }
 tags = { }
