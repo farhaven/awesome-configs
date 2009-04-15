@@ -388,8 +388,8 @@ clientkeys = {
 root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
-local opacities_focus   = otable()
-local opacities_unfocus = otable()
+local opacities_focus   = { }
+local opacities_unfocus = { }
 -- {{{ focus
 awful.hooks.focus.register(function (c)
     c.border_color = beautiful.border_focus
