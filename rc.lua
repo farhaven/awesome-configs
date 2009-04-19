@@ -260,19 +260,19 @@ end
 -- }}}
 -- }}}
 -- {{{ Key bindings
-globalkeys = {
+globalkeys = awful.util.table.join(
     -- {{{ Tags
-    key({ }, "XF86Back", awful.tag.viewprev),
-    key({ }, "XF86Forward", awful.tag.viewnext),
+    awful.key({ }, "XF86Back", awful.tag.viewprev),
+    awful.key({ }, "XF86Forward", awful.tag.viewnext),
     -- }}}
     -- {{{ Misc
-    key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
-    key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
-    key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
-    key({ modkey, "Mod1" }, "r", awesome.restart),
+    awful.key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
+    awful.key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
+    awful.key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
+    awful.key({ modkey, "Mod1" }, "r", awesome.restart),
 
 -- hide / unhide current screens wibox
-    key({ modkey, "Mod1" }, "w", function ()
+    awful.key({ modkey, "Mod1" }, "w", function ()
         local w = wi_widgets[mouse.screen]
         if w.visible then
             w.visible = false
@@ -283,7 +283,7 @@ globalkeys = {
 -- }}}
 -- {{{ Prompts
     -- {{{ Run prompt
-    key({ modkey }, "Return", function ()
+    awful.key({ modkey }, "Return", function ()
         awful.prompt.run({ prompt = " $ " },
             tb_prompt,
             awful.util.spawn,
@@ -293,7 +293,7 @@ globalkeys = {
     end),
     -- }}}
     -- {{{ Lua prompt
-    key({ modkey, "Mod1" }, "Return", function ()
+    awful.key({ modkey, "Mod1" }, "Return", function ()
         awful.prompt.run({ prompt = " ? " },
             tb_prompt,
             awful.util.eval,
@@ -303,7 +303,7 @@ globalkeys = {
     end),
     -- }}}
     -- {{{ Program read prompt
-    key({ modkey, "Mod4" }, "Return", function()
+    awful.key({ modkey, "Mod4" }, "Return", function()
         awful.prompt.run({ prompt = " > " },
         tb_prompt,
         function (s)
@@ -317,21 +317,21 @@ globalkeys = {
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
-    key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
-    key({ modkey }, "d", awful.client.floating.toggle),
+    awful.key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
+    awful.key({ modkey }, "d", awful.client.floating.toggle),
 
-    key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end),
-    key({ modkey }, "Down", function () awful.client.focus.byidx(1) end),
-    key({ modkey }, "Left", function () awful.client.swap.byidx(1) end),
-    key({ modkey }, "Right", function () awful.client.movetoscreen() end),
-    key({ modkey }, "XF86Back", function ()
+    awful.key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end),
+    awful.key({ modkey }, "Down", function () awful.client.focus.byidx(1) end),
+    awful.key({ modkey }, "Left", function () awful.client.swap.byidx(1) end),
+    awful.key({ modkey }, "Right", function () awful.client.movetoscreen() end),
+    awful.key({ modkey }, "XF86Back", function ()
         awful.screen.focus(1)
         local coords = mouse.coords()
         coords['x'] = coords['x'] + 1
         coords['y'] = coords['y'] + 2
         mouse.coords(coords)
     end),
-    key({ modkey }, "XF86Forward", function ()
+    awful.key({ modkey }, "XF86Forward", function ()
         awful.screen.focus(-1)
         local coords = mouse.coords()
         coords['x'] = coords['x'] + 1
@@ -340,26 +340,26 @@ globalkeys = {
     end),
 -- }}}
 -- {{{ Layout manipulation
-    key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
-    key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
-    key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end),
+    awful.key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
+    awful.key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
+    awful.key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end),
 
-    key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
-    key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
+    awful.key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
+    awful.key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
 -- }}}
 -- {{{ Audio
 -- Control cmus
-    key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end),
-    key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end),
-    key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end),
-    key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end),
+    awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end),
+    awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end),
+    awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end),
+    awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end),
 
 -- Audio control
-    key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise() end),
-    key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower() end),
-    key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute() end),
+    awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise() end),
+    awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower() end),
+    awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute() end)
 -- }}}
-}
+)
 -- {{{ Tags
 for i = 1, 9 do
     table.insert(globalkeys,
@@ -377,14 +377,14 @@ for i = 1, 9 do
             end))
 end
 -- }}}
-clientkeys = {
-    key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
-    key({ modkey }, "f",  awful.client.floating.toggle),
+clientkeys = awful.util.table.join(
+    awful.key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
+    awful.key({ modkey }, "f",  awful.client.floating.toggle),
 
-    key({ modkey }, "a", function (c) c.sticky = not c.sticky end),
-    key({ modkey }, "j", function (c) c:lower() end),
-    key({ modkey }, "k", function (c) c:raise() end),
-}
+    awful.key({ modkey }, "a", function (c) c.sticky = not c.sticky end),
+    awful.key({ modkey }, "j", function (c) c:lower() end),
+    awful.key({ modkey }, "k", function (c) c:raise() end)
+)
 root.keys(globalkeys)
 -- }}}
 -- {{{ Hooks
