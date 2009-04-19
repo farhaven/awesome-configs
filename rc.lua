@@ -151,24 +151,25 @@ tb_spacer.text = " "
 tl_taglist = { }
 for s = 1, screen.count() do
     tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
-                                             { button({ }, 1, awful.tag.viewonly),
-                                               button({ }, 4, awful.tag.viewnext),
-                                               button({ }, 5, awful.tag.viewprev) })
+                                             awful.util.table.join(
+                                                awful.button({ }, 1, awful.tag.viewonly),
+                                                awful.button({ }, 4, awful.tag.viewnext),
+                                                awful.button({ }, 5, awful.tag.viewprev) ))
 end
 -- }}}
 -- {{{ task list
 tl_tasklist = { }
 for s = 1, screen.count() do
     tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, 
-                                               {
-                                                    button({ }, 1, function (c)
+                                               awful.util.table.join(
+                                                    awful.button({ }, 1, function (c)
                                                         if not c:isvisible() then
                                                             awful.tag.viewonly(c:tags()[1])
                                                         end
                                                         client.focus = c
                                                         c:raise()
                                                     end),
-                                                    button({ }, 3, function ()
+                                                    awful.button({ }, 3, function ()
                                                         if instance then
                                                             instance:hide()
                                                             instance = nil
@@ -176,19 +177,19 @@ for s = 1, screen.count() do
                                                             instance = awful.menu.clients({ width=250 })
                                                         end
                                                     end),
-                                                    button({ }, 4, function ()
+                                                    awful.button({ }, 4, function ()
                                                         awful.client.focus.byidx(1)
                                                         if client.focus then
                                                             client.focus:raise()
                                                         end
                                                     end),
-                                                    button({ }, 5, function ()
+                                                    awful.button({ }, 5, function ()
                                                         awful.client.focus.byidx(-1)
                                                         if client.focus then
                                                             client.focus:raise()
                                                         end
                                                     end)
-                                                })
+                                                ))
 end
 -- }}}
 -- {{{ prompt
@@ -202,10 +203,10 @@ for s = 1, screen.count() do
     lb_layout[s] = widget({ type  = "textbox",
                             name  = "lb_layout",
                           })
-    lb_layout[s]:buttons({
-        button({ }, 1, function () awful.layout.inc(layouts, 1) end),
-        button({ }, 3, function () awful.layout.inc(layouts, -1) end)
-    })
+    lb_layout[s]:buttons(awful.util.table.join(
+        awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end)
+    ))
     lb_layout[s].text = getlayouticon(s)
     lb_layout[s].bg = beautiful.bg_normal
 end
@@ -251,9 +252,9 @@ for s = 1, screen.count() do
 
     wi_widgets[s].screen = s
     wi_widgets[s].opacity = 0.85
-    wi_widgets[s]:buttons({
-        button({ modkey }, 1, awful.mouse.wibox.move)
-    })
+    wi_widgets[s]:buttons(awful.util.table.join(
+        awful.button({ modkey }, 1, awful.mouse.wibox.move)
+    ))
     wi_widgets[s]:geometry({ height = 16 })
     wi_widgets[s].ontop = false
 end
@@ -318,7 +319,6 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Client / Focus manipulation
     awful.key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
-    awful.key({ modkey }, "d", awful.client.floating.toggle),
 
     awful.key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end),
     awful.key({ modkey }, "Down", function () awful.client.focus.byidx(1) end),
@@ -362,19 +362,17 @@ globalkeys = awful.util.table.join(
 )
 -- {{{ Tags
 for i = 1, 9 do
-    table.insert(globalkeys,
-        key({ modkey }, i,
+    table.foreach(awful.key({ modkey }, i,
             function ()
                 awful.tag.viewonly(tags[mouse.screen][i])
-            end))
+            end), function(_, k) table.insert(globalkeys, k) end)
 
-    table.insert(globalkeys,
-        key({ modkey, "Mod1" }, i,
+    table.foreach(awful.key({ modkey, "Mod1" }, i,
             function ()
                 if client.focus then
                     awful.client.movetotag(tags[mouse.screen][i])
                 end
-            end))
+            end), function(_, k) table.insert(globalkeys, k) end)
 end
 -- }}}
 clientkeys = awful.util.table.join(
@@ -408,12 +406,12 @@ awful.hooks.manage.register(function (c, startup)
         c.screen = mouse.screen
     end
 
-    c:buttons({
-        button({ }, 1, function (c) client.focus = c end),
-        button({ modkey }, 1, awful.mouse.client.move),
-        button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
-        button({ modkey }, 3, awful.mouse.client.resize)
-    })
+    c:buttons(awful.util.table.join(
+        awful.button({ }, 1, function (c) client.focus = c end),
+        awful.button({ modkey }, 1, awful.mouse.client.move),
+        awful.button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
+        awful.button({ modkey }, 3, awful.mouse.client.resize)
+    ))
 
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
