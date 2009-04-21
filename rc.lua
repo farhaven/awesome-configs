@@ -6,14 +6,14 @@ require('obvious') -- Obvious widget library, get it from git://git.mercenariesg
 -- {{{ Misc functions
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
-    if not awful.layout.get(s) then return "   " end
-    return "<span color='"..beautiful.fg_focus.."'>" .. awful.util.escape(layout_icons[awful.layout.getname(awful.layout.get(s))]) .. "</span>"
+    if not awful.layout.get(s) then return "     " end
+    return " " .. awful.util.escape(layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
 -- }}}
 -- {{{ Variable definitions
 -- {{{ theme setup
-theme_path = os.getenv("HOME") .. "/.config/awesome/themes/foo/foo.theme"
+theme_path = os.getenv("HOME") .. "/.config/awesome/themes/dwm/dwm.theme"
 beautiful.init(theme_path)
 -- }}}
 -- {{{ misc
@@ -213,8 +213,8 @@ for s = 1, screen.count() do
                                 },
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             }
-
     wi_widgets[s].screen = s
+    wi_widgets[s]:geometry({ height = 16 })
 end
 -- }}}
 -- }}}
