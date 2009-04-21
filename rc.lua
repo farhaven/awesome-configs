@@ -4,31 +4,6 @@ require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 
 -- {{{ Misc functions
--- {{{ dump_table(t, depth)
-function dump_table(t, depth)
-    if not depth then depth = 0 end
-    local prefix = ""
-    for i = 1, depth do
-        prefix = prefix .. " "
-    end
-    for k, v in pairs(t) do
-        if type(v) == "table" then
-            dump_table(v, depth + 1)
-        else
-            print(prefix..k.." "..tostring(v))
-        end
-    end
-    print("")
-end
--- }}}
--- {{{ dump_client(c)
-function dump_client(c)
-    local msg = "Name: "..(c.name or "").."\n"
-    msg = msg.. "Transient for: "..(tostring(c.transient_for or "")).."\n"
-
-    naughty.notify({ text = msg })
-end
--- }}}
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
     if not awful.layout.get(s) then return "   " end
@@ -65,8 +40,6 @@ layout_icons =
     ["tileleft"] = "=[]",
     ["tilebottom"] = "[v]",
     ["tiletop"] = "[^]",
-    ["fairv"] = "[|]",
-    ["fairh"] = "[-]",
     ["floating"] = "><>",
     ["magnifier"] = "[o]",
 }
@@ -75,11 +48,11 @@ layout_icons =
 -- {{{ Naughty setup
 naughty.config.bg           = beautiful.bg_normal
 naughty.config.fg           = beautiful.fg_normal
-naughty.config.screen       = screen.count() == 2 and 2 or 1
+naughty.config.screen       = screen.count()
 naughty.config.border_width = 2
-naughty.config.presets.normal.border_color = beautiful.fg_normal
+naughty.config.presets.normal.border_color  = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
-naughty.config.presets.normal.opacity = 0.8
+naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Misc settings
 -- {{{ Tags
@@ -118,13 +91,12 @@ config.apps = {
     { match = { "gnome%-mplayer" }, float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" }, tag = 1 },
-    { match = { "urxvt.irssi" }, tag = 5 },
-    { match = { "urxvt.cmus" }, tag = 3 },
-    { match = { "claws%-mail" }, tag = 6 },
+    { match = { "urxvt" },          tag = 1 },
     { match = { "firefox", "dillo" }, tag = 2 },
-    { match = { "gvim" }, tag = 4 },
-    { match = { "xpdf" }, tag = 3 },
+    { match = { "urxvt.cmus", "xpdf" }, tag = 3 },
+    { match = { "gvim" },           tag = 4 },
+    { match = { "urxvt.irssi" },    tag = 5 },
+    { match = { "claws%-mail" },    tag = 6 },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" }, opacity_f = 0.85 },
@@ -141,10 +113,7 @@ config.global = {
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
-tb_spacer = widget({
-    type = "textbox",
-    name = "tb_spacer",
-})
+tb_spacer = widget({ type = "textbox" })
 tb_spacer.text = " "
 -- }}}
 -- {{{ tag list
@@ -193,16 +162,12 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ prompt
-tb_prompt = widget({ type = "textbox",
-                     name = "tb_prompt",
-                   })
+tb_prompt = widget({ type = "textbox" })
 -- }}}
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
-    lb_layout[s] = widget({ type  = "textbox",
-                            name  = "lb_layout",
-                          })
+    lb_layout[s] = widget({ type  = "textbox" })
     lb_layout[s]:buttons(awful.util.table.join(
         awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
         awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end)
@@ -221,7 +186,6 @@ obvious.clock.set_editor("gvim")
 
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
-                            name = "wi_widgets" .. s, 
                             fg = beautiful.fg_normal, 
                             bg = beautiful.bg_normal
                           })
@@ -251,12 +215,6 @@ for s = 1, screen.count() do
                             }
 
     wi_widgets[s].screen = s
-    wi_widgets[s].opacity = 0.85
-    wi_widgets[s]:buttons(awful.util.table.join(
-        awful.button({ modkey }, 1, awful.mouse.wibox.move)
-    ))
-    wi_widgets[s]:geometry({ height = 16 })
-    wi_widgets[s].ontop = false
 end
 -- }}}
 -- }}}
