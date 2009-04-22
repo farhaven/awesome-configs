@@ -3,39 +3,37 @@ require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 
--- {{{ Misc functions
+-- {{{ Functions
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
     if not awful.layout.get(s) then return "     " end
-    return " " .. awful.util.escape(layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
+    return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
 -- }}}
--- {{{ Variable definitions
--- {{{ theme setup
-theme_path = os.getenv("HOME") .. "/.config/awesome/themes/dwm/dwm.theme"
-beautiful.init(theme_path)
+-- {{{ Settings
+config = { }
+-- {{{ Global settings
+config.global = {
+    ["opacity_f" ] = 1,
+    ["opacity_u" ] = 0.5,
+    ["theme"]      = os.getenv("HOME") .. "/.config/awesome/themes/dwm/dwm.theme",
+    ["terminal"]   = "urxvt",
+    ["editor"]     = "gvim",
+    ["modkey"]     = "Mod3",
+}
+beautiful.init(config.global.theme)
 -- }}}
--- {{{ misc
-terminal = "urxvt"
-editor = "gvim"
-
--- Default modkey.
--- I remapped Caps Lock to Mod3 using the following commands for xmodmap:
--- xmodmap -e "clear lock"
--- xmodmap -e "add mod3 = Caps_Lock"
-modkey = "Mod3"
--- }}} 
--- {{{ layouts
-layouts =
-{   awful.layout.suit.tile,
+-- {{{ Layouts
+config.layouts = {
+    awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.top,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
     awful.layout.suit.magnifier,
 }
-layout_icons =
+config.layout_icons =
 {   ["tile"] = "[]=",
     ["tileleft"] = "=[]",
     ["tilebottom"] = "[v]",
@@ -43,27 +41,15 @@ layout_icons =
     ["floating"] = "><>",
     ["magnifier"] = "[o]",
 }
--- }}} 
 -- }}}
--- {{{ Naughty setup
-naughty.config.bg           = beautiful.bg_normal
-naughty.config.fg           = beautiful.fg_normal
-naughty.config.screen       = screen.count()
-naughty.config.border_width = 2
-naughty.config.presets.normal.border_color  = beautiful.fg_normal
-naughty.config.presets.normal.hover_timeout = 0.3
-naughty.config.presets.normal.opacity       = 0.8
--- }}}
--- {{{ Misc settings
 -- {{{ Tags
-config = { }
 config.tags = {
-    { name = "α", layout = layouts[3] },
-    { name = "β", layout = layouts[1] },
-    { name = "γ", layout = layouts[3] },
-    { name = "δ", layout = layouts[1] },
-    { name = "ε", layout = layouts[3] },
-    { name = "ζ", layout = layouts[6] },
+    { name = "α", layout = config.layouts[3] },
+    { name = "β", layout = config.layouts[1] },
+    { name = "γ", layout = config.layouts[3] },
+    { name = "δ", layout = config.layouts[1] },
+    { name = "ε", layout = config.layouts[3] },
+    { name = "ζ", layout = config.layouts[6] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -91,12 +77,12 @@ config.apps = {
     { match = { "gnome%-mplayer" }, float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },          tag = 1 },
-    { match = { "firefox", "dillo" }, tag = 2 },
-    { match = { "urxvt.cmus", "xpdf" }, tag = 3 },
-    { match = { "gvim" },           tag = 4 },
-    { match = { "urxvt.irssi" },    tag = 5 },
-    { match = { "claws%-mail" },    tag = 6 },
+    { match = { config.global.terminal }, tag = 1 },
+    { match = { "firefox", "dillo" },     tag = 2 },
+    { match = { "urxvt.cmus", "xpdf" },   tag = 3 },
+    { match = { config.global.editor },   tag = 4 },
+    { match = { "urxvt.irssi" },          tag = 5 },
+    { match = { "claws%-mail" },          tag = 6 },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" }, opacity_f = 0.85 },
@@ -104,11 +90,14 @@ config.apps = {
     -- }}}
 }
 -- }}}
--- {{{ global settings
-config.global = {
-    ["opacity_f" ] = 1,
-    ["opacity_u" ] = 0.5
-}
+-- {{{ Naughty
+naughty.config.bg           = beautiful.bg_normal
+naughty.config.fg           = beautiful.fg_normal
+naughty.config.screen       = screen.count()
+naughty.config.border_width = 2
+naughty.config.presets.normal.border_color  = beautiful.fg_normal
+naughty.config.presets.normal.hover_timeout = 0.3
+naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- }}}
 -- {{{ Widgets
@@ -169,8 +158,8 @@ lb_layout = { }
 for s = 1, screen.count() do
     lb_layout[s] = widget({ type  = "textbox" })
     lb_layout[s]:buttons(awful.util.table.join(
-        awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end)
+        awful.button({ }, 1, function () awful.layout.inc(config.layouts, 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(config.layouts, -1) end)
     ))
     lb_layout[s].text = getlayouticon(s)
     lb_layout[s].bg = beautiful.bg_normal
@@ -182,7 +171,7 @@ st_systray = widget({ type  = "systray" })
 -- {{{ widget box
 wi_widgets = {}
 
-obvious.clock.set_editor("gvim")
+obvious.clock.set_editor(config.global.editor)
 
 for s = 1, screen.count() do
     wi_widgets[s] = wibox({ position = "top", 
@@ -225,13 +214,13 @@ globalkeys = awful.util.table.join(
     awful.key({ }, "XF86Forward", awful.tag.viewnext),
     -- }}}
     -- {{{ Misc
-    awful.key({ modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
-    awful.key({ modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
-    awful.key({ modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
-    awful.key({ modkey, "Mod1" }, "r", awesome.restart),
+    awful.key({ config.global.modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
+    awful.key({ config.global.modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"") end),
+    awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock") end),
+    awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
 -- hide / unhide current screens wibox
-    awful.key({ modkey, "Mod1" }, "w", function ()
+    awful.key({ config.global.modkey, "Mod1" }, "w", function ()
         local w = wi_widgets[mouse.screen]
         if w.visible then
             w.visible = false
@@ -242,7 +231,7 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Prompts
     -- {{{ Run prompt
-    awful.key({ modkey }, "Return", function ()
+    awful.key({ config.global.modkey }, "Return", function ()
         awful.prompt.run({ prompt = " $ " },
             tb_prompt,
             awful.util.spawn,
@@ -252,7 +241,7 @@ globalkeys = awful.util.table.join(
     end),
     -- }}}
     -- {{{ Lua prompt
-    awful.key({ modkey, "Mod1" }, "Return", function ()
+    awful.key({ config.global.modkey, "Mod1" }, "Return", function ()
         awful.prompt.run({ prompt = " ? " },
             tb_prompt,
             awful.util.eval,
@@ -262,7 +251,7 @@ globalkeys = awful.util.table.join(
     end),
     -- }}}
     -- {{{ Program read prompt
-    awful.key({ modkey, "Mod4" }, "Return", function()
+    awful.key({ config.global.modkey, "Mod4" }, "Return", function()
         awful.prompt.run({ prompt = " > " },
         tb_prompt,
         function (s)
@@ -276,20 +265,20 @@ globalkeys = awful.util.table.join(
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
-    awful.key({ modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
+    awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
-    awful.key({ modkey }, "Up", function () awful.client.focus.byidx(-1) end),
-    awful.key({ modkey }, "Down", function () awful.client.focus.byidx(1) end),
-    awful.key({ modkey }, "Left", function () awful.client.swap.byidx(1) end),
-    awful.key({ modkey }, "Right", function () awful.client.movetoscreen() end),
-    awful.key({ modkey }, "XF86Back", function ()
+    awful.key({ config.global.modkey }, "Up", function () awful.client.focus.byidx(-1) end),
+    awful.key({ config.global.modkey }, "Down", function () awful.client.focus.byidx(1) end),
+    awful.key({ config.global.modkey }, "Left", function () awful.client.swap.byidx(1) end),
+    awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
+    awful.key({ config.global.modkey }, "XF86Back", function ()
         awful.screen.focus(1)
         local coords = mouse.coords()
         coords['x'] = coords['x'] + 1
         coords['y'] = coords['y'] + 2
         mouse.coords(coords)
     end),
-    awful.key({ modkey }, "XF86Forward", function ()
+    awful.key({ config.global.modkey }, "XF86Forward", function ()
         awful.screen.focus(-1)
         local coords = mouse.coords()
         coords['x'] = coords['x'] + 1
@@ -298,12 +287,12 @@ globalkeys = awful.util.table.join(
     end),
 -- }}}
 -- {{{ Layout manipulation
-    awful.key({ modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
-    awful.key({ modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
-    awful.key({ modkey }, " ", function () awful.layout.inc(layouts, 1) end),
+    awful.key({ config.global.modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
+    awful.key({ config.global.modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
+    awful.key({ config.global.modkey }, " ", function () awful.layout.inc(config.layouts, 1) end),
 
-    awful.key({ modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
-    awful.key({ modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
+    awful.key({ config.global.modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
+    awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
 -- }}}
 -- {{{ Audio
 -- Control cmus
@@ -320,12 +309,12 @@ globalkeys = awful.util.table.join(
 )
 -- {{{ Tags
 for i = 1, 9 do
-    table.foreach(awful.key({ modkey }, i,
+    table.foreach(awful.key({ config.global.modkey }, i,
             function ()
                 awful.tag.viewonly(tags[mouse.screen][i])
             end), function(_, k) table.insert(globalkeys, k) end)
 
-    table.foreach(awful.key({ modkey, "Mod1" }, i,
+    table.foreach(awful.key({ config.global.modkey, "Mod1" }, i,
             function ()
                 if client.focus then
                     awful.client.movetotag(tags[mouse.screen][i])
@@ -334,12 +323,12 @@ for i = 1, 9 do
 end
 -- }}}
 clientkeys = awful.util.table.join(
-    awful.key({ modkey, "Mod1" }, "c",  function (c) c:kill() end),
-    awful.key({ modkey }, "f",  awful.client.floating.toggle),
+    awful.key({ config.global.modkey, "Mod1" }, "c",  function (c) c:kill() end),
+    awful.key({ config.global.modkey }, "f",  awful.client.floating.toggle),
 
-    awful.key({ modkey }, "a", function (c) c.sticky = not c.sticky end),
-    awful.key({ modkey }, "j", function (c) c:lower() end),
-    awful.key({ modkey }, "k", function (c) c:raise() end)
+    awful.key({ config.global.modkey }, "a", function (c) c.sticky = not c.sticky end),
+    awful.key({ config.global.modkey }, "j", function (c) c:lower() end),
+    awful.key({ config.global.modkey }, "k", function (c) c:raise() end)
 )
 root.keys(globalkeys)
 -- }}}
@@ -366,9 +355,9 @@ awful.hooks.manage.register(function (c, startup)
 
     c:buttons(awful.util.table.join(
         awful.button({ }, 1, function (c) client.focus = c end),
-        awful.button({ modkey }, 1, awful.mouse.client.move),
-        awful.button({ modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
-        awful.button({ modkey }, 3, awful.mouse.client.resize)
+        awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
+        awful.button({ config.global.modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
+        awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
     ))
 
     c.border_width = beautiful.border_width
