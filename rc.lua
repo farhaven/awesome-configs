@@ -74,7 +74,7 @@ config.apps = {
     { match = { "netzwerkprotokoll", "event tester" }, float = true },
     { match = { "pinentry", "virtualbox" }, float = true },
     { match = { "sauerbraten engine", "Open File" }, float = true },
-    { match = { "gnome%-mplayer" }, float = true },
+    { match = { "mplayer" }, float = true },
     -- }}}
     -- {{{ apptags
     { match = { config.global.terminal }, tag = 1 },
