@@ -296,10 +296,10 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Audio
 -- Control cmus
-    awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r") end),
-    awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u") end),
-    awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n") end),
-    awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s") end),
+    awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
+    awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u", false) end),
+    awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n", false) end),
+    awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s", false) end),
 
 -- Audio control
     awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise() end),
