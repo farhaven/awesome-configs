@@ -10,6 +10,18 @@ function getlayouticon(s)
     return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
+-- {{{ warptofocus()
+function warptofocus()
+    if awful.mouse.client_under_pointer() == client.focus or
+        awful.layout.get(client.focus.screen) == awful.layout.suit.magnifier then
+        return
+    end
+    local g = client.focus:geometry()
+    g.x = g.x + 4
+    g.y = g.y + 4
+    mouse.coords(g)
+end
+-- }}}
 -- }}}
 -- {{{ Settings
 config = { }
@@ -210,8 +222,16 @@ end
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     -- {{{ Tags
-    awful.key({ }, "XF86Back", awful.tag.viewprev),
-    awful.key({ }, "XF86Forward", awful.tag.viewnext),
+    awful.key({ }, "XF86Back",
+        function ()
+            awful.tag.viewprev()
+            client.focus = awful.mouse.client_under_pointer()
+        end),
+    awful.key({ }, "XF86Forward",
+        function ()
+            awful.tag.viewnext()
+            client.focus = awful.mouse.client_under_pointer()
+        end),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"") end),
@@ -267,24 +287,24 @@ globalkeys = awful.util.table.join(
 -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
-    awful.key({ config.global.modkey }, "Up", function () awful.client.focus.byidx(-1) end),
-    awful.key({ config.global.modkey }, "Down", function () awful.client.focus.byidx(1) end),
-    awful.key({ config.global.modkey }, "Left", function () awful.client.swap.byidx(1) end),
-    awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
-    awful.key({ config.global.modkey }, "XF86Back", function ()
-        awful.screen.focus(1)
-        local coords = mouse.coords()
-        coords['x'] = coords['x'] + 1
-        coords['y'] = coords['y'] + 2
-        mouse.coords(coords)
+    awful.key({ config.global.modkey }, "Up", function ()
+        awful.client.focus.byidx(-1)
+        warptofocus()
     end),
-    awful.key({ config.global.modkey }, "XF86Forward", function ()
-        awful.screen.focus(-1)
-        local coords = mouse.coords()
-        coords['x'] = coords['x'] + 1
-        coords['y'] = coords['y'] + 2
-        mouse.coords(coords)
+    awful.key({ config.global.modkey }, "Down", function ()
+        awful.client.focus.byidx(1)
+        warptofocus()
     end),
+    awful.key({ config.global.modkey }, "Left", function ()
+        awful.client.swap.byidx(1)
+        warptofocus()
+    end),
+    awful.key({ config.global.modkey }, "Right", function ()
+        awful.client.movetoscreen()
+        warptofocus()
+    end),
+    awful.key({ config.global.modkey }, "XF86Back", function () awful.screen.focus(1) end),
+    awful.key({ config.global.modkey }, "XF86Forward", function () awful.screen.focus(-1) end),
 -- }}}
 -- {{{ Layout manipulation
     awful.key({ config.global.modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
