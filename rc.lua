@@ -404,7 +404,6 @@ end)
 -- {{{ arrange
 awful.hooks.arrange.register(function (screen)
     lb_layout[screen].text = getlayouticon(screen)
-    client.focus = awful.mouse.client_under_pointer()
     if not client.focus then
         local c = awful.client.focus.history.get(screen, 0)
         if c then client.focus = c end
