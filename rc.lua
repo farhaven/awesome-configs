@@ -225,12 +225,10 @@ globalkeys = awful.util.table.join(
     awful.key({ }, "XF86Back",
         function ()
             awful.tag.viewprev()
-            client.focus = awful.mouse.client_under_pointer()
         end),
     awful.key({ }, "XF86Forward",
         function ()
             awful.tag.viewnext()
-            client.focus = awful.mouse.client_under_pointer()
         end),
     -- }}}
     -- {{{ Misc
@@ -425,7 +423,7 @@ end)
 awful.hooks.arrange.register(function (screen)
     lb_layout[screen].text = getlayouticon(screen)
     if not client.focus then
-        local c = awful.client.focus.history.get(screen, 0)
+        local c = awful.mouse.client_under_pointer()
         if c then client.focus = c end
     end
 end)
