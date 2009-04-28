@@ -60,7 +60,7 @@ config.tags = {
     { name = "β", layout = config.layouts[4], mwfact = 0.87 },
     { name = "γ", layout = config.layouts[3] },
     { name = "δ", layout = config.layouts[1] },
-    { name = "ε", layout = config.layouts[3] },
+    { name = "ε", layout = config.layouts[1], mwfact = 0.28 },
     { name = "ζ", layout = config.layouts[6] },
 }
 tags = { }
