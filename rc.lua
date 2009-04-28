@@ -303,15 +303,23 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ config.global.modkey }, "XF86Back", function ()
         awful.screen.focus(1)
-        local x = mouse.coords().x + 1
-        local y = mouse.coords().y + 1
-        mouse.coords({ x = x, y = y })
+        if client.focus.screen == mouse.screen then
+            warptofocus()
+        else
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end
     end),
     awful.key({ config.global.modkey }, "XF86Forward", function ()
         awful.screen.focus(-1)
-        local x = mouse.coords().x + 1
-        local y = mouse.coords().y + 1
-        mouse.coords({ x = x, y = y })
+        if client.focus.screen == mouse.screen then
+            warptofocus()
+        else
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end
     end),
 -- }}}
 -- {{{ Layout manipulation
