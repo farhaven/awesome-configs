@@ -252,7 +252,10 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey }, "Return", function ()
         awful.prompt.run({ prompt = " $ " },
             tb_prompt,
-            awful.util.spawn,
+            function (s)
+                local rv = awful.util.spawn(s, true)
+                if rv then naughty.notify({ text = awful.util.escape(rv), screen = mouse.screen }) end
+            end,
             awful.completion.shell,
             os.getenv("HOME") .. "/.cache/awesome/history"
         )
