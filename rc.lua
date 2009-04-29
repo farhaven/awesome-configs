@@ -306,7 +306,7 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ config.global.modkey }, "XF86Back", function ()
         awful.screen.focus(1)
-        if client.focus.screen == mouse.screen then
+        if client.focus and client.focus.screen == mouse.screen then
             warptofocus()
         else
             local x = mouse.coords().x + 1
@@ -316,7 +316,7 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ config.global.modkey }, "XF86Forward", function ()
         awful.screen.focus(-1)
-        if client.focus.screen == mouse.screen then
+        if client.focus and client.focus.screen == mouse.screen then
             warptofocus()
         else
             local x = mouse.coords().x + 1
@@ -404,9 +404,9 @@ awful.hooks.manage.register(function (c, startup)
 
     c.size_hints_honor = true
 
-    local instance = c.instance:lower() or ""
-    local class = c.class:lower() or ""
-    local name = c.name:lower() or ""
+    local instance = c.instance and c.instance:lower() or ""
+    local class = c.class and c.class:lower() or ""
+    local name = c.name and c.name:lower() or ""
 
     opacities_unfocus[c] = config.global.opacity_u or 1
     opacities_focus[c] = config.global.opacity_f or 1
