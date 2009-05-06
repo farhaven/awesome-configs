@@ -17,8 +17,8 @@ function warptofocus(force)
         return
     end
     local g = client.focus:geometry()
-    g.x = g.x + 1
-    g.y = g.y + 1
+    g.x = g.x + 2
+    g.y = g.y + 2
     mouse.coords(g)
 end
 -- }}}
