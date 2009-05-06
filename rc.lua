@@ -10,10 +10,10 @@ function getlayouticon(s)
     return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
--- {{{ warptofocus()
-function warptofocus()
-    if awful.mouse.client_under_pointer() == client.focus or
-        awful.layout.get(client.focus.screen) == awful.layout.suit.magnifier then
+-- {{{ warptofocus(force)
+function warptofocus(force)
+    if not force and (not client.focus or awful.mouse.client_under_pointer() == client.focus or
+        awful.layout.get(client.focus.screen) == awful.layout.suit.magnifier) then
         return
     end
     local g = client.focus:geometry()
@@ -298,7 +298,7 @@ globalkeys = awful.util.table.join(
     end),
     awful.key({ config.global.modkey }, "Left", function ()
         awful.client.swap.byidx(1)
-        warptofocus()
+        warptofocus(true)
     end),
     awful.key({ config.global.modkey }, "Right", function ()
         awful.client.movetoscreen()
