@@ -81,23 +81,24 @@ end
 -- {{{ Clients
 config.apps = {
     -- {{{ floating setup
-    { match = { "xcalc", "xdialog" }, float = true },
+    { match = { "xcalc", "xdialog" },                      float = true },
     { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
-    { match = { "netzwerkprotokoll", "event tester" }, float = true },
-    { match = { "pinentry", "virtualbox" }, float = true },
-    { match = { "sauerbraten engine", "Open File" }, float = true },
-    { match = { "mplayer" }, float = true },
+    { match = { "netzwerkprotokoll", "event tester" },     float = true },
+    { match = { "pinentry", "virtualbox" },                float = true },
+    { match = { "sauerbraten engine", "Open File" },       float = true },
+    { match = { "mplayer", "vlc" },                        float = true },
     -- }}}
     -- {{{ apptags
     { match = { config.global.terminal }, tag = 1 },
     { match = { "firefox", "dillo" },     tag = 2 },
+    { match = { "webkitbrowser" },        tag = 2 },
     { match = { "urxvt.cmus", "xpdf" },   tag = 3 },
     { match = { config.global.editor },   tag = 4 },
     { match = { "urxvt.irssi" },          tag = 5 },
     { match = { "claws%-mail" },          tag = 6 },
     -- }}}
     -- {{{ opacity
-    { match = { "xterm", "urxvt" }, opacity_f = 0.85 },
+    { match = { "xterm", "urxvt" },         opacity_f = 0.85 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     -- }}}
 }
