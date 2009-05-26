@@ -57,7 +57,7 @@ config.layout_icons =
 -- {{{ Tags
 config.tags = {
     { name = "α", layout = config.layouts[3] },
-    { name = "β", layout = config.layouts[4], mwfact = 0.87 },
+    { name = "β", layout = config.layouts[1], mwfact = 0.8 },
     { name = "γ", layout = config.layouts[3] },
     { name = "δ", layout = config.layouts[1] },
     { name = "ε", layout = config.layouts[1], mwfact = 0.28 },
