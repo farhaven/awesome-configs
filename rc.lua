@@ -302,6 +302,15 @@ globalkeys = awful.util.table.join(
         warptofocus()
     end),
     awful.key({ config.global.modkey }, "Left", function ()
+        if not client.focus then return end
+        client.focus:swap(awful.client.getmaster(client.focus.screen))
+        warptofocus(true)
+    end),
+    awful.key({ config.global.modkey, "Mod4" }, "Up", function ()
+        awful.client.swap.byidx(-1)
+        warptofocus(true)
+    end),
+    awful.key({ config.global.modkey, "Mod4" }, "Down", function ()
         awful.client.swap.byidx(1)
         warptofocus(true)
     end),
@@ -389,6 +398,11 @@ end)
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
     c.opacity = opacities_unfocus[c]
+end)
+-- }}}
+-- {{{ unmanage
+awful.hooks.unmanage.register(function (c)
+    warptofocus()
 end)
 -- }}}
 -- {{{ manage
