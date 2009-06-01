@@ -33,8 +33,8 @@ config.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.magnifier,
 }
-config.layout_icons =
-{   ["tile"] = "[]=",
+config.layout_icons = {
+    ["tile"] = "[]=",
     ["tileleft"] = "=[]",
     ["tilebottom"] = "[v]",
     ["tiletop"] = "[^]",
