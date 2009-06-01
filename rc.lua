@@ -370,6 +370,8 @@ end)
 awful.hooks.manage.register(function (c, startup)
     if not startup and awful.client.focus.filter(c) then
         c.screen = mouse.screen
+        c.maximized_horizontal = false
+        c.maximized_vertical = false
     end
 
     c:buttons(awful.util.table.join(
