@@ -10,18 +10,6 @@ function getlayouticon(s)
     return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
--- {{{ warptofocus(force)
-function warptofocus(force)
-    if not force and (not client.focus or awful.mouse.client_under_pointer() == client.focus or
-        awful.layout.get(client.focus.screen) == awful.layout.suit.magnifier) then
-        return
-    end
-    local g = client.focus:geometry()
-    g.x = g.x + 2
-    g.y = g.y + 2
-    mouse.coords(g)
-end
--- }}}
 -- }}}
 -- {{{ Settings
 config = { }
@@ -295,50 +283,26 @@ globalkeys = awful.util.table.join(
 -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
-    awful.key({ config.global.modkey }, "Up", function ()
-        awful.client.focus.byidx(-1)
-        warptofocus()
-    end),
-    awful.key({ config.global.modkey }, "Down", function ()
-        awful.client.focus.byidx(1)
-        warptofocus()
-    end),
+    awful.key({ config.global.modkey }, "Up", function () awful.client.focus.byidx(-1) end),
+    awful.key({ config.global.modkey }, "Down", function () awful.client.focus.byidx(1) end),
     awful.key({ config.global.modkey }, "Left", function ()
         if not client.focus then return end
         client.focus:swap(awful.client.getmaster(client.focus.screen))
-        warptofocus(true)
     end),
-    awful.key({ config.global.modkey, "Mod4" }, "Up", function ()
-        awful.client.swap.byidx(-1)
-        warptofocus(true)
-    end),
-    awful.key({ config.global.modkey, "Mod4" }, "Down", function ()
-        awful.client.swap.byidx(1)
-        warptofocus(true)
-    end),
-    awful.key({ config.global.modkey }, "Right", function ()
-        awful.client.movetoscreen()
-        warptofocus()
-    end),
+    awful.key({ config.global.modkey, "Mod4" }, "Up", function () awful.client.swap.byidx(-1) end),
+    awful.key({ config.global.modkey, "Mod4" }, "Down", function () awful.client.swap.byidx(1) end),
+    awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
     awful.key({ config.global.modkey }, "XF86Back", function ()
         awful.screen.focus(1)
-        if client.focus and client.focus.screen == mouse.screen then
-            warptofocus()
-        else
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end
+        local x = mouse.coords().x + 1
+        local y = mouse.coords().y + 1
+        mouse.coords({ x = x, y = y })
     end),
     awful.key({ config.global.modkey }, "XF86Forward", function ()
         awful.screen.focus(-1)
-        if client.focus and client.focus.screen == mouse.screen then
-            warptofocus()
-        else
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end
+        local x = mouse.coords().x + 1
+        local y = mouse.coords().y + 1
+        mouse.coords({ x = x, y = y })
     end),
 -- }}}
 -- {{{ Layout manipulation
@@ -400,11 +364,6 @@ end)
 awful.hooks.unfocus.register(function (c)
     c.border_color = beautiful.border_normal
     c.opacity = opacities_unfocus[c]
-end)
--- }}}
--- {{{ unmanage
-awful.hooks.unmanage.register(function (c)
-    warptofocus()
 end)
 -- }}}
 -- {{{ manage
