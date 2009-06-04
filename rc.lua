@@ -178,10 +178,11 @@ wi_widgets = {}
 obvious.clock.set_editor(config.global.editor)
 
 for s = 1, screen.count() do
-    wi_widgets[s] = wibox({ position = "top", 
-                            fg = beautiful.fg_normal, 
-                            bg = beautiful.bg_normal
-                          })
+    wi_widgets[s] = awful.wibox({ position = "top",
+                                  fg = beautiful.fg_normal,
+                                  bg = beautiful.bg_normal,
+                                  screen = s
+                                })
 
     wi_widgets[s].widgets = {
                                 {
@@ -206,7 +207,6 @@ for s = 1, screen.count() do
                                 },
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             }
-    wi_widgets[s].screen = s
     wi_widgets[s]:geometry({ height = 16 })
 end
 -- }}}
