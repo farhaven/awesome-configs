@@ -81,11 +81,12 @@ config.apps = {
     { match = { "firefox", "dillo" },     tag = 2 },
     { match = { "webkitbrowser" },        tag = 2 },
     { match = { "vimpression" },          tag = 2 },
-    { match = { "urxvt.cmus", "xpdf" },   tag = 3 },
+    { match = { "urxvt.cmus", "kpdf" },   tag = 3 },
     { match = { "wicd" },                 tag = 3 },
     { match = { config.global.editor },   tag = 4 },
     { match = { "urxvt.irssi" },          tag = 5 },
     { match = { "claws%-mail" },          tag = 6 },
+    { match = { "urxvt.mutt" },           tag = 6 },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.85 },
