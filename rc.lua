@@ -185,20 +185,18 @@ for s = 1, screen.count() do
                                 })
 
     wi_widgets[s].widgets = {
-                                {
-                                    tl_taglist[s],
-                                    lb_layout[s],
-                                    tb_prompt,
-                                    ["layout"] = awful.widget.layout.horizontal.leftright
-                                },
+                                tl_taglist[s],
+                                lb_layout[s],
+                                tb_prompt,
                                 {
                                     tb_spacer,
-                                    obvious.volume_alsa(),
+                                    obvious.clock(),
+                                    s == screen.count() and st_systray,
                                     tb_spacer,
                                     obvious.battery(),
                                     tb_spacer,
-                                    s == screen.count() and st_systray,
-                                    obvious.clock(),
+                                    obvious.volume_alsa(),
+                                    tb_spacer,
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
                                 {
