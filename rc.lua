@@ -6,6 +6,9 @@ require('obvious') -- Obvious widget library, get it from git://git.mercenariesg
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
+    if type(s) == "string" then
+        return " " .. awful.util.escape(config.layout_icons[s]) .. " "
+    end
     if not awful.layout.get(s) then return "     " end
     return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
@@ -436,8 +439,8 @@ awful.hooks.tags.register(function (screen, tag, view)
 end)
 -- }}}
 -- {{{ layout
-awful.hooks.layout.register(function(screen, t, view)
-    lb_layout[screen].text = getlayouticon(screen)
+awful.hooks.layout.register(function(t, layout)
+    lb_layout[t.screen].text = getlayouticon(layout.name)
 end)
 -- }}}
 -- {{{ mouse_enter
