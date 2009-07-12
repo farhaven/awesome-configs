@@ -220,10 +220,7 @@ globalkeys = awful.util.table.join(
         function ()
             awful.tag.viewnext()
         end),
-    awful.key({ config.global.modkey }, "r",
-        function ()
-            awful.tag.history.restore(mouse.screen)
-        end),
+    awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"", false) end),
