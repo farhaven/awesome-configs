@@ -410,7 +410,7 @@ awful.hooks.manage.register(function (c, startup)
     end
     client.focus = c
 
-    if not startup then
+    if not startup and awful.client.floating.get(c) then
         awful.placement.centered(c, c.transient_for)
         awful.placement.no_offscreen(c)
     end
@@ -418,14 +418,26 @@ awful.hooks.manage.register(function (c, startup)
     c:keys(clientkeys)
 end)
 -- }}}
--- {{{ arrange
-awful.hooks.arrange.register(function (screen)
-    lb_layout[screen].text = getlayouticon(screen)
-    if not client.focus then
-        local c = awful.mouse.client_under_pointer()
-        if not c then c = awful.client.focus.history.get(screen, 0) end
+-- {{{ unmanage
+awful.hooks.unmanage.register(function (c)
+    if not client.focus or not client.focus:isvisible() then
+        local c = awful.client.focus.history.get(c.screen, 0)
         if c then client.focus = c end
     end
+end)
+-- }}}
+-- {{{ tags
+awful.hooks.tags.register(function (screen, tag, view)
+    lb_layout[screen].text = getlayouticon(screen)
+    if not client.focus or not client.focus:isvisible() then
+        local c = awful.client.focus.history.get(screen, 0)
+        if c then client.focus = c end
+    end
+end)
+-- }}}
+-- {{{ layout
+awful.hooks.layout.register(function(screen, t, view)
+    lb_layout[screen].text = getlayouticon(screen)
 end)
 -- }}}
 -- {{{ mouse_enter
