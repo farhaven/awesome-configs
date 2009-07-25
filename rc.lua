@@ -200,7 +200,6 @@ for s = 1, screen.count() do
                                 lb_layout[s],
                                 tb_prompt,
                                 {
-                                    tb_spacer,
                                     obvious.clock(),
                                     s == screen.count() and st_systray,
                                     tb_spacer,
