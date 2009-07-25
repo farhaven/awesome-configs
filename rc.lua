@@ -34,7 +34,7 @@ config.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
-    awful.layout.suit.magnifier,
+    awful.layout.suit.spiral,
 }
 config.layout_icons = {
     ["tile"] = "[]=",
@@ -42,7 +42,7 @@ config.layout_icons = {
     ["tilebottom"] = "[v]",
     ["tiletop"] = "[^]",
     ["floating"] = "><>",
-    ["magnifier"] = "[o]",
+    ["spiral"] = "[@]",
 }
 -- }}}
 -- {{{ Tags
