@@ -418,7 +418,6 @@ awful.hooks.manage.register(function (c, startup)
             end
         end
     end
-    client.focus = c
 
     if not startup and awful.client.floating.get(c) then
         awful.placement.centered(c, c.transient_for)
@@ -426,6 +425,9 @@ awful.hooks.manage.register(function (c, startup)
     end
 
     c:keys(clientkeys)
+
+    client.focus = c
+    awful.hooks.user.call("focus", c)
 end)
 -- }}}
 -- {{{ unmanage
