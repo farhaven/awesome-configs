@@ -7,7 +7,7 @@ return {
 
     bg_normal     = "#333333",
     bg_focus      = "#1279bf",
-    bg_urgent     = "#ffd700",
+    bg_urgent     = "#00ff00",
 
     fg_normal     = "#999999",
     fg_focus      = "#ffffff",
