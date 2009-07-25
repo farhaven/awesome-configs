@@ -179,6 +179,14 @@ st_systray = widget({ type  = "systray" })
 wi_widgets = {}
 
 obvious.clock.set_editor(config.global.editor)
+obvious.clock.set_shortformat(function ()
+    local week = tonumber(os.date("%W")) + 1
+    return "%H%M ("..week..") "
+end)
+obvious.clock.set_longformat(function ()
+    local week = tonumber(os.date("%W")) + 1
+    return "%d%m ("..week..") "
+end)
 
 for s = 1, screen.count() do
     wi_widgets[s] = awful.wibox({ position = "top",
