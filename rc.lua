@@ -164,10 +164,10 @@ tb_prompt = widget({ type = "textbox" })
 lb_layout = { }
 for s = 1, screen.count() do
     lb_layout[s] = widget({ type  = "textbox" })
-    lb_layout[s]:buttons(awful.util.table.join(
+    lb_layout[s].buttons = awful.util.table.join(
         awful.button({ }, 1, function () awful.layout.inc(config.layouts, 1) end),
         awful.button({ }, 3, function () awful.layout.inc(config.layouts, -1) end)
-    ))
+    )
     lb_layout[s].text = getlayouticon(s)
     lb_layout[s].bg = beautiful.bg_normal
 end
@@ -355,7 +355,7 @@ clientkeys = awful.util.table.join(
     awful.key({ config.global.modkey }, "j", function (c) c:lower() end),
     awful.key({ config.global.modkey }, "k", function (c) c:raise() end)
 )
-root.keys(globalkeys)
+root.keys = globalkeys
 -- }}}
 -- {{{ Hooks
 local opacities_focus   = { }
@@ -380,12 +380,12 @@ awful.hooks.manage.register(function (c, startup)
         c.maximized_vertical = false
     end
 
-    c:buttons(awful.util.table.join(
+    c.buttons = awful.util.table.join(
         awful.button({ }, 1, function (c) client.focus = c end),
         awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
         awful.button({ config.global.modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
         awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
-    ))
+    )
 
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
@@ -424,7 +424,7 @@ awful.hooks.manage.register(function (c, startup)
         awful.placement.no_offscreen(c)
     end
 
-    c:keys(clientkeys)
+    c.keys = clientkeys
 
     client.focus = c
     awful.hooks.user.call("focus", c)
