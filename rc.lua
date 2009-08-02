@@ -108,6 +108,15 @@ naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Obvious
 obvious.popup_run_prompt.set_slide(true)
+obvious.clock.set_editor(config.global.editor)
+obvious.clock.set_shortformat(function ()
+    local week = tonumber(os.date("%W")) + 1
+    return "%H%M ("..week..") "
+end)
+obvious.clock.set_longformat(function ()
+    local week = tonumber(os.date("%W")) + 1
+    return "%d%m ("..week..") "
+end)
 -- }}}
 -- }}}
 -- {{{ Widgets
@@ -177,16 +186,6 @@ st_systray = widget({ type  = "systray" })
 -- }}}
 -- {{{ widget box
 wi_widgets = {}
-
-obvious.clock.set_editor(config.global.editor)
-obvious.clock.set_shortformat(function ()
-    local week = tonumber(os.date("%W")) + 1
-    return "%H%M ("..week..") "
-end)
-obvious.clock.set_longformat(function ()
-    local week = tonumber(os.date("%W")) + 1
-    return "%d%m ("..week..") "
-end)
 
 for s = 1, screen.count() do
     wi_widgets[s] = awful.wibox({ position = "top",
