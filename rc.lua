@@ -106,6 +106,9 @@ naughty.config.presets.normal.border_color  = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
 -- }}}
+-- {{{ Obvious
+obvious.popup_run_prompt.set_slide(true)
+-- }}}
 -- }}}
 -- {{{ Widgets
 -- {{{ spacer
@@ -157,9 +160,6 @@ for s = 1, screen.count() do
                                                 ))
 end
 -- }}}
--- {{{ prompt
-tb_prompt = widget({ type = "textbox" })
--- }}}
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
@@ -198,7 +198,6 @@ for s = 1, screen.count() do
     wi_widgets[s].widgets = {
                                 tl_taglist[s],
                                 lb_layout[s],
-                                tb_prompt,
                                 {
                                     obvious.clock(),
                                     s == screen.count() and st_systray,
@@ -251,38 +250,29 @@ globalkeys = awful.util.table.join(
 -- {{{ Prompts
     -- {{{ Run prompt
     awful.key({ config.global.modkey }, "Return", function ()
-        awful.prompt.run({ prompt = " $ " },
-            tb_prompt,
-            function (s)
-                local rv = awful.util.spawn(s, true)
-                if rv then naughty.notify({ text = awful.util.escape(rv), screen = mouse.screen }) end
-            end,
-            awful.completion.shell,
-            os.getenv("HOME") .. "/.cache/awesome/history"
-        )
+        obvious.popup_run_prompt.set_run_function(function (s)
+            local rv = awful.util.spawn(s, true)
+            if rv then naughty.notify({ text = awful.util.escape(rv), screen = mouse.screen }) end
+        end)
+        obvious.popup_run_prompt.set_prompt_string(" $ ")
+        obvious.popup_run_prompt.run_prompt()
     end),
     -- }}}
     -- {{{ Lua prompt
     awful.key({ config.global.modkey, "Mod1" }, "Return", function ()
-        awful.prompt.run({ prompt = " ? " },
-            tb_prompt,
-            awful.util.eval,
-            awful.prompt.bash,
-            os.getenv("HOME") .. "/.cache/awesome/history_eval"
-        )
+        obvious.popup_run_prompt.set_run_function(awful.util.eval)
+        obvious.popup_run_prompt.set_prompt_string(" ? ")
+        obvious.popup_run_prompt.run_prompt()
     end),
     -- }}}
     -- {{{ Program read prompt
     awful.key({ config.global.modkey, "Mod4" }, "Return", function()
-        awful.prompt.run({ prompt = " > " },
-        tb_prompt,
-        function (s)
+        obvious.popup_run_prompt.set_run_function(function (s)
             local txt = awful.util.escape(awful.util.pread(s.." 2>&1"))
             naughty.notify({ text = txt, timeout = 0, screen = mouse.screen })
-        end,
-        awful.completion.shell,
-        os.getenv("HOME") .. "/.cache/awesome/history_commands"
-        )
+        end)
+        obvious.popup_run_prompt.set_prompt_string(" > ")
+        obvious.popup_run_prompt.run_prompt()
     end),
     -- }}}
 -- }}}
