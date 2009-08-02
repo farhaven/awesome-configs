@@ -19,7 +19,7 @@ config = { }
 -- {{{ Global settings
 config.global = {
     ["opacity_f" ] = 1,
-    ["opacity_u" ] = 0.5,
+    ["opacity_u" ] = 0.65,
     ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
     ["terminal"]   = "urxvt",
     ["editor"]     = "gvim",
