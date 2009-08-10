@@ -197,6 +197,7 @@ for s = 1, screen.count() do
     wi_widgets[s].widgets = {
                                 tl_taglist[s],
                                 lb_layout[s],
+                                obvious.lib.widget.textbox.create(obvious.wlan(), awful.widget.layout.horizontal.leftright),
                                 {
                                     obvious.clock(),
                                     s == screen.count() and st_systray,
