@@ -1,3 +1,4 @@
+require('strict') -- strict checking for unassigned variables, like perl's use strict;
 require('awful')
 require('beautiful')
 require('naughty') -- Naughtyfications
