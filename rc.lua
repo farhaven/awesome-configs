@@ -48,12 +48,12 @@ config.layout_icons = {
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "α", layout = config.layouts[3] },
-    { name = "β", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "γ", layout = config.layouts[3] },
-    { name = "δ", layout = config.layouts[1] },
-    { name = "ε", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "ζ", layout = config.layouts[6] },
+    { name = "1:α", layout = config.layouts[3] },
+    { name = "2:β", layout = config.layouts[1], mwfact = 0.8 },
+    { name = "3:γ", layout = config.layouts[3] },
+    { name = "4:δ", layout = config.layouts[1] },
+    { name = "5:ε", layout = config.layouts[1], mwfact = 0.28 },
+    { name = "6:ζ", layout = config.layouts[6] },
 }
 tags = { }
 for s = 1, screen.count() do
