@@ -242,7 +242,7 @@ statsbox.widgets = {
                                 textbox("Misc:")
                             },
                             {
-                                textbox(" load:"),
+                                textbox("  load:"),
                                 obvious.cpu():set_width(32),
                                 obvious.cpu():set_type("textbox"):set_format(" (%03d%%)"),
                                 ["layout"] = awful.widget.layout.horizontal.leftright
@@ -254,12 +254,19 @@ statsbox.widgets = {
                                 textbox("Network:")
                             },
                             {
-                                textbox(" wlan0(signal):"),
-                                obvious.wlan():set_type("graph"):set_width(32),
-                                textbox(" wlan0(in):"),
+                                textbox(" wlan0: in:"),
                                 obvious.net.recv("wlan0"):set_width(32),
-                                textbox(" wlan0(out):"),
+                                textbox(" out:"),
                                 obvious.net.send("wlan0"):set_width(32),
+                                textbox(" signal:"),
+                                obvious.wlan():set_type("graph"):set_width(32),
+                                ["layout"] = awful.widget.layout.horizontal.leftright
+                            },
+                            {
+                                textbox("  tun0: in:"),
+                                obvious.net.recv("tun0"):set_width(32),
+                                textbox(" out:"),
+                                obvious.net.send("tun0"):set_width(32),
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             },
                             ["layout"] = awful.widget.layout.vertical.flex
@@ -269,16 +276,22 @@ statsbox.widgets = {
                                 textbox("Storage:")
                             },
                             {
-                                textbox(" sda:"),
+                                textbox("   sda:"),
                                 obvious.io():set_type("graph"):set_width(32),
-                                obvious.fs_usage():set_type("textbox"):set_format(" /:%03d%%"),
+                                obvious.fs_usage():set_type("textbox"):set_format("         /:%03d%%"),
+                                ["layout"] = awful.widget.layout.horizontal.leftright
+                            },
+                            {
+                                textbox("   sdb:"),
+                                obvious.io("sdb"):set_type("graph"):set_width(32),
+                                obvious.fs_usage("/mnt/sdb2"):set_type("textbox"):set_format(" /mnt/sdb2:%03d%%"),
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             },
                             ["layout"] = awful.widget.layout.vertical.flex
                         },
                         ["layout"] = awful.widget.layout.vertical.flex
                     }
-statsbox:geometry({ width = 330, height = 80 })
+statsbox:geometry({ width = 300, height = 112 })
 statsbox.screen = 1
 
 function show_statsbox(scr)
