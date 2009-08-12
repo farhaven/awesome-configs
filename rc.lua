@@ -319,7 +319,7 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
--- hide / unhide current screens wibox
+    -- hide / unhide current screens wibox
     awful.key({ config.global.modkey, "Mod1" }, "w", function ()
         local w = wi_widgets[mouse.screen]
         if w.visible then
