@@ -14,6 +14,20 @@ function getlayouticon(s)
     return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
 end
 -- }}}
+-- {{{ textbox(content)
+textboxes = { }
+function textbox(content)
+    for k, v in ipairs(textboxes) do
+        if v.text == content then
+            return v
+        end
+    end
+    local w = widget({ type = "textbox" })
+    w.text = content
+    table.insert(textboxes, w)
+    return w
+end
+-- }}}
 -- }}}
 -- {{{ Settings
 config = { }
@@ -121,10 +135,6 @@ end)
 -- }}}
 -- }}}
 -- {{{ Widgets
--- {{{ spacer
-tb_spacer = widget({ type = "textbox" })
-tb_spacer.text = " "
--- }}}
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
@@ -198,15 +208,14 @@ for s = 1, screen.count() do
     wi_widgets[s].widgets = {
                                 tl_taglist[s],
                                 lb_layout[s],
-                                obvious.lib.widget.textbox.create(obvious.wlan(), awful.widget.layout.horizontal.leftright),
                                 {
                                     obvious.clock(),
                                     s == screen.count() and st_systray,
-                                    tb_spacer,
+                                    textbox(" "),
                                     obvious.battery(),
-                                    tb_spacer,
+                                    textbox(" "),
                                     obvious.volume_alsa(),
-                                    tb_spacer,
+                                    textbox(" "),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
                                 {
