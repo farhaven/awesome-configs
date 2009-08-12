@@ -228,6 +228,78 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- }}}
+-- {{{ stats wibox
+local statsbox = wibox({
+                            border_color = beautiful.fg_normal,
+                            border_width = 1
+})
+statsbox.visible = false
+statsbox.ontop = true
+statsbox.opacity = 0.9
+statsbox.widgets = {
+                        {
+                            {
+                                textbox("Misc:")
+                            },
+                            {
+                                textbox(" load:"),
+                                obvious.cpu():set_width(32),
+                                obvious.cpu():set_type("textbox"):set_format(" (%03d%%)"),
+                                ["layout"] = awful.widget.layout.horizontal.leftright
+                            },
+                            ["layout"] = awful.widget.layout.vertical.flex
+                        },
+                        {
+                            {
+                                textbox("Network:")
+                            },
+                            {
+                                textbox(" wlan0(signal):"),
+                                obvious.wlan():set_type("graph"):set_width(32),
+                                textbox(" wlan0(in):"),
+                                obvious.net.recv("wlan0"):set_width(32),
+                                textbox(" wlan0(out):"),
+                                obvious.net.send("wlan0"):set_width(32),
+                                ["layout"] = awful.widget.layout.horizontal.leftright
+                            },
+                            ["layout"] = awful.widget.layout.vertical.flex
+                        },
+                        {
+                            {
+                                textbox("Storage:")
+                            },
+                            {
+                                textbox(" sda:"),
+                                obvious.io():set_type("graph"):set_width(32),
+                                obvious.fs_usage():set_type("textbox"):set_format(" /:%03d%%"),
+                                ["layout"] = awful.widget.layout.horizontal.leftright
+                            },
+                            ["layout"] = awful.widget.layout.vertical.flex
+                        },
+                        ["layout"] = awful.widget.layout.vertical.flex
+                    }
+statsbox:geometry({ width = 330, height = 80 })
+statsbox.screen = 1
+
+function show_statsbox(scr)
+    scr = scr or mouse.screen
+    statsbox.screen = scr
+    statsbox:geometry({ x = screen[scr].workarea.x + 4, y = screen[scr].workarea.y + 20})
+    statsbox.visible = true
+end
+
+function hide_statsbox()
+    statsbox.visible = false
+end
+
+function toggle_statsbox(scr)
+    if statsbox.visible then
+        hide_statsbox()
+    else
+        show_statsbox(scr)
+    end
+end
+-- }}}
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     -- {{{ Tags
@@ -256,6 +328,8 @@ globalkeys = awful.util.table.join(
             w.visible = true
         end
     end),
+
+    awful.key({ config.global.modkey }, "s", toggle_statsbox),
 -- }}}
 -- {{{ Prompts
     -- {{{ Run prompt
