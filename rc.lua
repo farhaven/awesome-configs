@@ -214,7 +214,7 @@ for s = 1, screen.count() do
                                     textbox(" "),
                                     obvious.battery(),
                                     textbox(" "),
-                                    obvious.volume_alsa(),
+                                    obvious.volume_alsa():set_layout(awful.widget.layout.horizontal.rightleft),
                                     textbox(" "),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
