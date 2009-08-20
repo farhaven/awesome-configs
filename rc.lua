@@ -62,12 +62,12 @@ config.layout_icons = {
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "1:α", layout = config.layouts[3] },
-    { name = "2:β", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "3:γ", layout = config.layouts[3] },
-    { name = "4:δ", layout = config.layouts[1] },
-    { name = "5:ε", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "6:ζ", layout = config.layouts[6] },
+    { name = "1:term", layout = config.layouts[3] },
+    { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
+    { name = "3:misc", layout = config.layouts[3] },
+    { name = "4:text", layout = config.layouts[1] },
+    { name = "5:irc", layout = config.layouts[1], mwfact = 0.28 },
+    { name = "6:mail", layout = config.layouts[6] },
 }
 tags = { }
 for s = 1, screen.count() do
