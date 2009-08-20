@@ -514,15 +514,6 @@ client.add_signal("manage", function (c, startup)
     c:keys(clientkeys)
 
     client.focus = c
-
-    c:add_signal("mouse::enter", function (c)
-        if awful.client.focus.filter(c) and (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or
-            (client.focus.screen ~= c.screen and #(c:tags()[1]:clients()) == 1)) then
-            client.focus = c
-        elseif awful.client.focus.filter(c) and awful.layout.get(c.screen) == awful.layout.suit.magnifier then
-            client.focus = awful.client.tiled(c.screen)[1]
-        end
-    end)
 end)
 -- }}}
 -- {{{ unmanage
@@ -542,5 +533,17 @@ for s = 1, screen.count() do
     awful.tag.attached_add_signal(s, "property::layout", layout_update)
     awful.tag.attached_add_signal(s, "property::selected", layout_update)
 end
+-- }}}
+-- {{{ mouse enter
+client.add_signal("new", function (c)
+    c:add_signal("mouse::enter", function (c)
+        if awful.client.focus.filter(c) and (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or
+            (client.focus.screen ~= c.screen and #(c:tags()[1]:clients()) == 1)) then
+            client.focus = c
+        elseif awful.client.focus.filter(c) and awful.layout.get(c.screen) == awful.layout.suit.magnifier then
+            client.focus = awful.client.tiled(c.screen)[1]
+        end
+    end)
+end)
 -- }}}
 -- }}}
