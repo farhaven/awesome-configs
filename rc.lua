@@ -73,7 +73,7 @@ tags = { }
 for s = 1, screen.count() do
     tags[s] = { }
     for i, v in ipairs(config.tags) do
-        tags[s][i] = tag(v.name)
+        tags[s][i] = tag({ name = v.name })
         tags[s][i].screen = s
         awful.tag.setproperty(tags[s][i], "layout", v.layout)
         awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
@@ -444,23 +444,23 @@ clientkeys = awful.util.table.join(
 )
 root.keys(globalkeys)
 -- }}}
--- {{{ Hooks
+-- {{{ Signals
 local opacities_focus   = { }
 local opacities_unfocus = { }
 -- {{{ focus
-awful.hooks.focus.register(function (c)
+client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
     c.opacity = opacities_focus[c]
 end)
 -- }}}
 -- {{{ unfocus
-awful.hooks.unfocus.register(function (c)
+client.add_signal("unfocus", function (c)
     c.border_color = beautiful.border_normal
     c.opacity = opacities_unfocus[c]
 end)
 -- }}}
 -- {{{ manage
-awful.hooks.manage.register(function (c, startup)
+client.add_signal("manage", function (c, startup)
     if not startup and awful.client.focus.filter(c) then
         c.screen = mouse.screen
         c.maximized_horizontal = false
@@ -514,39 +514,33 @@ awful.hooks.manage.register(function (c, startup)
     c:keys(clientkeys)
 
     client.focus = c
-    awful.hooks.user.call("focus", c)
+
+    c:add_signal("mouse::enter", function (c)
+        if awful.client.focus.filter(c) and (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or
+            (client.focus.screen ~= c.screen and #(c:tags()[1]:clients()) == 1)) then
+            client.focus = c
+        elseif awful.client.focus.filter(c) and awful.layout.get(c.screen) == awful.layout.suit.magnifier then
+            client.focus = awful.client.tiled(c.screen)[1]
+        end
+    end)
 end)
 -- }}}
 -- {{{ unmanage
-awful.hooks.unmanage.register(function (c)
+client.add_signal("unmanage", function (c)
     if not client.focus or not client.focus:isvisible() then
         local c = awful.client.focus.history.get(c.screen, 0)
         if c then client.focus = c end
     end
 end)
 -- }}}
--- {{{ tags
-awful.hooks.tags.register(function (screen, tag, view)
-    lb_layout[screen].text = getlayouticon(screen)
-    if not client.focus or not client.focus:isvisible() then
-        local c = awful.client.focus.history.get(screen, 0)
-        if c then client.focus = c end
-    end
-end)
--- }}}
 -- {{{ layout
-awful.hooks.layout.register(function(t, layout)
-    lb_layout[t.screen].text = getlayouticon(layout.name)
-end)
--- }}}
--- {{{ mouse_enter
-awful.hooks.mouse_enter.register(function (c)
-    if awful.client.focus.filter(c) and (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or
-        (client.focus.screen ~= c.screen and #(c:tags()[1]:clients()) == 1)) then
-        client.focus = c
-    elseif awful.client.focus.filter(c) and awful.layout.get(c.screen) == awful.layout.suit.magnifier then
-        client.focus = awful.client.tiled(c.screen)[1]
-    end
-end)
+function layout_update(t)
+    lb_layout[t.screen].text = getlayouticon(awful.layout.getname(awful.layout.get(t.screen)))
+end
+
+for s = 1, screen.count() do
+    awful.tag.attached_add_signal(s, "property::layout", layout_update)
+    awful.tag.attached_add_signal(s, "property::selected", layout_update)
+end
 -- }}}
 -- }}}
