@@ -550,6 +550,3 @@ awful.hooks.mouse_enter.register(function (c)
 end)
 -- }}}
 -- }}}
-
--- show splash screen
-require('awful.splash')
