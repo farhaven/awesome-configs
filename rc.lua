@@ -386,13 +386,13 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod4" }, "Down", function () awful.client.swap.byidx(1) end),
     awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
     awful.key({ config.global.modkey }, "XF86Back", function ()
-        awful.screen.focus(1)
+        awful.screen.focus_relative(1)
         local x = mouse.coords().x + 1
         local y = mouse.coords().y + 1
         mouse.coords({ x = x, y = y })
     end),
     awful.key({ config.global.modkey }, "XF86Forward", function ()
-        awful.screen.focus(-1)
+        awful.screen.focus_relative(-1)
         local x = mouse.coords().x + 1
         local y = mouse.coords().y + 1
         mouse.coords({ x = x, y = y })
@@ -532,6 +532,12 @@ end
 for s = 1, screen.count() do
     awful.tag.attached_add_signal(s, "property::layout", layout_update)
     awful.tag.attached_add_signal(s, "property::selected", layout_update)
+    awful.tag.attached_add_signal(s, "property::selected", function (t)
+        if not client.focus or not client.focus:isvisible() then
+            local c = awful.client.focus.history.get(t.screen, 0)
+            if c then client.focus = c end
+        end
+    end)
 end
 -- }}}
 -- {{{ mouse enter
