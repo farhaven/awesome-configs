@@ -13,7 +13,7 @@ return {
     fg_focus      = "#ffffff",
     fg_urgent     = "#111111",
 
-    border_width  = 1,
+    border_width  = 2,
     border_normal = "#333333",
     border_focus  = "#1279bf",
 
