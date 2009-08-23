@@ -297,7 +297,7 @@ statsbox.screen = 1
 function show_statsbox(scr)
     scr = scr or mouse.screen
     statsbox.screen = scr
-    statsbox:geometry({ x = screen[scr].workarea.x + 4, y = screen[scr].workarea.y + 20})
+    statsbox:geometry({ x = screen[scr].workarea.x + 4, y = screen[scr].workarea.y + 4 })
     statsbox.visible = true
 end
 
