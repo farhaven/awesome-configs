@@ -122,7 +122,7 @@ naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Obvious
-obvious.popup_run_prompt.set_slide(true)
+obvious.popup_run_prompt.set_slide(false)
 obvious.clock.set_editor(config.global.editor)
 obvious.clock.set_shortformat(function ()
     local week = tonumber(os.date("%W")) + 1
