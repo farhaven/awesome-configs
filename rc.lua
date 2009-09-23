@@ -36,8 +36,9 @@ config = { }
 config.global = {
     ["opacity_f" ] = 1,
     ["opacity_u" ] = 0.65,
-    ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
-    ["terminal"]   = "urxvt",
+    -- ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
+    ["theme"]      = awful.util.getdir("config") .. "/themes/zenburn/theme.lua",
+    ["terminal"]   = "urxvtc",
     ["editor"]     = "gvim",
     ["modkey"]     = "Mod3",
 }
@@ -88,23 +89,20 @@ end
 -- {{{ Clients
 config.apps = {
     -- {{{ floating setup
-    { match = { "xcalc", "xdialog" },                      float = true },
-    { match = { "nitrogen", "zsnes", "xine", "xmessage" }, float = true },
-    { match = { "netzwerkprotokoll", "event tester" },     float = true },
-    { match = { "pinentry", "virtualbox" },                float = true },
-    { match = { "sauerbraten engine", "Open File" },       float = true },
-    { match = { "mplayer", "vlc" },                        float = true },
+    { match = { "xcalc", "xdialog", "event tester" },   float = true },
+    { match = { "nitrogen", "zsnes", "xmessage" },      float = true },
+    { match = { "pinentry" },                           float = true },
+    { match = { "sauerbraten engine" },                 float = true },
+    { match = { "mplayer", "Open File"},                float = true },
     -- }}}
     -- {{{ apptags
-    { match = { config.global.terminal }, tag = 1 },
+    { match = { "urxvt" },                tag = 1 },
     { match = { "firefox", "dillo" },     tag = 2 },
-    { match = { "webkitbrowser" },        tag = 2 },
-    { match = { "vimpression" },          tag = 2 },
-    { match = { "urxvt.cmus", "evince" }, tag = 3 },
-    { match = { "wicd" },                 tag = 3 },
+    { match = { "vimpression", "uzbl" },  tag = 2 },
+    { match = { "urxvt.cmus", "wicd" },   tag = 3 },
+    { match = { "xpdf", "virtualbox" },   tag = 3 },
     { match = { config.global.editor },   tag = 4 },
     { match = { "urxvt.irssi" },          tag = 5 },
-    { match = { "claws%-mail" },          tag = 6 },
     { match = { "urxvt.mutt" },           tag = 6 },
     -- }}}
     -- {{{ opacity
