@@ -1,5 +1,6 @@
 require('strict') -- strict checking for unassigned variables, like perl's use strict;
 require('awful')
+require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
@@ -532,12 +533,6 @@ end
 for s = 1, screen.count() do
     awful.tag.attached_add_signal(s, "property::layout", layout_update)
     awful.tag.attached_add_signal(s, "property::selected", layout_update)
-    awful.tag.attached_add_signal(s, "property::selected", function (t)
-        if not client.focus or not client.focus:isvisible() then
-            local c = awful.client.focus.history.get(t.screen, 0)
-            if c then client.focus = c end
-        end
-    end)
 end
 -- }}}
 -- {{{ mouse enter
