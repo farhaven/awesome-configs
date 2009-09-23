@@ -345,31 +345,16 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Prompts
     -- {{{ Run prompt
-    awful.key({ config.global.modkey }, "Return", function ()
-        obvious.popup_run_prompt.set_run_function(function (s)
-            local rv = awful.util.spawn(s, true)
-            if rv then naughty.notify({ text = awful.util.escape(rv), screen = mouse.screen }) end
-        end)
-        obvious.popup_run_prompt.set_prompt_string(" $ ")
-        obvious.popup_run_prompt.run_prompt()
-    end),
+    awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("xrun") end),
     -- }}}
     -- {{{ Lua prompt
-    awful.key({ config.global.modkey, "Mod1" }, "Return", function ()
-        obvious.popup_run_prompt.set_run_function(awful.util.eval)
-        obvious.popup_run_prompt.set_prompt_string(" ? ")
-        obvious.popup_run_prompt.run_prompt()
-    end),
+    awful.key({ config.global.modkey, "Mod1" }, "Return", function () awful.util.spawn("xrun awesome-client -v") end),
     -- }}}
     -- {{{ Program read prompt
-    awful.key({ config.global.modkey, "Mod4" }, "Return", function()
-        obvious.popup_run_prompt.set_run_function(function (s)
-            local txt = awful.util.escape(awful.util.pread(s.." 2>&1"))
-            naughty.notify({ text = txt, timeout = 0, screen = mouse.screen })
-        end)
-        obvious.popup_run_prompt.set_prompt_string(" > ")
-        obvious.popup_run_prompt.run_prompt()
-    end),
+    awful.key({ config.global.modkey, "Mod4" }, "Return", function() awful.util.spawn("xrun -v") end),
+    -- }}}
+    -- {{{ URL prompt
+    awful.key({ config.global.modkey }, "numbersign", function () awful.util.spawn("xrun 'while read u; do uzbl -u $u; done'") end),
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
