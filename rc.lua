@@ -201,7 +201,8 @@ for s = 1, screen.count() do
     wi_widgets[s] = awful.wibox({ position = "top",
                                   fg = beautiful.fg_normal,
                                   bg = beautiful.bg_normal,
-                                  screen = s
+                                  screen = s,
+                                  height = 16
                                 })
 
     wi_widgets[s].widgets = {
@@ -223,7 +224,6 @@ for s = 1, screen.count() do
                                 },
                                 ["layout"] = awful.widget.layout.horizontal.leftright
                             }
-    wi_widgets[s]:geometry({ height = 16 })
 end
 -- }}}
 -- }}}
