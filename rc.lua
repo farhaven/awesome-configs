@@ -41,6 +41,7 @@ config.global = {
     ["terminal"]   = "urxvtc",
     ["editor"]     = "gvim",
     ["modkey"]     = "Mod3",
+    ["hostname"]   = awful.util.pread("hostname -a | cut -d' ' -f1"):gsub("\n", ""),
 }
 beautiful.init(config.global.theme)
 -- }}}
@@ -227,24 +228,77 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- }}}
+-- {{{ Key bindings
+-- {{{ System specific keybindings (decided upon based on hostname
+systemkeys = { }
+if config.global.hostname == "hydrogen" then
+    systemkeys = awful.util.table.join(
+        -- {{{ Tags
+        awful.key({ }, "XF86Back",
+            function ()
+                awful.tag.viewprev()
+            end),
+        awful.key({ }, "XF86Forward",
+            function ()
+                awful.tag.viewnext()
+            end),
+        -- }}}
+        -- {{{ Screen focus
+        awful.key({ config.global.modkey }, "XF86Back", function ()
+            awful.screen.focus_relative(1)
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end),
+        awful.key({ config.global.modkey }, "XF86Forward", function ()
+            awful.screen.focus_relative(-1)
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end),
+        -- }}}
+        -- {{{ CMUS control
+        awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
+        awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u", false) end),
+        awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n", false) end),
+        awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s", false) end)
+        -- }}}
+    )
+elseif config.global.hostname == "beryllium" then
+    systemkeys = awful.util.table.join(
+        -- {{{ Tags
+        awful.key({ config.global.modkey }, "Page_Up",
+            function ()
+                awful.tag.viewprev()
+            end),
+        awful.key({ config.global.modkey }, "Page_Down",
+            function ()
+                awful.tag.viewnext()
+            end),
+        -- }}}
+        -- {{{ Screen focus
+        awful.key({ config.global.modkey, "Mod1" }, "Page_Up", function ()
+            awful.screen.focus_relative(1)
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end),
+        awful.key({ config.global.modkey, "Mod1" }, "Page_Down", function ()
+            awful.screen.focus_relative(-1)
+            local x = mouse.coords().x + 1
+            local y = mouse.coords().y + 1
+            mouse.coords({ x = x, y = y })
+        end)
+        -- }}}
+    )
 end
 -- }}}
--- {{{ Key bindings
 globalkeys = awful.util.table.join(
+    systemkeys,
     -- {{{ Tags
-    awful.key({ }, "XF86Back",
-        function ()
-            awful.tag.viewprev()
-        end),
-    awful.key({ }, "XF86Forward",
-        function ()
-            awful.tag.viewnext()
-        end),
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
     -- }}}
     -- {{{ Misc
-    awful.key({ config.global.modkey }, "Home", function () awful.util.spawn("sudo su -c \"echo up > /proc/acpi/ibm/brightness\"", false) end),
-    awful.key({ config.global.modkey }, "End", function () awful.util.spawn("sudo su -c \"echo down > /proc/acpi/ibm/brightness\"", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
@@ -284,18 +338,6 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod4" }, "Up", function () awful.client.swap.byidx(-1) end),
     awful.key({ config.global.modkey, "Mod4" }, "Down", function () awful.client.swap.byidx(1) end),
     awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
-    awful.key({ config.global.modkey }, "XF86Back", function ()
-        awful.screen.focus_relative(1)
-        local x = mouse.coords().x + 1
-        local y = mouse.coords().y + 1
-        mouse.coords({ x = x, y = y })
-    end),
-    awful.key({ config.global.modkey }, "XF86Forward", function ()
-        awful.screen.focus_relative(-1)
-        local x = mouse.coords().x + 1
-        local y = mouse.coords().y + 1
-        mouse.coords({ x = x, y = y })
-    end),
 -- }}}
 -- {{{ Layout manipulation
     awful.key({ config.global.modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
@@ -306,13 +348,7 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
 -- }}}
 -- {{{ Audio
--- Control cmus
-    awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
-    awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u", false) end),
-    awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n", false) end),
-    awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s", false) end),
-
--- Audio control
+-- Volume control
     awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
     awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
     awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
