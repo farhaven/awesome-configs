@@ -91,8 +91,7 @@ end
 config.apps = {
     -- {{{ floating setup
     { match = { "xcalc", "xdialog", "event tester" },   float = true },
-    { match = { "nitrogen", "zsnes", "xmessage" },      float = true },
-    { match = { "pinentry" },                           float = true },
+    { match = { "zsnes", "xmessage", "pinentry" },      float = true },
     { match = { "sauerbraten engine" },                 float = true },
     { match = { "mplayer", "Open File"},                float = true },
     -- }}}
