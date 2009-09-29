@@ -286,7 +286,13 @@ elseif config.global.hostname == "beryllium" then
             local x = mouse.coords().x + 1
             local y = mouse.coords().y + 1
             mouse.coords({ x = x, y = y })
-        end)
+        end),
+        -- }}}
+        -- {{{ CMUS control
+        awful.key({ "Mod4" }, "Left", function () awful.util.spawn("cmus-remote -r", false) end),
+        awful.key({ "Mod4" }, "Down", function () awful.util.spawn("cmus-remote -u", false) end),
+        awful.key({ "Mod4" }, "Right", function () awful.util.spawn("cmus-remote -n", false) end),
+        awful.key({ "Mod4" }, "Up", function () awful.util.spawn("cmus-remote -s", false) end)
         -- }}}
     )
 end
