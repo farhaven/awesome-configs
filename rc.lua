@@ -31,7 +31,7 @@ end
 -- }}}
 -- }}}
 -- {{{ Settings
-config = { }
+local config = { }
 -- {{{ Global settings
 config.global = {
     ["opacity_f" ] = 1,
@@ -71,7 +71,7 @@ config.tags = {
     { name = "5:irc", layout = config.layouts[1], mwfact = 0.28 },
     { name = "6:mail", layout = config.layouts[6] },
 }
-tags = { }
+local tags = { }
 for s = 1, screen.count() do
     tags[s] = { }
     for i, v in ipairs(config.tags) do
@@ -92,7 +92,7 @@ config.apps = {
     { match = { "xcalc", "xdialog", "event tester" },   float = true },
     { match = { "zsnes", "xmessage", "pinentry" },      float = true },
     { match = { "sauerbraten engine" },                 float = true },
-    { match = { "mplayer", "Open File"},                float = true },
+    { match = { "mplayer", "open file"},                float = true },
     -- }}}
     -- {{{ apptags
     { match = { "urxvt" },                tag = 1 },
@@ -120,7 +120,6 @@ naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Obvious
-obvious.popup_run_prompt.set_slide(false)
 obvious.clock.set_editor(config.global.editor)
 obvious.clock.set_shortformat(function ()
     local week = tonumber(os.date("%W")) + 1
@@ -134,7 +133,7 @@ end)
 -- }}}
 -- {{{ Widgets
 -- {{{ tag list
-tl_taglist = { }
+local tl_taglist = { }
 for s = 1, screen.count() do
     tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
                                              awful.util.table.join(
@@ -144,7 +143,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ task list
-tl_tasklist = { }
+local tl_tasklist = { }
 for s = 1, screen.count() do
     tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, 
                                                awful.util.table.join(
@@ -179,7 +178,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ layout box
-lb_layout = { }
+local lb_layout = { }
 for s = 1, screen.count() do
     lb_layout[s] = widget({ type  = "textbox" })
     lb_layout[s]:buttons(awful.util.table.join(
@@ -191,10 +190,10 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ systray
-st_systray = widget({ type  = "systray" })
+local st_systray = widget({ type  = "systray" })
 -- }}}
 -- {{{ widget box
-wi_widgets = {}
+local wi_widgets = {}
 
 for s = 1, screen.count() do
     wi_widgets[s] = awful.wibox({ position = "top",
@@ -228,7 +227,7 @@ end
 -- }}}
 -- {{{ Key bindings
 -- {{{ System specific keybindings (decided upon based on hostname
-systemkeys = { }
+local systemkeys = { }
 if config.global.hostname == "hydrogen" then
     systemkeys = awful.util.table.join(
         -- {{{ Tags
@@ -297,7 +296,7 @@ elseif config.global.hostname == "beryllium" then
     )
 end
 -- }}}
-globalkeys = awful.util.table.join(
+local globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
@@ -373,7 +372,7 @@ for i = 1, 9 do
             end), function(_, k) table.insert(globalkeys, k) end)
 end
 -- }}}
-clientkeys = awful.util.table.join(
+local clientkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod1" }, "c",  function (c) c:kill() end),
     awful.key({ config.global.modkey }, "f",  awful.client.floating.toggle),
 
