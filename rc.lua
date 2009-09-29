@@ -36,12 +36,11 @@ config = { }
 config.global = {
     ["opacity_f" ] = 1,
     ["opacity_u" ] = 0.65,
-    -- ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
     ["theme"]      = awful.util.getdir("config") .. "/themes/zenburn/theme.lua",
     ["terminal"]   = "urxvtc",
     ["editor"]     = "gvim",
     ["modkey"]     = "Mod3",
-    ["hostname"]   = awful.util.pread("hostname -a | cut -d' ' -f1"):gsub("\n", ""),
+    ["hostname"]   = awful.util.pread("hostname"):gsub("\n", ""),
 }
 beautiful.init(config.global.theme)
 -- }}}
