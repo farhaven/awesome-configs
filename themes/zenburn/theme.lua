@@ -12,7 +12,8 @@ theme.wallpaper_cmd = { "awsetbg /usr/local/share/awesome/themes/zenburn/zenburn
 -- }}}
 
 -- {{{ Styles
-theme.font      = "Droid Sans Mono 8"
+-- theme.font      = "Droid Sans Mono 8"
+theme.font      = "Terminus 8"
 
 -- {{{ Colors
 theme.fg_normal = "#DCDCCC"
