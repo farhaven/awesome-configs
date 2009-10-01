@@ -352,7 +352,6 @@ client.add_signal("manage", function (c, startup)
     c:buttons(awful.util.table.join(
         awful.button({ }, 1, function (c) client.focus = c end),
         awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
-        awful.button({ config.global.modkey, "Mod1" }, 1, awful.mouse.client.dragtotag.widget),
         awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
     ))
 
