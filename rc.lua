@@ -396,14 +396,6 @@ client.add_signal("manage", function (c, startup)
     client.focus = c
 end)
 -- }}}
--- {{{ unmanage
-client.add_signal("unmanage", function (c)
-    if not client.focus or not client.focus:isvisible() then
-        local c = awful.client.focus.history.get(c.screen, 0)
-        if c then client.focus = c end
-    end
-end)
--- }}}
 -- {{{ layout
 function layout_update(t)
     lb_layout[t.screen].text = getlayouticon(awful.layout.getname(awful.layout.get(t.screen)))
