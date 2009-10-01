@@ -29,6 +29,14 @@ function textbox(content)
     return w
 end
 -- }}}
+-- {{{ screenfocus(idx)
+function screenfocus(idx)
+    awful.screen.focus_relative(idx)
+    local x = mouse.coords().x + 1
+    local y = mouse.coords().y + 1
+    mouse.coords({ x = x, y = y })
+end
+-- }}}
 -- }}}
 -- {{{ Settings
 config = { }
@@ -121,7 +129,6 @@ naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Obvious
-obvious.popup_run_prompt.set_slide(false)
 obvious.clock.set_editor(config.global.editor)
 obvious.clock.set_shortformat(function ()
     local week = tonumber(os.date("%W")) + 1
@@ -233,28 +240,12 @@ systemkeys = { }
 if config.global.hostname == "hydrogen" then
     systemkeys = awful.util.table.join(
         -- {{{ Tags
-        awful.key({ }, "XF86Back",
-            function ()
-                awful.tag.viewprev()
-            end),
-        awful.key({ }, "XF86Forward",
-            function ()
-                awful.tag.viewnext()
-            end),
+        awful.key({ }, "XF86Back", awful.tag.viewprev),
+        awful.key({ }, "XF86Forward", awful.tag.viewnext),
         -- }}}
         -- {{{ Screen focus
-        awful.key({ config.global.modkey }, "XF86Back", function ()
-            awful.screen.focus_relative(1)
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end),
-        awful.key({ config.global.modkey }, "XF86Forward", function ()
-            awful.screen.focus_relative(-1)
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end),
+        awful.key({ config.global.modkey }, "XF86Back", function () screenfocus(1) end),
+        awful.key({ config.global.modkey }, "XF86Forward", function () screenfocus(-1) end),
         -- }}}
         -- {{{ CMUS control
         awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
@@ -266,28 +257,12 @@ if config.global.hostname == "hydrogen" then
 elseif config.global.hostname == "beryllium" then
     systemkeys = awful.util.table.join(
         -- {{{ Tags
-        awful.key({ config.global.modkey }, "Page_Up",
-            function ()
-                awful.tag.viewprev()
-            end),
-        awful.key({ config.global.modkey }, "Page_Down",
-            function ()
-                awful.tag.viewnext()
-            end),
+        awful.key({ config.global.modkey }, "Page_Up", awful.tag.viewprev),
+        awful.key({ config.global.modkey }, "Page_Down", awful.tag.viewnext),
         -- }}}
         -- {{{ Screen focus
-        awful.key({ config.global.modkey, "Mod1" }, "Page_Up", function ()
-            awful.screen.focus_relative(1)
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end),
-        awful.key({ config.global.modkey, "Mod1" }, "Page_Down", function ()
-            awful.screen.focus_relative(-1)
-            local x = mouse.coords().x + 1
-            local y = mouse.coords().y + 1
-            mouse.coords({ x = x, y = y })
-        end),
+        awful.key({ config.global.modkey, "Mod1" }, "Page_Up", function () screenfocus(1) end),
+        awful.key({ config.global.modkey, "Mod1" }, "Page_Down", function () screenfocus(-1) end),
         -- }}}
         -- {{{ CMUS control
         awful.key({ "Mod4" }, "Left", function () awful.util.spawn("cmus-remote -r", false) end),
