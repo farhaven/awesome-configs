@@ -104,14 +104,14 @@ config.apps = {
     { match = { "mplayer", "Open File"},                float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },                tag = 1 },
-    { match = { "firefox", "dillo" },     tag = 2 },
-    { match = { "vimpression", "uzbl" },  tag = 2 },
-    { match = { "urxvt.cmus", "wicd" },   tag = 3 },
-    { match = { "xpdf", "virtualbox" },   tag = 3 },
-    { match = { config.global.editor },   tag = 5 },
-    { match = { "urxvt.irssi" },          tag = 6 },
-    { match = { "urxvt.mutt" },           tag = 7 },
+    { match = { "urxvt" },              tag = 1 },
+    { match = { "firefox", "dillo" },   tag = 2 },
+    { match = { "uzbl" },               tag = 2 },
+    { match = { "urxvt.cmus", "wicd" }, tag = 3 },
+    { match = { "xpdf", "virtualbox" }, tag = 3 },
+    { match = { config.global.editor }, tag = 5 },
+    { match = { "urxvt.irssi" },        tag = 6 },
+    { match = { "urxvt.mutt" },         tag = 7 },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.85 },
@@ -206,7 +206,7 @@ end
 -- }}}
 -- }}}
 -- {{{ Key bindings
--- {{{ System specific keybindings (decided upon based on hostname
+-- {{{ System specific keybindings (decided upon based on hostname)
 systemkeys = { }
 if config.global.hostname == "hydrogen" then
     systemkeys = awful.util.table.join(
