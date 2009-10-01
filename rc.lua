@@ -66,10 +66,11 @@ config.layout_icons = {
 config.tags = {
     { name = "1:term", layout = config.layouts[3] },
     { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "3:misc", layout = config.layouts[3] },
-    { name = "4:text", layout = config.layouts[1] },
-    { name = "5:irc", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "6:mail", layout = config.layouts[6] },
+    { name = "3:misc (1)", layout = config.layouts[3] },
+    { name = "4:misc (2)", layout = config.layouts[3] },
+    { name = "5:text", layout = config.layouts[1] },
+    { name = "6:irc", layout = config.layouts[1], mwfact = 0.28 },
+    { name = "7:mail", layout = config.layouts[6] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -100,9 +101,9 @@ config.apps = {
     { match = { "vimpression", "uzbl" },  tag = 2 },
     { match = { "urxvt.cmus", "wicd" },   tag = 3 },
     { match = { "xpdf", "virtualbox" },   tag = 3 },
-    { match = { config.global.editor },   tag = 4 },
-    { match = { "urxvt.irssi" },          tag = 5 },
-    { match = { "urxvt.mutt" },           tag = 6 },
+    { match = { config.global.editor },   tag = 5 },
+    { match = { "urxvt.irssi" },          tag = 6 },
+    { match = { "urxvt.mutt" },           tag = 7 },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.85 },
