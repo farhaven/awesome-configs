@@ -344,7 +344,6 @@ end)
 -- {{{ manage
 client.add_signal("manage", function (c, startup)
     if not startup and awful.client.focus.filter(c) then
-        c.screen = mouse.screen
         c.maximized_horizontal = false
         c.maximized_vertical = false
     end
