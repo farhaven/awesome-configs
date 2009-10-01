@@ -256,11 +256,7 @@ globalkeys = awful.util.table.join(
     -- hide / unhide current screens wibox
     awful.key({ config.global.modkey, "Mod1" }, "w", function ()
         local w = wi_widgets[mouse.screen]
-        if w.visible then
-            w.visible = false
-        else
-            w.visible = true
-        end
+        w.visible = not w.visible
     end),
 -- }}}
 -- {{{ Prompts
