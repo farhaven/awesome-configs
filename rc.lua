@@ -114,7 +114,7 @@ config.apps = {
     { match = { "urxvt.mutt" },         tag = 7 },
     -- }}}
     -- {{{ opacity
-    { match = { "xterm", "urxvt" },         opacity_f = 0.85 },
+    { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     -- }}}
 }
