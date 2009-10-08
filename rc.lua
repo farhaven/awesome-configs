@@ -154,7 +154,12 @@ end
 -- {{{ task list
 tl_tasklist = { }
 for s = 1, screen.count() do
-    tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, { })
+    tl_tasklist[s] = awful.widget.tasklist.new(function (c)
+        if tags[s][2].selected then
+            return awful.widget.tasklist.label.focused(c, s)
+        end
+        return awful.widget.tasklist.label.currenttags(c, s)
+    end, { })
 end
 -- }}}
 -- {{{ layout box
