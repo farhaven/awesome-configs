@@ -271,7 +271,7 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod4" }, "Return", function() awful.util.spawn("xrun -v") end),
     -- }}}
     -- {{{ URL prompt
-    awful.key({ config.global.modkey }, "numbersign", function () awful.util.spawn("xrun 'while read u; do uzbl -u $u; done'") end),
+    awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("xrun 'while read u; do uzbl -u $u; done'") end),
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
