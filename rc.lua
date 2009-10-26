@@ -144,7 +144,7 @@ end)
 -- {{{ tag list
 tl_taglist = { }
 for s = 1, screen.count() do
-    tl_taglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, 
+    tl_taglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all,
                                              awful.util.table.join(
                                                 awful.button({ }, 1, awful.tag.viewonly),
                                                 awful.button({ }, 4, awful.tag.viewnext),
@@ -154,7 +154,7 @@ end
 -- {{{ task list
 tl_tasklist = { }
 for s = 1, screen.count() do
-    tl_tasklist[s] = awful.widget.tasklist.new(function (c) return awful.widget.tasklist.label.currenttags(c, s) end, { })
+    tl_tasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, { })
 end
 -- }}}
 -- {{{ layout box
@@ -187,20 +187,21 @@ for s = 1, screen.count() do
                                 tl_taglist[s],
                                 lb_layout[s],
                                 {
-                                    obvious.clock(),
-                                    s == screen.count() and st_systray,
+                                    textbox(" "),
+                                    obvious.volume_alsa(),
                                     textbox(" "),
                                     obvious.battery(),
+                                    s == screen.count() and st_systray,
                                     textbox(" "),
-                                    obvious.volume_alsa():set_layout(awful.widget.layout.horizontal.rightleft),
-                                    textbox(" "),
+                                    obvious.clock(),
                                     ["layout"] = awful.widget.layout.horizontal.rightleft,
                                 },
                                 {
                                     tl_tasklist[s],
                                     ["layout"] = awful.widget.layout.horizontal.flex
                                 },
-                                ["layout"] = awful.widget.layout.horizontal.leftright
+                                ["layout"] = awful.widget.layout.horizontal.leftright,
+                                ["height"] = wi_widgets[s].height
                             }
 end
 -- }}}
