@@ -100,8 +100,8 @@ config.apps = {
     -- {{{ floating setup
     { match = { "xcalc", "xdialog", "event tester" },   float = true },
     { match = { "zsnes", "xmessage", "pinentry" },      float = true },
-    { match = { "sauerbraten engine" },                 float = true },
-    { match = { "mplayer", "Open File"},                float = true },
+    { match = { "sauerbraten engine", "gnuplot" },      float = true },
+    { match = { "mplayer", "Open File", "dclock" },     float = true },
     -- }}}
     -- {{{ apptags
     { match = { "urxvt" },              tag = 1 },
