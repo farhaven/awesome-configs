@@ -76,7 +76,7 @@ config.tags = {
     { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
     { name = "3:misc (1)", layout = config.layouts[3] },
     { name = "4:misc (2)", layout = config.layouts[3] },
-    { name = "5:text", layout = config.layouts[1] },
+    { name = "5:text", layout = config.layouts[1], mwfact = 0.57 },
     { name = "6:irc", layout = config.layouts[1], mwfact = 0.28 },
     { name = "7:mail", layout = config.layouts[6] },
 }
