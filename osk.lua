@@ -7,10 +7,11 @@ local wibox    = require("awful.wibox")
 local layout   = require("awful.widget.layout")
 local button   = require("awful.button")
 local util     = require("awful.util")
+local naughty  = require("naughty")
 local ipairs   = ipairs
 local tostring = tostring
 local table    = table
-local unpack   = unpack
+local pairs    = pairs
 local math     = {
     abs        = math.abs
 }
@@ -31,6 +32,11 @@ local keymaps = {
         { "q", "w", "e", "r", "t", "z", "u", "i", "o" },
         { "a", "s", "d", "f", "g", "h", "j", "l", "p" },
         { "y", "x", "c", "v", "b", "n", "m", "k", "⏎" },
+    },
+    numbers = {
+        { "1", "2", "3", "0" },
+        { "4", "5", "6", "-" },
+        { "7", "8", "9", "." }
     }
 }
 local active_keymap = "letters"
@@ -39,8 +45,18 @@ local keycodes = {
     q=24,     w=25, e=26, r=27, t=28, z=52, u=30, i=31, o=32, p=33, ["⏎"]=36,
     a=38,     s=39, d=40, f=41, g=42, h=43, j=44, k=45, l=46,
     ["<"]=94, y=29, x=53, c=54, v=55, b=56, n=57, m=58, [","]=59, ["."]=60, ["/"]=61,
+    ['1']=10, ['2']=11, ['3']=12, ['4']=13, ['5']=14,
+    ['6']=15, ['7']=16, ['8']=17, ['9']=18, ['0']=19,
+    ['-']=20
 }
+
 local pressed_key = ""
+
+local w = { }
+
+local maps = { }
+for name, _ in pairs(keymaps) do table.insert(maps, name) end
+table.sort(maps)
 -- }}}
 -- {{{ local function distance(k1, k2, map)
 local function distance(k1, k2, map)
@@ -68,6 +84,21 @@ local function fake_key(keycode)
     capi.fake_input("key_release", keycode)
 end
 -- }}}
+-- {{{ local function change_keymap(map)
+local function change_keymap()
+    local idx
+    for i, v in ipairs(maps) do
+        if v == active_keymap then
+            idx = i
+            break
+        end
+    end
+    idx = util.cycle(#maps, idx + 1)
+    w[active_keymap].visible = false
+    active_keymap = maps[idx]
+    w[active_keymap].visible = true
+end
+-- }}}
 -- {{{ local function keypress(keysym)
 local function keypress(keysym)
     pressed_key = keysym
@@ -76,15 +107,20 @@ end
 -- {{{ local function keyrelease(keysym)
 local function keyrelease(keysym)
     local d = distance(keysym, pressed_key, keymaps[active_keymap])
-    dbg.dump(d)
     if d.x < -1 then -- "BackSpace"
         fake_key(22)
     elseif d.x > 1 then -- "Space"
         fake_key(65)
     elseif d.y > 1 then -- "Return"
         fake_key(36)
+    elseif d.y < -1 then -- Change layout
+        change_keymap()
     else
-        fake_key(keycodes[keysym])
+        if not keycodes[keysym] then
+            naughty.notify({ text = "No keycode for \"" .. keysym .. "\"" })
+        else
+            fake_key(keycodes[keysym])
+        end
     end
     pressed_key = ""
 end
@@ -123,26 +159,28 @@ local function create_keymap(map)
 end
 -- }}}
 -- {{{ initial wibox setup
-local w = wibox({
-    height   = 160,
-    position = "bottom",
-    widgets  = { create_keymap(keymaps[active_keymap]), layout = layout.horizontal.leftright }
-})
-w.visible = false
+for name, map in pairs(keymaps) do
+    w[name] = wibox({
+        height   = 160,
+        position = "bottom",
+        widgets  = { create_keymap(map), layout = layout.horizontal.leftright }
+    })
+    w[name].visible = false
+end
 -- }}}
 -- {{{ function show
 function show()
-    w.visible = true
+    w[active_keymap].visible = true
 end
 -- }}}
 -- {{{ function hide
 function hide()
-    w.visible = false
+    w[active_keymap].visible = false
 end
 -- }}}
 -- {{{ function visible
 function visible()
-    return w.visible
+    return w[active_keymap].visible
 end
 -- }}}
 -- {{{ function widget
