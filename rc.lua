@@ -149,7 +149,7 @@ tb_client_next:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.client.focus.byidx(-1) end)
 ))
 tb_client_prev = widget({ type = "textbox" })
-tb_client_prev.text = "☚"
+tb_client_prev.text = "  ☚ "
 tb_client_prev:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.client.focus.byidx(1) end)
 ))
