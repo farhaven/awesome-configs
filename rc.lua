@@ -7,15 +7,6 @@ require('obvious') -- Obvious widget library, get it from git://git.mercenariesg
 require('osk')     -- on screen keyboard
 
 -- {{{ Functions
--- {{{ getlayouticon(layout)
-function getlayouticon(s)
-    if type(s) == "string" then
-        return " " .. awful.util.escape(config.layout_icons[s]) .. " "
-    end
-    if not awful.layout.get(s) then return "     " end
-    return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
-end
--- }}}
 -- {{{ textbox(content)
 textboxes = { }
 function textbox(content)
@@ -28,14 +19,6 @@ function textbox(content)
     w.text = content
     table.insert(textboxes, w)
     return w
-end
--- }}}
--- {{{ screenfocus(idx)
-function screenfocus(idx)
-    awful.screen.focus_relative(idx)
-    local x = mouse.coords().x + 1
-    local y = mouse.coords().y + 1
-    mouse.coords({ x = x, y = y })
 end
 -- }}}
 -- }}}
@@ -81,33 +64,11 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- {{{ Clients
-config.apps = {
-    -- {{{ floating setup
-    { match = { "xcalc", "xdialog", "event tester" },   float = true },
-    { match = { "zsnes", "xmessage", "pinentry" },      float = true },
-    { match = { "sauerbraten engine", "gnuplot" },      float = true },
-    { match = { "mplayer", "Open File", "dclock" },     float = true },
-    -- }}}
-    -- {{{ apptags
-    { match = { "urxvt" },              tag = 1 },
-    { match = { "firefox", "dillo" },   tag = 2 },
-    { match = { "uzbl" },               tag = 2 },
-    { match = { "urxvt.cmus", "wicd" }, tag = 3 },
-    { match = { "xpdf", "virtualbox" }, tag = 3 },
-    { match = { config.global.editor }, tag = 5 },
-    { match = { "urxvt.irssi" },        tag = 6 },
-    { match = { "urxvt.mutt" },         tag = 7 },
-    -- }}}
-    -- {{{ opacity
-    { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
-    { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
-    -- }}}
-}
+config.apps = { }
 -- }}}
 -- {{{ Naughty
 naughty.config.bg           = beautiful.bg_normal
 naughty.config.fg           = beautiful.fg_normal
-naughty.config.screen       = screen.count()
 naughty.config.border_width = 2
 naughty.config.presets.normal.border_color  = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
@@ -186,75 +147,16 @@ for s = 1, screen.count() do
 end
 -- }}}
 -- }}}
--- {{{ Key bindings
-globalkeys = awful.util.table.join(
--- {{{ Client / Focus manipulation
-    awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
-
-    awful.key({ config.global.modkey }, "Up", function () awful.client.focus.byidx(-1) end),
-    awful.key({ config.global.modkey }, "Down", function () awful.client.focus.byidx(1) end),
-    awful.key({ config.global.modkey }, "Left", function ()
-        if not client.focus then return end
-        client.focus:swap(awful.client.getmaster(client.focus.screen))
-    end),
-    awful.key({ config.global.modkey, "Mod4" }, "Up", function () awful.client.swap.byidx(-1) end),
-    awful.key({ config.global.modkey, "Mod4" }, "Down", function () awful.client.swap.byidx(1) end),
-    awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
--- }}}
--- {{{ Layout manipulation
-    awful.key({ config.global.modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
-    awful.key({ config.global.modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
-    awful.key({ config.global.modkey }, " ", function () awful.layout.inc(config.layouts, 1) end),
-
-    awful.key({ config.global.modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
-    awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
--- }}}
--- {{{ Audio
--- Volume control
-    awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
-    awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
-    awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
--- }}}
-)
--- {{{ Tags
-for i = 1, 9 do
-    table.foreach(awful.key({ config.global.modkey }, i,
-            function ()
-                awful.tag.viewonly(tags[mouse.screen][i])
-            end), function(_, k) table.insert(globalkeys, k) end)
-
-    table.foreach(awful.key({ config.global.modkey, "Mod1" }, i,
-            function ()
-                if client.focus then
-                    awful.client.movetotag(tags[mouse.screen][i])
-                end
-            end), function(_, k) table.insert(globalkeys, k) end)
-end
--- }}}
-clientkeys = awful.util.table.join(
-    awful.key({ config.global.modkey, "Mod1" }, "c",  function (c) c:kill() end),
-    awful.key({ config.global.modkey }, "f",  awful.client.floating.toggle),
-
-    awful.key({ config.global.modkey }, "a", function (c) c.sticky = not c.sticky end),
-    awful.key({ config.global.modkey }, "j", function (c) c:lower() end),
-    awful.key({ config.global.modkey }, "k", function (c) c:raise() end)
-)
-root.keys(globalkeys)
--- }}}
 -- {{{ Signals
-local opacities_focus   = { }
-local opacities_unfocus = { }
 -- {{{ focus
 client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = opacities_focus[c]
     c:raise()
 end)
 -- }}}
 -- {{{ unfocus
 client.add_signal("unfocus", function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = opacities_unfocus[c]
 end)
 -- }}}
 -- {{{ manage
@@ -264,12 +166,6 @@ client.add_signal("manage", function (c, startup)
         c.maximized_vertical = false
     end
 
-    c:buttons(awful.util.table.join(
-        awful.button({ }, 1, function (c) client.focus = c end),
-        awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
-        awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
-    ))
-
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
@@ -278,9 +174,6 @@ client.add_signal("manage", function (c, startup)
     local instance = c.instance and c.instance:lower() or ""
     local class = c.class and c.class:lower() or ""
     local name = c.name and c.name:lower() or ""
-
-    opacities_unfocus[c] = config.global.opacity_u or 1
-    opacities_focus[c] = config.global.opacity_f or 1
 
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
@@ -292,12 +185,6 @@ client.add_signal("manage", function (c, startup)
                 if v.tag then
                     awful.client.movetotag(tags[c.screen][v.tag], c)
                 end
-                if v.opacity_u then
-                    opacities_unfocus[c] = v.opacity_u
-                end
-                if v.opacity_f then
-                    opacities_focus[c] = v.opacity_f
-                end
             end
         end
     end
@@ -307,20 +194,8 @@ client.add_signal("manage", function (c, startup)
         awful.placement.no_offscreen(c)
     end
 
-    c:keys(clientkeys)
-
     client.focus = c
 end)
--- }}}
--- {{{ layout
-function layout_update(t)
-    lb_layout[t.screen].text = getlayouticon(awful.layout.getname(awful.layout.get(t.screen)))
-end
-
-for s = 1, screen.count() do
-    awful.tag.attached_add_signal(s, "property::layout", layout_update)
-    awful.tag.attached_add_signal(s, "property::selected", layout_update)
-end
 -- }}}
 -- {{{ mouse enter
 client.add_signal("new", function (c)
