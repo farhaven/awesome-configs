@@ -248,6 +248,7 @@ local opacities_unfocus = { }
 client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
     c.opacity = opacities_focus[c]
+    c:raise()
 end)
 -- }}}
 -- {{{ unfocus
