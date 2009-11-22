@@ -130,6 +130,18 @@ end)
 -- {{{ systray
 st_systray = widget({ type  = "systray" })
 -- }}}
+-- {{{ Terminal and kill buttons
+tb_terminal = widget({ type = "textbox" })
+tb_terminal.text = "☻"
+tb_terminal:buttons(awful.util.table.join(
+    awful.button({ }, 1, function () awful.util.spawn(config.global.terminal) end )
+))
+tb_kill = widget({ type = "textbox" })
+tb_kill.text = "☠"
+tb_kill:buttons(awful.util.table.join(
+    awful.button({ }, 1, function () client.focus:kill() end)
+))
+-- }}}
 -- {{{ widget box
 wi_widgets = {}
 
@@ -146,6 +158,8 @@ for s = 1, screen.count() do
                                 -- obvious.volume_alsa(),
                                 {
                                     osk.widget(),
+                                    tb_terminal,
+                                    tb_kill,
                                     layput = awful.widget.layout.horizontal.leftright
                                 },
                                 textbox(" "),
