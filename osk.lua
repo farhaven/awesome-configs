@@ -1,7 +1,7 @@
 -- On Screen Keyboard for the awesome window manager
 --   * Original by farhaven
 
--- Grab the environment
+-- {{{ Grab the environment
 local dbg      = require("dbg")
 local wibox    = require("awful.wibox")
 local layout   = require("awful.widget.layout")
@@ -18,12 +18,13 @@ local capi     = {
     widget     = widget,
     fake_input = root.fake_input
 }
+-- }}}
 
 -- On Screen Keyboard for the awesome window manager
 module("osk")
 
+-- {{{ settings
 local font = "Fixed 16"
-local pressed_key = ""
 
 local keymaps = {
     letters = {
@@ -39,7 +40,9 @@ local keycodes = {
     a=38,     s=39, d=40, f=41, g=42, h=43, j=44, k=45, l=46,
     ["<"]=94, y=29, x=53, c=54, v=55, b=56, n=57, m=58, [","]=59, ["."]=60, ["/"]=61,
 }
-
+local pressed_key = ""
+-- }}}
+-- {{{ local function distance(k1, k2, map)
 local function distance(k1, k2, map)
     local p1 = { }
     local p2 = { }
@@ -58,16 +61,19 @@ local function distance(k1, k2, map)
     end
     return { x = p1.x - p2.x, y = p1.y - p2.y }
 end
-
+-- }}}
+-- {{{ local function fake_key(keycode)
 local function fake_key(keycode)
     capi.fake_input("key_press", keycode)
     capi.fake_input("key_release", keycode)
 end
-
+-- }}}
+-- {{{ local function keypress(keysym)
 local function keypress(keysym)
     pressed_key = keysym
 end
-
+-- }}}
+-- {{{ local function keyrelease(keysym)
 local function keyrelease(keysym)
     local d = distance(keysym, pressed_key, keymaps[active_keymap])
     dbg.dump(d)
@@ -82,7 +88,8 @@ local function keyrelease(keysym)
     end
     pressed_key = ""
 end
-
+-- }}}
+-- {{{ local function create_button_row(keys)
 local function create_button_row(keys)
     local widgets = { layout = layout.horizontal.flex }
 
@@ -105,7 +112,8 @@ local function create_button_row(keys)
 
     return widgets
 end
-
+-- }}}
+-- {{{ local function create_keymap(map)
 local function create_keymap(map)
     local w = { layout = layout.vertical.flex }
     for _, row in ipairs(map) do
@@ -113,26 +121,31 @@ local function create_keymap(map)
     end
     return w
 end
-
+-- }}}
+-- {{{ initial wibox setup
 local w = wibox({
     height   = 160,
     position = "bottom",
-    widgets  = { create_keymap(keymaps["letters"]), layout = layout.horizontal.leftright }
+    widgets  = { create_keymap(keymaps[active_keymap]), layout = layout.horizontal.leftright }
 })
 w.visible = false
-
+-- }}}
+-- {{{ function show
 function show()
     w.visible = true
 end
-
+-- }}}
+-- {{{ function hide
 function hide()
     w.visible = false
 end
-
+-- }}}
+-- {{{ function visible
 function visible()
     return w.visible
 end
-
+-- }}}
+-- {{{ function widget
 function widget()
     local w_toggle = capi.widget({ type = "textbox" })
     w_toggle.text = "<span color=\"#FF0000\">⌨</span>"
@@ -150,3 +163,4 @@ function widget()
     ))
     return w_toggle
 end
+-- }}}
