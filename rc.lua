@@ -4,6 +4,7 @@ require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
+require('osk')     -- on screen keyboard
 
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
@@ -44,7 +45,7 @@ config = { }
 config.global = {
     ["opacity_f" ] = 1,
     ["opacity_u" ] = 0.65,
-    ["theme"]      = awful.util.getdir("config") .. "/themes/zenburn/theme.lua",
+    ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
     ["terminal"]   = "urxvtc",
     ["editor"]     = "gvim",
     ["modkey"]     = "Mod3",
@@ -54,31 +55,15 @@ beautiful.init(config.global.theme)
 -- }}}
 -- {{{ Layouts
 config.layouts = {
-    awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.top,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.floating,
-    awful.layout.suit.spiral,
+    awful.layout.suit.max
 }
 config.layout_icons = {
-    ["tile"] = "[]=",
-    ["tileleft"] = "=[]",
-    ["tilebottom"] = "[v]",
-    ["tiletop"] = "[^]",
-    ["floating"] = "><>",
-    ["spiral"] = "[@]",
+    ["max"] = "[M]"
 }
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "1:term", layout = config.layouts[3] },
-    { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "3:misc (1)", layout = config.layouts[3] },
-    { name = "4:misc (2)", layout = config.layouts[3] },
-    { name = "5:text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "6:irc", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "7:mail", layout = config.layouts[6] },
+    { name = " 1 ", layout = config.layouts[1] },
 }
 tags = { }
 for s = 1, screen.count() do
@@ -127,48 +112,21 @@ naughty.config.border_width = 2
 naughty.config.presets.normal.border_color  = beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
+naughty.config.presets.normal.font = "Fixed 8"
 -- }}}
 -- {{{ Obvious
 obvious.clock.set_editor(config.global.editor)
 obvious.clock.set_shortformat(function ()
     local week = tonumber(os.date("%W")) + 1
-    return "%H%M ("..week..") "
+    return "%H%M ("..week..")"
 end)
 obvious.clock.set_longformat(function ()
     local week = tonumber(os.date("%W")) + 1
-    return "%d%m ("..week..") "
+    return "%d%m ("..week..")"
 end)
 -- }}}
 -- }}}
 -- {{{ Widgets
--- {{{ tag list
-tl_taglist = { }
-for s = 1, screen.count() do
-    tl_taglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all,
-                                             awful.util.table.join(
-                                                awful.button({ }, 1, awful.tag.viewonly),
-                                                awful.button({ }, 4, awful.tag.viewnext),
-                                                awful.button({ }, 5, awful.tag.viewprev) ))
-end
--- }}}
--- {{{ task list
-tl_tasklist = { }
-for s = 1, screen.count() do
-    tl_tasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, { })
-end
--- }}}
--- {{{ layout box
-lb_layout = { }
-for s = 1, screen.count() do
-    lb_layout[s] = widget({ type  = "textbox" })
-    lb_layout[s]:buttons(awful.util.table.join(
-        awful.button({ }, 1, function () awful.layout.inc(config.layouts, 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(config.layouts, -1) end)
-    ))
-    lb_layout[s].text = getlayouticon(s)
-    lb_layout[s].bg = beautiful.bg_normal
-end
--- }}}
 -- {{{ systray
 st_systray = widget({ type  = "systray" })
 -- }}}
@@ -180,28 +138,22 @@ for s = 1, screen.count() do
                                   fg = beautiful.fg_normal,
                                   bg = beautiful.bg_normal,
                                   screen = s,
-                                  height = 16
+                                  height = 48
                                 })
 
     wi_widgets[s].widgets = {
-                                tl_taglist[s],
-                                lb_layout[s],
+                                -- textbox(" "),
+                                -- obvious.volume_alsa(),
                                 {
-                                    textbox(" "),
-                                    obvious.volume_alsa(),
-                                    textbox(" "),
-                                    obvious.battery(),
-                                    s == screen.count() and st_systray,
-                                    textbox(" "),
-                                    obvious.clock(),
-                                    ["layout"] = awful.widget.layout.horizontal.rightleft,
+                                    osk.widget(),
+                                    layput = awful.widget.layout.horizontal.leftright
                                 },
-                                {
-                                    tl_tasklist[s],
-                                    ["layout"] = awful.widget.layout.horizontal.flex
-                                },
-                                ["layout"] = awful.widget.layout.horizontal.leftright,
-                                ["height"] = wi_widgets[s].height
+                                textbox(" "),
+                                obvious.clock(),
+                                textbox(" "),
+                                obvious.battery(),
+                                -- s == screen.count() and st_systray,
+                                ["layout"] = awful.widget.layout.horizontal.rightleft,
                             }
 end
 -- }}}
