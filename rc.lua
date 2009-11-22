@@ -142,6 +142,18 @@ tb_kill:buttons(awful.util.table.join(
     awful.button({ }, 1, function () client.focus:kill() end)
 ))
 -- }}}
+-- {{{ client focus buttons
+tb_client_next = widget({ type = "textbox" })
+tb_client_next.text = "☛"
+tb_client_next:buttons(awful.util.table.join(
+    awful.button({ }, 1, function () awful.client.focus.byidx(-1) end)
+))
+tb_client_prev = widget({ type = "textbox" })
+tb_client_prev.text = "☚"
+tb_client_prev:buttons(awful.util.table.join(
+    awful.button({ }, 1, function () awful.client.focus.byidx(1) end)
+))
+-- }}}
 -- {{{ widget box
 wi_widgets = {}
 
@@ -160,6 +172,8 @@ for s = 1, screen.count() do
                                     osk.widget(),
                                     tb_terminal,
                                     tb_kill,
+                                    tb_client_prev,
+                                    tb_client_next,
                                     layout = awful.widget.layout.horizontal.leftright
                                 },
                                 textbox(" "),
@@ -173,73 +187,7 @@ end
 -- }}}
 -- }}}
 -- {{{ Key bindings
--- {{{ System specific keybindings (decided upon based on hostname)
-systemkeys = { }
-if config.global.hostname == "hydrogen" then
-    systemkeys = awful.util.table.join(
-        -- {{{ Tags
-        awful.key({ }, "XF86Back", awful.tag.viewprev),
-        awful.key({ }, "XF86Forward", awful.tag.viewnext),
-        -- }}}
-        -- {{{ Screen focus
-        awful.key({ config.global.modkey }, "XF86Back", function () screenfocus(1) end),
-        awful.key({ config.global.modkey }, "XF86Forward", function () screenfocus(-1) end),
-        -- }}}
-        -- {{{ CMUS control
-        awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
-        awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u", false) end),
-        awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n", false) end),
-        awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s", false) end)
-        -- }}}
-    )
-elseif config.global.hostname == "beryllium" then
-    systemkeys = awful.util.table.join(
-        -- {{{ Tags
-        awful.key({ config.global.modkey }, "Page_Up", awful.tag.viewprev),
-        awful.key({ config.global.modkey }, "Page_Down", awful.tag.viewnext),
-        -- }}}
-        -- {{{ Screen focus
-        awful.key({ config.global.modkey, "Mod1" }, "Page_Up", function () screenfocus(1) end),
-        awful.key({ config.global.modkey, "Mod1" }, "Page_Down", function () screenfocus(-1) end),
-        -- }}}
-        -- {{{ CMUS control
-        awful.key({ "Mod4" }, "Left", function () awful.util.spawn("cmus-remote -r", false) end),
-        awful.key({ "Mod4" }, "Down", function () awful.util.spawn("cmus-remote -u", false) end),
-        awful.key({ "Mod4" }, "Right", function () awful.util.spawn("cmus-remote -n", false) end),
-        awful.key({ "Mod4" }, "Up", function () awful.util.spawn("cmus-remote -s", false) end)
-        -- }}}
-    )
-end
--- }}}
 globalkeys = awful.util.table.join(
-    systemkeys,
-    -- {{{ Tags
-    awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
-    -- }}}
-    -- {{{ Misc
-    awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
-    awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
-
-    -- hide / unhide current screens wibox
-    awful.key({ config.global.modkey, "Mod1" }, "w", function ()
-        local w = wi_widgets[mouse.screen]
-        w.visible = not w.visible
-    end),
--- }}}
--- {{{ Prompts
-    -- {{{ Run prompt
-    awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("xrun") end),
-    -- }}}
-    -- {{{ Lua prompt
-    awful.key({ config.global.modkey, "Mod1" }, "Return", function () awful.util.spawn("xrun awesome-client -v") end),
-    -- }}}
-    -- {{{ Program read prompt
-    awful.key({ config.global.modkey, "Mod4" }, "Return", function() awful.util.spawn("xrun -v") end),
-    -- }}}
-    -- {{{ URL prompt
-    awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("xrun 'while read u; do uzbl -u $u; done'") end),
-    -- }}}
--- }}}
 -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
