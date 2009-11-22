@@ -132,13 +132,12 @@ st_systray = widget({ type  = "systray" })
 -- }}}
 -- {{{ Terminal and kill buttons
 tb_terminal = widget({ type = "textbox" })
-tb_terminal.text = "☻"
-tb_terminal:margin({ right = 10 })
+tb_terminal.text = "☻ "
 tb_terminal:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.util.spawn(config.global.terminal) end )
 ))
 tb_kill = widget({ type = "textbox" })
-tb_kill.text = "☠"
+tb_kill.text = " ☠"
 tb_kill:buttons(awful.util.table.join(
     awful.button({ }, 1, function () client.focus:kill() end)
 ))
