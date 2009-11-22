@@ -160,7 +160,7 @@ for s = 1, screen.count() do
                                     osk.widget(),
                                     tb_terminal,
                                     tb_kill,
-                                    layput = awful.widget.layout.horizontal.leftright
+                                    layout = awful.widget.layout.horizontal.leftright
                                 },
                                 textbox(" "),
                                 obvious.clock(),
