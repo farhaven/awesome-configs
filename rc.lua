@@ -139,7 +139,6 @@ tb_terminal:buttons(awful.util.table.join(
 ))
 tb_kill = widget({ type = "textbox" })
 tb_kill.text = "☠"
-tb_kill:margin({ left = 10 })
 tb_kill:buttons(awful.util.table.join(
     awful.button({ }, 1, function () client.focus:kill() end)
 ))
