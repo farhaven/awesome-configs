@@ -40,9 +40,9 @@ local keymaps = {
         { "7", "8", "9", ".", "\\", "(", ")", "|", "@" }
     },
     control = {
-        { "Shift", "Up", "Control" },
-        { "Left", "Down", "Right" },
-        { "Escape", "Alt" }
+        { "Shift",  "Up",   "Control", "PgUp",   "Ins" },
+        { "Left",   "Down", "Right",   "PgDown", "Del" },
+        { "Escape", "Alt",  "Tab",     "Home",   "End"}
     }
 }
 local active_keymap = "letters"
@@ -57,7 +57,8 @@ local keycodes = {
     ["\""]={ 48, "shift" }, ["/"]=61, ["{"]={ 34, "shift" }, ["}"] = { 35, "shift" },
     ["!"]={ 10, "shift" }, ["'"]=48, ["\\"]=51, ["("]={ 18, "shift" }, [")"]={ 19, "shift" },
     ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }, ["Left"]=113, ["Right"]=114,
-    ["Up"]=111, ["Down"]=116, ["Shift"]=50, ["Control"]=37, ["Escape"]=9, ["Alt"]=64
+    ["Up"]=111, ["Down"]=116, ["Shift"]=50, ["Control"]=37, ["Escape"]=9, ["Alt"]=64,
+    ["Tab"]=32, ["PgUp"]=112, ["Next"]=117, ["Home"]=110, ["Ins"]=118, ["Del"]=119, ["End"]=115
 }
 
 local pressed_key = ""
