@@ -120,6 +120,7 @@ local function fake_key(keysym)
             capi.fake_input("key_release", 50)
         end
     else
+        dbg.stderr("%d\n", keycodes[keysym])
         capi.fake_input("key_press", keycodes[keysym])
         capi.fake_input("key_release", keycodes[keysym])
     end
