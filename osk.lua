@@ -97,10 +97,10 @@ local function fake_key(keysym)
         return
     end
 
+    for _, m in pairs(modifiers) do
+        capi.fake_input("key_press", keycodes[m])
+    end
     if type(keysym) == "number" then
-        for _, m in pairs(modifiers) do
-            capi.fake_input("key_press", keycodes[m])
-        end
         capi.fake_input("key_press", keysym)
         capi.fake_input("key_release", keysym)
         for _, m in pairs(modifiers) do
@@ -123,6 +123,10 @@ local function fake_key(keysym)
         capi.fake_input("key_press", keycodes[keysym])
         capi.fake_input("key_release", keycodes[keysym])
     end
+    for _, m in pairs(modifiers) do
+        capi.fake_input("key_release", keycodes[m])
+    end
+    modifiers = { }
 end
 -- }}}
 -- {{{ local function change_keymap(map)
