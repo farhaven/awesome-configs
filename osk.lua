@@ -91,6 +91,7 @@ end
 -- }}}
 -- {{{ local function fake_key(keycode)
 local function fake_key(keysym)
+    dbg.stderr("keysym: %d\n", keysym)
     if keysym == "Shift" or keysym == "Control" or keysym == "Alt" then
         table.insert(modifiers, keysym)
         return
