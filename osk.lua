@@ -34,9 +34,9 @@ local keymaps = {
         { "y", "x", "c", "v", "b", "n", "m", "k", "⏎" },
     },
     numbers = {
-        { "1", "2", "3", "0" },
-        { "4", "5", "6", "-" },
-        { "7", "8", "9", "." }
+        { "1", "2", "3", "0", ":",  ";", "*", "?", "\"" },
+        { "4", "5", "6", "-", "/",  "{", "}", "!", "'" },
+        { "7", "8", "9", ".", "\\", "(", ")", "|", "@" }
     }
 }
 local active_keymap = "letters"
@@ -47,7 +47,10 @@ local keycodes = {
     ["<"]=94, y=29, x=53, c=54, v=55, b=56, n=57, m=58, [","]=59, ["."]=60, ["/"]=61,
     ['1']=10, ['2']=11, ['3']=12, ['4']=13, ['5']=14,
     ['6']=15, ['7']=16, ['8']=17, ['9']=18, ['0']=19,
-    ['-']=20
+    ['-']=20, [";"]=47, [":"]={ 47, "shift" }, ["*"]={ 17, "shift" }, ["?"] = { 61, "shift" },
+    ["\""]={ 48, "shift" }, ["/"]=61, ["{"]={ 34, "shift" }, ["}"] = { 35, "shift" },
+    ["!"]={ 10, "shift" }, ["'"]=48, ["\\"]=51, ["("]={ 18, "shift" }, [")"]={ 19, "shift" },
+    ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }
 }
 
 local pressed_key = ""
@@ -79,9 +82,20 @@ local function distance(k1, k2, map)
 end
 -- }}}
 -- {{{ local function fake_key(keycode)
-local function fake_key(keycode)
-    capi.fake_input("key_press", keycode)
-    capi.fake_input("key_release", keycode)
+local function fake_key(keysym)
+    if type(keycodes[keysym]) == "table" then
+        if keycodes[keysym][2] == "shift" then
+            capi.fake_input("key_press", 50)
+        end
+        capi.fake_input("key_press", keycodes[keysym][1])
+        capi.fake_input("key_release", keycodes[keysym][1])
+        if keycodes[keysym][2] == "shift" then
+            capi.fake_input("key_release", 50)
+        end
+    else
+        capi.fake_input("key_press", keycodes[keysym])
+        capi.fake_input("key_release", keycodes[keysym])
+    end
 end
 -- }}}
 -- {{{ local function change_keymap(map)
@@ -119,7 +133,7 @@ local function keyrelease(keysym)
         if not keycodes[keysym] then
             naughty.notify({ text = "No keycode for \"" .. keysym .. "\"" })
         else
-            fake_key(keycodes[keysym])
+            fake_key(keysym)
         end
     end
     pressed_key = ""
