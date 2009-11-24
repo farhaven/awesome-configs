@@ -98,12 +98,12 @@ local function fake_key(keysym)
 
     if type(keysym) == "number" then
         for _, m in pairs(modifiers) do
-            capi.fake_input("key_press", keysym[m])
+            capi.fake_input("key_press", keycodes[m])
         end
         capi.fake_input("key_press", keysym)
         capi.fake_input("key_release", keysym)
         for _, m in pairs(modifiers) do
-            capi.fake_input("key_release", keysym[m])
+            capi.fake_input("key_release", keycodes[m])
         end
         modifiers = { }
         return
