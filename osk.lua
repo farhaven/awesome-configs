@@ -38,6 +38,10 @@ local keymaps = {
         { "1", "2", "3", "0", ":",  ";", "*", "?", "\"" },
         { "4", "5", "6", "-", "/",  "{", "}", "!", "'" },
         { "7", "8", "9", ".", "\\", "(", ")", "|", "@" }
+    },
+    control = {
+        { "Shift", "Up", "Control" },
+        { "Left", "Down", "Right" }
     }
 }
 local active_keymap = "letters"
@@ -51,7 +55,8 @@ local keycodes = {
     ['-']=20, [";"]=47, [":"]={ 47, "shift" }, ["*"]={ 17, "shift" }, ["?"] = { 61, "shift" },
     ["\""]={ 48, "shift" }, ["/"]=61, ["{"]={ 34, "shift" }, ["}"] = { 35, "shift" },
     ["!"]={ 10, "shift" }, ["'"]=48, ["\\"]=51, ["("]={ 18, "shift" }, [")"]={ 19, "shift" },
-    ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }
+    ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }, ["Left"]=100, ["Right"]=102,
+    ["Up"]=98, ["Down"]=104, ["Shift"]=50, ["Control"]=37
 }
 
 local pressed_key = ""
@@ -59,6 +64,7 @@ local pressed_key = ""
 local w = { }
 
 local maps = { }
+local modifiers = { }
 for name, _ in pairs(keymaps) do table.insert(maps, name) end
 table.sort(maps)
 -- }}}
@@ -84,9 +90,21 @@ end
 -- }}}
 -- {{{ local function fake_key(keycode)
 local function fake_key(keysym)
+    if keysym == "Shift" or keysym == "Control" then
+        table.insert(modifiers, keysym)
+        return
+    end
+
     if type(keysym) == "number" then
+        for _, m in pairs(modifiers) do
+            capi.fake_input("key_press", keysym[m])
+        end
         capi.fake_input("key_press", keysym)
         capi.fake_input("key_release", keysym)
+        for _, m in pairs(modifiers) do
+            capi.fake_input("key_release", keysym[m])
+        end
+        modifiers = { }
         return
     end
 
