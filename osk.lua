@@ -41,7 +41,8 @@ local keymaps = {
     },
     control = {
         { "Shift", "Up", "Control" },
-        { "Left", "Down", "Right" }
+        { "Left", "Down", "Right" },
+        { "Escape", "Alt" }
     }
 }
 local active_keymap = "letters"
@@ -56,7 +57,7 @@ local keycodes = {
     ["\""]={ 48, "shift" }, ["/"]=61, ["{"]={ 34, "shift" }, ["}"] = { 35, "shift" },
     ["!"]={ 10, "shift" }, ["'"]=48, ["\\"]=51, ["("]={ 18, "shift" }, [")"]={ 19, "shift" },
     ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }, ["Left"]=100, ["Right"]=102,
-    ["Up"]=98, ["Down"]=104, ["Shift"]=50, ["Control"]=37
+    ["Up"]=98, ["Down"]=104, ["Shift"]=50, ["Control"]=37, ["Escape"]=9, ["Alt"]=64
 }
 
 local pressed_key = ""
@@ -90,7 +91,7 @@ end
 -- }}}
 -- {{{ local function fake_key(keycode)
 local function fake_key(keysym)
-    if keysym == "Shift" or keysym == "Control" then
+    if keysym == "Shift" or keysym == "Control" or keysym == "Alt" then
         table.insert(modifiers, keysym)
         return
     end
