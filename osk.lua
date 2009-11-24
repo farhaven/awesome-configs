@@ -12,6 +12,7 @@ local ipairs   = ipairs
 local tostring = tostring
 local table    = table
 local pairs    = pairs
+local type     = type
 local math     = {
     abs        = math.abs
 }
@@ -83,6 +84,12 @@ end
 -- }}}
 -- {{{ local function fake_key(keycode)
 local function fake_key(keysym)
+    if type(keysym) == "number" then
+        capi.fake_input("key_press", keysym)
+        capi.fake_input("key_release", keysym)
+        return
+    end
+
     if type(keycodes[keysym]) == "table" then
         if keycodes[keysym][2] == "shift" then
             capi.fake_input("key_press", 50)
