@@ -3,7 +3,7 @@
 ---------------------------
 
 return {
-    font          = "Droid Sans Mono 8",
+    font          = "Terminus 8",
 
     bg_normal     = "#333333",
     bg_focus      = "#1279bf",
