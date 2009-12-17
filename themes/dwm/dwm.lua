@@ -6,9 +6,9 @@ return {
     -- font          = "Monospace 8",
     -- font          = "fixed 8",
     -- font          = "Sans 8",
-    -- font          = "Terminus 6",
+    font          = "Terminus 8",
     -- font          = "FreeMono 9",
-    font          = "Droid Sans Mono 8",
+    -- font          = "Droid Sans Mono 8",
 
     bg_normal     = "#cccccc",
     bg_focus      = "#0066ff",
