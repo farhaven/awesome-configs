@@ -4,6 +4,7 @@ require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
+require('tagger')  -- for more dynamic tag handling
 
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
@@ -73,28 +74,13 @@ config.layout_icons = {
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "1:term", layout = config.layouts[3] },
-    { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "3:misc (1)", layout = config.layouts[3] },
-    { name = "4:misc (2)", layout = config.layouts[3] },
-    { name = "5:text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "6:irc", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "7:mail", layout = config.layouts[6] },
+    ["term"] = { layout = config.layouts[3] },
+    ["www"]  = { layout = config.layouts[1], mwfact = 0.8 },
+    ["misc"] = { layout = config.layouts[3] },
+    ["text"] = { layout = config.layouts[1], mwfact = 0.57 },
+    ["irc"]  = { layout = config.layouts[1], mwfact = 0.28 },
+    ["mail"] = { layout = config.layouts[6] },
 }
-tags = { }
-for s = 1, screen.count() do
-    tags[s] = { }
-    for i, v in ipairs(config.tags) do
-        tags[s][i] = tag({ name = v.name })
-        tags[s][i].screen = s
-        awful.tag.setproperty(tags[s][i], "layout", v.layout)
-        awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
-        awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
-        awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
-        awful.tag.setproperty(tags[s][i], "icon", v.icon)
-    end
-    tags[s][1].selected = true
-end
 -- }}}
 -- {{{ Clients
 config.apps = {
@@ -105,14 +91,14 @@ config.apps = {
     { match = { "mplayer", "Open File", "dclock" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },              tag = 1 },
-    { match = { "firefox", "dillo" },   tag = 2 },
-    { match = { "uzbl" },               tag = 2 },
-    { match = { "urxvt.cmus", "wicd" }, tag = 3 },
-    { match = { "xpdf", "virtualbox" }, tag = 3 },
-    { match = { config.global.editor }, tag = 5 },
-    { match = { "urxvt.irssi" },        tag = 6 },
-    { match = { "urxvt.mutt" },         tag = 7 },
+    { match = { "urxvt" },              tag = "term" },
+    { match = { "firefox", "dillo" },   tag = "www"  },
+    { match = { "uzbl", "opera" },      tag = "www"  },
+    { match = { "urxvt.cmus", "wicd" }, tag = "misc" },
+    { match = { "xpdf", "virtualbox" }, tag = "misc" },
+    { match = { config.global.editor }, tag = "text" },
+    { match = { "urxvt.irssi" },        tag = "irc"  },
+    { match = { "urxvt.mutt" },         tag = "mail" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
@@ -250,6 +236,9 @@ globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
+    awful.key({ config.global.modkey }, "q", tagger.add),
+    awful.key({ config.global.modkey }, "w", tagger.remove),
+    awful.key({ config.global.modkey }, "e", tagger.rename),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
@@ -307,13 +296,13 @@ globalkeys = awful.util.table.join(
 for i = 1, 9 do
     table.foreach(awful.key({ config.global.modkey }, i,
             function ()
-                awful.tag.viewonly(tags[mouse.screen][i])
+                awful.tag.viewonly(screen[mouse.screen]:tags()[i])
             end), function(_, k) table.insert(globalkeys, k) end)
 
     table.foreach(awful.key({ config.global.modkey, "Mod1" }, i,
             function ()
                 if client.focus then
-                    awful.client.movetotag(tags[mouse.screen][i])
+                    awful.client.movetotag(screen[mouse.screen]:tags()[i])
                 end
             end), function(_, k) table.insert(globalkeys, k) end)
 end
@@ -376,7 +365,7 @@ client.add_signal("manage", function (c, startup)
                     c:raise()
                 end
                 if v.tag then
-                    awful.client.movetotag(tags[c.screen][v.tag], c)
+                    awful.client.movetotag(tagger.apptag(v.tag, config.tags[v.tag], c), c)
                 end
                 if v.opacity_u then
                     opacities_unfocus[c] = v.opacity_u
