@@ -45,6 +45,10 @@ function apptag(name, props, client)
 end
 
 function add(scr, name, props)
+    local switchthere = false
+    if not scr then
+        switchthere = true
+    end
     scr = scr or capi.mouse.screen
     name = name or '(none)'
     props = props or { }
@@ -58,8 +62,8 @@ function add(scr, name, props)
     awful.tag.setproperty(t, "ncols", props.ncols)
     awful.tag.setproperty(t, "icon", props.icon)
 
-    if #(capi.screen[scr]:tags()) == 1 then
-        t.selected = true
+    if #(capi.screen[scr]:tags()) == 1 or switchthere then
+        awful.tag.viewonly(t)
     end
 
     return t
