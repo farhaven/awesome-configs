@@ -357,24 +357,29 @@ client.add_signal("manage", function (c, startup)
     opacities_unfocus[c] = config.global.opacity_u or 1
     opacities_focus[c] = config.global.opacity_f or 1
 
+    local properties = { }
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
             if name:match(m) or instance:match(m) or class:match(m) then
-                if v.float ~= nil then
-                    awful.client.floating.set(c, v.float)
-                    c:raise()
-                end
-                if v.tag then
-                    awful.client.movetotag(tagger.apptag(v.tag, config.tags[v.tag], c), c)
-                end
-                if v.opacity_u then
-                    opacities_unfocus[c] = v.opacity_u
-                end
-                if v.opacity_f then
-                    opacities_focus[c] = v.opacity_f
+                for l, n in pairs(v) do
+                    properties[l] = n
                 end
             end
         end
+    end
+
+    if properties.float ~= nil then
+        awful.client.floating.set(c, properties.float)
+        c:raise()
+    end
+    if properties.tag then
+        awful.client.movetotag(tagger.apptag(properties.tag, config.tags[properties.tag], c), c)
+    end
+    if properties.opacity_u then
+        opacities_unfocus[c] = properties.opacity_u
+    end
+    if properties.opacity_f then
+        opacities_focus[c] = properties.opacity_f
     end
 
     if not startup and awful.client.floating.get(c) then
