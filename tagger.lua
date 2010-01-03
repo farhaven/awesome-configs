@@ -9,9 +9,6 @@ local capi = {
 local ipairs = ipairs
 local table = table
 
-
-local dbg = require('dbg')
-
 module('tagger')
 
 function tag2idx(tag)
