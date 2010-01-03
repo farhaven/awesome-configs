@@ -94,13 +94,8 @@ function remove(scr, idx)
     if idx > #t then return end
     if #(t[idx]:clients()) ~= 0 then return end
     if t[idx].selected then awful.tag.viewnext() end
-    local t2 = { }
-    for i, tag in ipairs(t) do
-        if idx ~= i then
-            table.insert(t2, tag)
-        end
-    end
-    capi.screen[scr]:tags(t2)
+    table.remove(t, idx)
+    capi.screen[scr]:tags(t)
 end
 
 function rename(t)
