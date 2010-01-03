@@ -7,6 +7,7 @@ local capi = {
     client = client
 }
 local ipairs = ipairs
+local pairs = pairs
 local table = table
 
 module('tagger')
@@ -69,6 +70,21 @@ function add(scr, name, props)
     return t
 end
 
+function clean(scr)
+    local tags = capi.screen[scr]:tags()
+    local t2 = { }
+    for i, v in pairs(tags) do
+        if #(v:clients()) ~= 0 then
+            table.insert(t2, v)
+        else
+            if v.selected then
+                awful.tag.viewnext(capi.screen[v.screen])
+            end
+        end
+    end
+    capi.screen[scr]:tags(t2)
+end
+
 function remove(scr, idx)
     scr = scr or capi.mouse.screen
     idx = idx or tag2idx(awful.tag.selected(scr))
@@ -110,8 +126,5 @@ function rename(t)
 end
 
 capi.client.add_signal("unmanage", function (c)
-    local t = c:tags()
-    for i, v in ipairs(t) do
-        remove(c.screen, tag2idx(v))
-    end
+    clean(c.screen)
 end)
