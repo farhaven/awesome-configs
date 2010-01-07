@@ -51,7 +51,7 @@ function add(scr, name, props)
         switchthere = true
     end
     scr = scr or capi.mouse.screen
-    name = name or '(none)'
+    name = name or 'default'
     props = props or { }
 
     local t = capi.tag({ name = name })
@@ -78,9 +78,12 @@ function clean(scr)
             table.insert(t2, v)
         else
             if v.selected then
-                awful.tag.viewnext(capi.screen[v.screen])
+                awful.tag.viewprev(capi.screen[v.screen])
             end
         end
+    end
+    if #t2 == 0 then
+        table.insert(t2, tags[1])
     end
     capi.screen[scr]:tags(t2)
 end
@@ -91,7 +94,7 @@ function remove(scr, idx)
     if not idx then return end
 
     local t = capi.screen[scr]:tags()
-    if idx > #t then return end
+    if idx > #t or #t == 1 then return end
     if #(t[idx]:clients()) ~= 0 then return end
     if t[idx].selected then awful.tag.viewnext() end
     table.remove(t, idx)
@@ -123,3 +126,7 @@ end
 capi.client.add_signal("unmanage", function (c)
     clean(c.screen)
 end)
+
+for s = 1, capi.screen.count() do
+    add(s, 'default')
+end
