@@ -118,9 +118,10 @@ config.apps = {
     -- {{{ apptags
     { match = { "urxvt" },              tag = 1 },
     { match = { "firefox", "dillo" },   tag = 2 },
-    { match = { "uzbl" },               tag = 2 },
+    { match = { "uzbl", "chrome" },     tag = 2 },
     { match = { "urxvt.cmus", "wicd" }, tag = 3 },
-    { match = { "xpdf", "virtualbox" }, tag = 3 },
+    { match = { "win", "virtualbox" },  tag = 3 },
+    { match = { "yadex" },              tag = 4 },
     { match = { config.global.editor }, tag = 5 },
     { match = { "urxvt.irssi" },        tag = 6 },
     { match = { "urxvt.mutt" },         tag = 7 },
