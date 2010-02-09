@@ -1,3 +1,4 @@
+-- Environment
 local awful = require('awful')
 local capi = {
     tag = tag,
@@ -12,7 +13,7 @@ local table = table
 
 module('tagger')
 
-function tag2idx(tag)
+function tag2idx(tag) -- {{{
     if not tag then return nil end
     local tags = capi.screen[tag.screen]:tags()
 
@@ -24,8 +25,8 @@ function tag2idx(tag)
 
     return nil
 end
-
-function name2idx(name, screen)
+-- }}}
+function name2idx(name, screen) -- {{{
     screen = screen or capi.mouse.screen
     local tags = capi.screen[screen]:tags()
     for i, v in ipairs(tags) do
@@ -35,8 +36,8 @@ function name2idx(name, screen)
     end
     return nil
 end
-
-function apptag(name, props, client)
+-- }}}
+function apptag(name, props, client) -- {{{
     local screen = client and client.screen or capi.mouse.screen
     local idx = name2idx(name, screen)
     if not idx then
@@ -44,8 +45,8 @@ function apptag(name, props, client)
     end
     return capi.screen[screen]:tags()[idx]
 end
-
-function add(scr, name, props)
+-- }}}
+function add(scr, name, props) -- {{{
     local switchthere = false
     if not scr then
         switchthere = true
@@ -69,8 +70,8 @@ function add(scr, name, props)
 
     return t
 end
-
-function clean(scr)
+-- }}}
+function clean(scr) -- {{{
     local tags = capi.screen[scr]:tags()
     local t2 = { }
     for i, v in pairs(tags) do
@@ -87,8 +88,8 @@ function clean(scr)
     end
     capi.screen[scr]:tags(t2)
 end
-
-function remove(scr, idx)
+-- }}}
+function remove(scr, idx) -- {{{
     scr = scr or capi.mouse.screen
     idx = idx or tag2idx(awful.tag.selected(scr))
     if not idx then return end
@@ -100,8 +101,8 @@ function remove(scr, idx)
     table.remove(t, idx)
     capi.screen[scr]:tags(t)
 end
-
-function rename(t)
+-- }}}
+function rename(t) -- {{{
     t = t or awful.tag.selected(capi.mouse.screen)
 
     local name = t.name
@@ -130,3 +131,4 @@ end)
 for s = 1, capi.screen.count() do
     add(s, 'default')
 end
+-- }}}
