@@ -55,8 +55,13 @@ function add(scr, name, props) -- {{{
     name = name or 'default'
     props = props or { }
 
+    local tags = capi.screen[scr]:tags()
     local t = capi.tag({ name = name })
+    local idx = tag2idx(awful.tag.selected())
+    idx = idx or 0
+    table.insert(tags, idx + 1, t)
     t.screen = scr
+    capi.screen[scr]:tags(tags)
 
     awful.tag.setproperty(t, "layout", props.layout or awful.layout.suit.tile)
     awful.tag.setproperty(t, "mwfact", props.mwfact)
