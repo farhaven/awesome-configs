@@ -37,6 +37,17 @@ function screenfocus(idx)
     mouse.coords({ x = x, y = y })
 end
 -- }}}
+-- {{{ getclientbyprop(prop, value)
+function getclientbyprop(prop, value)
+    local c = client.get()
+    for i, v in ipairs(c) do
+        if v[prop] == value then
+            return v
+        end
+    end
+    return nil
+end
+-- }}}
 -- }}}
 -- {{{ Settings
 config = { }
