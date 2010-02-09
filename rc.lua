@@ -263,10 +263,7 @@ globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
-    awful.key({ config.global.modkey }, "q", function ()
-        tagger.add()
-        tagger.rename()
-    end),
+    awful.key({ config.global.modkey }, "q", tagger.add),
     awful.key({ config.global.modkey }, "w", tagger.remove),
     awful.key({ config.global.modkey }, "e", tagger.rename),
     -- }}}
