@@ -338,8 +338,8 @@ clientkeys = awful.util.table.join(
 root.keys(globalkeys)
 -- }}}
 -- {{{ Signals
-local opacities_focus   = { }
-local opacities_unfocus = { }
+opacities_focus   = { }
+opacities_unfocus = { }
 -- {{{ focus
 client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
