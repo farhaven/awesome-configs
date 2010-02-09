@@ -39,9 +39,11 @@ end
 -- }}}
 function apptag(name, props, client) -- {{{
     local screen = client and client.screen or capi.mouse.screen
+    props = props or { }
+    props.name = props.name or name
     local idx = name2idx(name, screen)
     if not idx then
-        return add(screen, name, props)
+        return add(screen, props)
     end
     return capi.screen[screen]:tags()[idx]
 end
@@ -49,7 +51,7 @@ end
 function add(scr, props) -- {{{
     scr = scr or capi.mouse.screen
     props = props or { }
-    name = props.name or 'default'
+    local name = props.name or 'default'
 
     local tags = capi.screen[scr]:tags()
     local t = capi.tag({ name = name })
