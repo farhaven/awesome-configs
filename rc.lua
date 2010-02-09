@@ -85,27 +85,22 @@ config.layout_icons = {
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "1:term", layout = config.layouts[3] },
-    { name = "2:www", layout = config.layouts[1], mwfact = 0.8 },
-    { name = "3:misc (1)", layout = config.layouts[3] },
-    { name = "4:misc (2)", layout = config.layouts[3] },
-    { name = "5:text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "6:irc", layout = config.layouts[1], mwfact = 0.28 },
-    { name = "7:mail", layout = config.layouts[6] },
+    { name = "term", layout = config.layouts[3] },
+    { name = "www", layout = config.layouts[1], mwfact = 0.8 },
+    { name = "misc 1", layout = config.layouts[3] },
+    { name = "misc 2", layout = config.layouts[3] },
+    { name = "text", layout = config.layouts[1], mwfact = 0.57 },
+    { name = "irc", layout = config.layouts[1], mwfact = 0.28 },
+    { name = "mail", layout = config.layouts[6] },
 }
-tags = { }
-for s = 1, screen.count() do
-    tags[s] = { }
-    for i, v in ipairs(config.tags) do
-        tags[s][i] = tag({ name = v.name })
-        tags[s][i].screen = s
-        awful.tag.setproperty(tags[s][i], "layout", v.layout)
-        awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
-        awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
-        awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
-        awful.tag.setproperty(tags[s][i], "icon", v.icon)
+for i, v in ipairs(config.tags) do
+    v.switch = true
+    for s = 1, screen.count() do
+        tagger.add(s, v)
     end
-    tags[s][1].selected = true
+end
+for s = 1, screen.count() do
+    awful.tag.viewonly(screen[s]:tags()[1])
 end
 -- }}}
 -- {{{ Clients
@@ -263,7 +258,7 @@ globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
-    awful.key({ config.global.modkey }, "q", tagger.add),
+    awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
     awful.key({ config.global.modkey }, "w", tagger.remove),
     awful.key({ config.global.modkey }, "e", tagger.rename),
     -- }}}

@@ -46,14 +46,10 @@ function apptag(name, props, client) -- {{{
     return capi.screen[screen]:tags()[idx]
 end
 -- }}}
-function add(scr, name, props) -- {{{
-    local switchthere = false
-    if not scr then
-        switchthere = true
-    end
+function add(scr, props) -- {{{
     scr = scr or capi.mouse.screen
-    name = name or 'default'
     props = props or { }
+    name = props.name or 'default'
 
     local tags = capi.screen[scr]:tags()
     local t = capi.tag({ name = name })
@@ -69,7 +65,7 @@ function add(scr, name, props) -- {{{
     awful.tag.setproperty(t, "ncols", props.ncols)
     awful.tag.setproperty(t, "icon", props.icon)
 
-    if #(capi.screen[scr]:tags()) == 1 or switchthere then
+    if #(capi.screen[scr]:tags()) == 1 or props.switch then
         awful.tag.viewonly(t)
     end
 
