@@ -4,6 +4,7 @@ require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
+require('tagger')
 
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
@@ -262,6 +263,12 @@ globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
+    awful.key({ config.global.modkey }, "q", function ()
+        tagger.add()
+        tagger.rename()
+    end),
+    awful.key({ config.global.modkey }, "w", tagger.remove),
+    awful.key({ config.global.modkey }, "e", tagger.rename),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
