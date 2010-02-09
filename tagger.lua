@@ -123,12 +123,4 @@ function rename(t) -- {{{
         return true
     end)
 end
-
-capi.client.add_signal("unmanage", function (c)
-    clean(c.screen)
-end)
-
-for s = 1, capi.screen.count() do
-    add(s, 'default')
-end
 -- }}}
