@@ -30,7 +30,7 @@ function name2idx(name, screen) -- {{{
     screen = screen or capi.mouse.screen
     local tags = capi.screen[screen]:tags()
     for i, v in ipairs(tags) do
-        if v.name == name then
+        if v.name == name or v.name:match("^%d+:" .. name .. "$") then
             return i
         end
     end
