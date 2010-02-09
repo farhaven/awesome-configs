@@ -392,8 +392,8 @@ client.add_signal("manage", function (c, startup)
         awful.client.floating.set(c, properties.float)
         c:raise()
     end
-    if properties.tag then
-        awful.client.movetotag(tags[c.screen][properties.tag], c)
+    if properties.tag and screen[c.screen]:tags()[properties.tag] then
+        awful.client.movetotag(screen[c.screen]:tags()[properties.tag], c)
     end
     if properties.opacity_u then
         opacities_unfocus[c] = properties.opacity_u
