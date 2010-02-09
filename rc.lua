@@ -117,15 +117,15 @@ config.apps = {
     { match = { "mplayer", "Open File", "dclock" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },              tag = 1 },
-    { match = { "firefox", "dillo" },   tag = 2 },
-    { match = { "uzbl", "chrome" },     tag = 2 },
-    { match = { "urxvt.cmus", "wicd" }, tag = 3 },
-    { match = { "win", "virtualbox" },  tag = 3 },
-    { match = { "yadex" },              tag = 4 },
-    { match = { config.global.editor }, tag = 5 },
-    { match = { "urxvt.irssi" },        tag = 6 },
-    { match = { "urxvt.mutt" },         tag = 7 },
+    { match = { "urxvt" },              tag = "term" },
+    { match = { "firefox", "dillo" },   tag = "www" },
+    { match = { "uzbl", "chrome" },     tag = "www" },
+    { match = { "urxvt.cmus", "wicd" }, tag = "misc 1" },
+    { match = { "win", "virtualbox" },  tag = "misc 1" },
+    { match = { "yadex" },              tag = "misc 2" },
+    { match = { config.global.editor }, tag = "text" },
+    { match = { "urxvt.irssi" },        tag = "irc" },
+    { match = { "urxvt.mutt" },         tag = "mail" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
@@ -396,8 +396,8 @@ client.add_signal("manage", function (c, startup)
         awful.client.floating.set(c, properties.float)
         c:raise()
     end
-    if properties.tag and screen[c.screen]:tags()[properties.tag] then
-        awful.client.movetotag(screen[c.screen]:tags()[properties.tag], c)
+    if properties.tag then
+        awful.client.movetotag(tagger.apptag(properties.tag, {}, c), c)
     end
     if properties.opacity_u then
         opacities_unfocus[c] = properties.opacity_u
