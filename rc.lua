@@ -264,7 +264,7 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
     -- }}}
     -- {{{ Misc
-    awful.key({ config.global.modkey, "Mod1" }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
+    awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
     -- hide / unhide current screens wibox
@@ -282,9 +282,6 @@ globalkeys = awful.util.table.join(
     -- }}}
     -- {{{ Program read prompt
     awful.key({ config.global.modkey, "Mod4" }, "Return", function() awful.util.spawn("xrun -v") end),
-    -- }}}
-    -- {{{ URL prompt
-    awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("xrun 'while read u; do uzbl -u $u; done'") end),
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
