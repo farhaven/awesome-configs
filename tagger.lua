@@ -73,6 +73,7 @@ function add(scr, name, props) -- {{{
         awful.tag.viewonly(t)
     end
 
+    update_names(scr)
     return t
 end
 -- }}}
@@ -105,6 +106,19 @@ function remove(scr, idx) -- {{{
     if t[idx].selected then awful.tag.viewnext() end
     table.remove(t, idx)
     capi.screen[scr]:tags(t)
+
+    update_names(scr)
+end
+-- }}}
+function update_names(scr) -- {{{
+    local t = capi.screen[scr]:tags()
+    for i, v in ipairs(t) do
+        if not v.name:match("^%d+:") then
+            v.name = i .. ":" .. v.name
+        else
+            v.name = v.name:gsub("^(%d+):", i..":")
+        end
+    end
 end
 -- }}}
 function rename(t) -- {{{
@@ -120,6 +134,7 @@ function rename(t) -- {{{
             t.name = t.name:sub(1, t.name:len() - 2) .. '_'
         elseif key == "Return" and t.name:len() > 1 then
             t.name = t.name:sub(1, t.name:len() - 1)
+            update_names(t.screen)
             return false
         elseif key == "Escape" then
             t.name = name
