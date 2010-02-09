@@ -316,13 +316,13 @@ globalkeys = awful.util.table.join(
 for i = 1, 9 do
     table.foreach(awful.key({ config.global.modkey }, i,
             function ()
-                awful.tag.viewonly(tags[mouse.screen][i])
+                awful.tag.viewonly(screen[mouse.screen]:tags()[i])
             end), function(_, k) table.insert(globalkeys, k) end)
 
     table.foreach(awful.key({ config.global.modkey, "Mod1" }, i,
             function ()
                 if client.focus then
-                    awful.client.movetotag(tags[mouse.screen][i])
+                    awful.client.movetotag(screen[mouse.screen]:tags()[i])
                 end
             end), function(_, k) table.insert(globalkeys, k) end)
 end
