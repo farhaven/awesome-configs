@@ -86,10 +86,10 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = "term", layout = config.layouts[3] },
-    { name = "www", layout = config.layouts[1], mwfact = 0.8 },
+    { name = "www",  layout = config.layouts[1], mwfact = 0.8 },
     { name = "misc", layout = config.layouts[3] },
     { name = "text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "irc", layout = config.layouts[1], mwfact = 0.28 },
+    { name = "irc",  layout = config.layouts[1], mwfact = 0.28 },
     { name = "mail", layout = config.layouts[6] },
 }
 for i, v in ipairs(config.tags) do
@@ -111,16 +111,16 @@ config.apps = {
     { match = { "mplayer", "Open File", "dclock" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },              tag = "term" },
-    { match = { "firefox", "dillo" },   tag = "www" },
-    { match = { "uzbl", "chrome" },     tag = "www" },
+    { match = { "urxvt" },                 tag = "term" },
+    { match = { "firefox", "dillo" },      tag = "www" },
+    { match = { "uzbl", "chrome" },        tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
-    { match = { "wicd" }, tag = "misc 1" },
-    { match = { "win", "virtualbox" },  tag = "emulation" },
-    { match = { "yadex" },              tag = "misc" },
-    { match = { config.global.editor }, tag = "text" },
-    { match = { "urxvt.irssi" },        tag = "irc" },
-    { match = { "urxvt.mutt" },         tag = "mail" },
+    { match = { "wicd" },                  tag = "misc" },
+    { match = { "win", "virtualbox" },     tag = "emulation" },
+    { match = { "yadex" },                 tag = "misc" },
+    { match = { config.global.editor },    tag = "text" },
+    { match = { "urxvt.irssi" },           tag = "irc" },
+    { match = { "urxvt.mutt" },            tag = "mail" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
