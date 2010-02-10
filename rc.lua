@@ -92,13 +92,8 @@ config.tags = {
     { name = "irc",  layout = config.layouts[1], mwfact = 0.28 },
     { name = "mail", layout = config.layouts[6] },
 }
-for i, v in ipairs(config.tags) do
-    v.switch = true
-    for s = 1, screen.count() do
-        tagger.add(s, v)
-    end
-end
 for s = 1, screen.count() do
+    tagger.add(s, awful.util.table.join(config.tags[1], { switch = true }))
     awful.tag.viewonly(screen[s]:tags()[1])
 end
 -- }}}
