@@ -115,6 +115,7 @@ config.apps = {
     { match = { "firefox", "dillo" },      tag = "www" },
     { match = { "uzbl", "chrome" },        tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
+    { match = { "gqview" },                tag = "media" },
     { match = { "wicd" },                  tag = "misc" },
     { match = { "win", "virtualbox" },     tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
