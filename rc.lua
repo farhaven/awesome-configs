@@ -404,7 +404,12 @@ client.add_signal("manage", function (c, startup)
 
     c:keys(clientkeys)
 
-    client.focus = c
+    if startup then
+        client.focus = awful.client.focus.history.get()
+    else
+        client.focus = c
+    end
+
 end)
 -- }}}
 -- {{{ layout
