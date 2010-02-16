@@ -1,10 +1,10 @@
-require('strict') -- strict checking for unassigned variables, like perl's use strict;
+local have_strict, strict = pcall(require, 'strict') -- strict checking for unassigned variables, like perl's use strict;
 require('awful')
 require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
-require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
-require('tagger')
+local have_obvious, obvious = pcall(require, 'obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
+local have_tagger, tagger = pcall(require, 'tagger')  -- Dynamic Tagging
 
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
@@ -93,7 +93,19 @@ config.tags = {
     { name = "mail", layout = config.layouts[6] },
 }
 for s = 1, screen.count() do
-    tagger.add(s, awful.util.table.join(config.tags[1], { switch = true }))
+    if have_tagger then
+        tagger.add(s, awful.util.table.join(config.tags[1], { switch = true }))
+    else
+        for i, v in ipairs(config.tags) do
+            local t = tag({ name = v.name })
+            t.screen = s
+            awful.tag.setproperty(t, "layout", v.layout)
+            awful.tag.setproperty(t, "mwfact", v.mwfact)
+            awful.tag.setproperty(t, "nmaster", v.nmaster)
+            awful.tag.setproperty(t, "ncols", v.ncols)
+            awful.tag.setproperty(t, "icon", v.icon)
+        end
+    end
     awful.tag.viewonly(screen[s]:tags()[1])
 end
 -- }}}
@@ -134,16 +146,29 @@ naughty.config.presets.normal.hover_timeout = 0.3
 naughty.config.presets.normal.opacity       = 0.8
 -- }}}
 -- {{{ Obvious
-obvious.clock.set_editor(config.global.editor)
-obvious.clock.set_shortformat(function ()
-    local week = tonumber(os.date("%W")) + 1
-    return "%H%M ("..week..") "
-end)
-obvious.clock.set_longformat(function ()
-    local week = tonumber(os.date("%W")) + 1
-    return "%d%m ("..week..") "
-end)
+if have_obvious then
+    obvious.clock.set_editor(config.global.editor)
+    obvious.clock.set_shortformat(function ()
+        local week = tonumber(os.date("%W")) + 1
+        return "%H%M ("..week..") "
+    end)
+    obvious.clock.set_longformat(function ()
+        local week = tonumber(os.date("%W")) + 1
+        return "%d%m ("..week..") "
+    end)
+end
 -- }}}
+-- }}}
+-- {{{ Spit out warning messages if some libs are not found
+if not have_obvious then
+    naughty.notify({ text = "Obvious could not be loaded by 'require()'", title = "Obvious missing", timeout = 0 })
+end
+if not have_tagger then
+    naughty.notify({ text = "Tagger could not be loaded by 'require()'", title = "Tagger missing", timeout = 0 })
+end
+if not have_strict then
+    naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work.", title = "strict missing", timeout = 0 })
+end
 -- }}}
 -- {{{ Widgets
 -- {{{ tag list
@@ -191,7 +216,7 @@ for s = 1, screen.count() do
     wi_widgets[s].widgets = {
                                 tl_taglist[s],
                                 lb_layout[s],
-                                {
+                                have_obvious and {
                                     textbox(" "),
                                     obvious.volume_alsa(),
                                     textbox(" "),
@@ -254,9 +279,9 @@ globalkeys = awful.util.table.join(
     systemkeys,
     -- {{{ Tags
     awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
-    awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
-    awful.key({ config.global.modkey }, "w", tagger.remove),
-    awful.key({ config.global.modkey }, "e", tagger.rename),
+    have_tagger and awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
+    have_tagger and awful.key({ config.global.modkey }, "w", tagger.remove),
+    have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
@@ -302,9 +327,9 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Audio
 -- Volume control
-    awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
-    awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
-    awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
+    have_obvious and awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
+    have_obvious and awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
+    have_obvious and awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
 -- }}}
 )
 -- {{{ Tags
@@ -388,7 +413,17 @@ client.add_signal("manage", function (c, startup)
         c:raise()
     end
     if properties.tag then
-        awful.client.movetotag(tagger.apptag(properties.tag, {}, c), c)
+        if have_tagger then
+            awful.client.movetotag(tagger.apptag(properties.tag, {}, c), c)
+        else
+            local t = screen[c.screen]:tags()
+            for k, v in pairs(t) do
+                if v.name == properties.tag then
+                    awful.client.movetotag(v)
+                    break
+                end
+            end
+        end
     end
     if properties.opacity_u then
         opacities_unfocus[c] = properties.opacity_u
