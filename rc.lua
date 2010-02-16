@@ -441,7 +441,10 @@ client.add_signal("manage", function (c, startup)
     c:keys(clientkeys)
 
     if startup then
-        client.focus = awful.client.focus.history.get()
+        local ch = awful.client.focus.history.get()
+        if ch then
+            client.focus = ch
+        end
     else
         client.focus = c
     end
