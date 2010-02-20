@@ -142,7 +142,7 @@ function rename(t) -- {{{
     end)
 end
 -- }}}
-function move(t, idx) -- {{{
+local function move(t, idx) -- {{{
     local tags = capi.screen[t.screen]:tags()
     local idx_old = tag2idx(t)
     if not idx_old then return end
@@ -154,7 +154,7 @@ function move(t, idx) -- {{{
     update_names(t.screen)
 end
 -- }}}
-function moverel(t, off) -- {{{
+local function moverel(t, off) -- {{{
     local idx = tag2idx(t)
     if not idx then return end
     local idx_max = #(capi.screen[t.screen]:tags())
