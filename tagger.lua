@@ -174,3 +174,48 @@ function moveright(t) -- {{{
     moverel(t, 1)
 end
 -- }}}
+local function movescreen(t, scr) -- {{{
+    if t.screen == scr or #(capi.screen[t.screen]:tags()) == 1 then return end
+    if t.selected then
+        awful.tag.viewnext(capi.screen[t.screen])
+    end
+    local clients = t:clients()
+    local oldscr = t.screen
+    local idx = tag2idx(awful.tag.selected(scr))
+    t.screen = scr
+    for i, v in pairs(clients) do
+        v.screen = scr
+        v:tags({ t })
+    end
+    local tags = capi.screen[scr]:tags()
+    local c = capi.client.focus
+    table.remove(tags)
+    table.insert(tags, idx, t)
+    capi.screen[scr]:tags(tags)
+    update_names(scr)
+    update_names(oldscr)
+    capi.client.focus = c
+    if not capi.client.focus or not capi.client.focus.visible then
+        capi.client.focus = awful.tag.selected(scr):clients()[1]
+    end
+    capi.mouse.screen = scr
+    awful.tag.viewonly(t)
+end
+-- }}}
+local function movescreenrel(t, off) -- {{{
+    local idx = t.screen
+    local idx_max = capi.screen.count()
+    local idx_new = awful.util.cycle(idx_max, idx + off)
+    movescreen(t, idx_new)
+end
+-- }}}
+function movescreenleft(t) -- {{{
+    t = t or awful.tag.selected(capi.mouse.screen)
+    movescreenrel(t, -1)
+end
+-- }}}
+function movescreenright(t) -- {{{
+    t = t or awful.tag.selected(capi.mouse.screen)
+    movescreenrel(t, 1)
+end
+-- }}}

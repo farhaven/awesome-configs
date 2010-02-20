@@ -285,6 +285,8 @@ globalkeys = awful.util.table.join(
     have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left", tagger.moveleft),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", tagger.moveright),
+    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Back", tagger.movescreenleft),
+    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Forward", tagger.movescreenright),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
