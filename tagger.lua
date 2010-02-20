@@ -142,3 +142,31 @@ function rename(t) -- {{{
     end)
 end
 -- }}}
+function move(t, idx) -- {{{
+    local tags = capi.screen[t.screen]:tags()
+    local idx_old = tag2idx(t)
+    if not idx_old then return end
+
+    table.remove(tags, idx_old)
+    table.insert(tags, idx, t)
+
+    capi.screen[t.screen]:tags(tags)
+    update_names(t.screen)
+end
+-- }}}
+function moverel(t, off) -- {{{
+    local idx = tag2idx(t)
+    if not idx then return end
+    local idx_max = #(capi.screen[t.screen]:tags())
+    local idx_new = awful.util.cycle(idx_max, idx + off)
+    move(t, idx_new)
+end
+-- }}}
+function moveleft(t) -- {{{
+    moverel(t, -1)
+end
+-- }}}
+function moveright(t) -- {{{
+    moverel(t, 1)
+end
+-- }}}
