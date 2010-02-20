@@ -3,6 +3,7 @@
 ---------------------------
 
 return {
+    -- font          = "Terminus 8",
     font          = "Fixed 8",
 
     bg_normal     = "#333333",
