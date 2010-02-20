@@ -165,10 +165,12 @@ local function moverel(t, off) -- {{{
 end
 -- }}}
 function moveleft(t) -- {{{
+    t = t or awful.tag.selected(capi.mouse.screen)
     moverel(t, -1)
 end
 -- }}}
 function moveright(t) -- {{{
+    t = t or awful.tag.selected(capi.mouse.screen)
     moverel(t, 1)
 end
 -- }}}

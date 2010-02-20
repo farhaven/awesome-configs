@@ -283,12 +283,8 @@ globalkeys = awful.util.table.join(
     have_tagger and awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
     have_tagger and awful.key({ config.global.modkey }, "w", tagger.remove),
     have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
-    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left",  function ()
-        tagger.moveleft (awful.tag.selected(mouse.screen))
-    end),
-    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", function ()
-        tagger.moveright(awful.tag.selected(mouse.screen))
-    end),
+    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left", tagger.moveleft),
+    have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", tagger.moveright),
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
