@@ -97,6 +97,7 @@ function remove(scr, idx) -- {{{
     scr = scr or capi.mouse.screen
     idx = idx or tag2idx(awful.tag.selected(scr))
     if not idx then return end
+    local c = capi.client.focus
 
     local t = capi.screen[scr]:tags()
     if idx > #t or #t == 1 then return end
@@ -106,6 +107,7 @@ function remove(scr, idx) -- {{{
     capi.screen[scr]:tags(t)
 
     update_names(scr)
+    capi.client.focus = c
 end
 -- }}}
 function update_names(scr) -- {{{
@@ -145,6 +147,7 @@ end
 local function move(t, idx) -- {{{
     local tags = capi.screen[t.screen]:tags()
     local idx_old = tag2idx(t)
+    local c = capi.client.focus
     if not idx_old then return end
 
     table.remove(tags, idx_old)
@@ -152,6 +155,7 @@ local function move(t, idx) -- {{{
 
     capi.screen[t.screen]:tags(tags)
     update_names(t.screen)
+    capi.client.focus = c
 end
 -- }}}
 local function moverel(t, off) -- {{{

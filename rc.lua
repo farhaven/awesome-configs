@@ -284,14 +284,10 @@ globalkeys = awful.util.table.join(
     have_tagger and awful.key({ config.global.modkey }, "w", tagger.remove),
     have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left",  function ()
-        local c = client.focus
         tagger.moveleft (awful.tag.selected(mouse.screen))
-        client.focus = c
     end),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", function ()
-        local c = client.focus
         tagger.moveright(awful.tag.selected(mouse.screen))
-        client.focus = c
     end),
     -- }}}
     -- {{{ Misc
