@@ -60,7 +60,7 @@ local keycodes = {
     ["!"]={ 10, "shift" }, ["'"]=48, ["\\"]=51, ["("]={ 18, "shift" }, [")"]={ 19, "shift" },
     ["|"]={ 51, "shift" }, ["@"]={ 11, "shift" }, ["Left"]=113, ["Right"]=114,
     ["Up"]=111, ["Down"]=116, ["Shift"]=50, ["Control"]=37, ["Escape"]=9, ["Alt"]=64,
-    ["Tab"]=23, ["PgUp"]=112, ["Next"]=117, ["Home"]=110, ["Ins"]=118, ["Del"]=119, ["End"]=115
+    ["Tab"]=23, ["PgUp"]=112, ["PgDown"]=117, ["Home"]=110, ["Ins"]=118, ["Del"]=119, ["End"]=115
 }
 
 local pressed_key = { x = 0, y = 0 }
