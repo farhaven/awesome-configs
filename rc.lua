@@ -214,6 +214,7 @@ client.add_signal("new", function (c)
             local g = { width = s.width * 0.7, height = s.height * 0.7 }
             c:geometry(g)
             awful.placement.centered(c)
+            awful.placement.no_overlap(c)
         end
     end)
 end)
