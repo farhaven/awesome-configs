@@ -115,6 +115,19 @@ tb_client_prev:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.client.focus.byidx(1) end)
 ))
 -- }}}
+tb_desktop = widget({ type = "textbox" })
+tb_desktop.text = "⎚"
+tb_desktop:buttons(awful.util.table.join(
+    awful.button({ }, 1, function ()
+        local c = client.get()
+        local val = true
+        if not c[1] then return end
+        if c[1].minimized then val = false end
+        for k, v in pairs(c) do
+            v.minimized = val
+        end
+    end)
+))
 -- {{{ widget box
 wi_widgets = {}
 
@@ -127,21 +140,19 @@ for s = 1, screen.count() do
                                 })
 
     wi_widgets[s].widgets = {
-                                -- textbox(" "),
-                                -- obvious.volume_alsa(),
                                 {
                                     osk.widget(),
                                     tb_terminal,
                                     tb_kill,
                                     tb_client_prev,
                                     tb_client_next,
+                                    tb_desktop,
                                     layout = awful.widget.layout.horizontal.leftright
                                 },
                                 textbox(" "),
                                 obvious.clock(),
                                 textbox(" "),
                                 obvious.battery(),
-                                -- s == screen.count() and st_systray,
                                 ["layout"] = awful.widget.layout.horizontal.rightleft,
                             }
 end
