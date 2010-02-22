@@ -116,13 +116,14 @@ tb_client_prev:buttons(awful.util.table.join(
 ))
 -- }}}
 tb_desktop = widget({ type = "textbox" })
-tb_desktop.text = "⎚"
+tb_desktop.text = "|D|"
 tb_desktop:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
         local c = client.get()
         local val = true
         if not c[1] then return end
         if c[1].minimized then val = false end
+        print(#c, val)
         for k, v in pairs(c) do
             v.minimized = val
         end
