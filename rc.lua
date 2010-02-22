@@ -52,7 +52,7 @@ config.tags = {
 tags = { }
 for i, v in ipairs(config.tags) do
     tags[i] = tag({ name = v.name })
-    tags[i].screen = s
+    tags[i].screen = 1
     awful.tag.setproperty(tags[i], "layout", v.layout)
     awful.tag.setproperty(tags[i], "mwfact", v.mwfact)
     awful.tag.setproperty(tags[i], "nmaster", v.nmaster)
