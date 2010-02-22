@@ -62,7 +62,9 @@ end
 tags[1].selected = true
 -- }}}
 -- {{{ Clients
-config.apps = { }
+config.apps = {
+    { match = { "rox" }, tag = 2 }
+}
 -- }}}
 -- {{{ Naughty
 naughty.config.bg           = beautiful.bg_normal
@@ -179,6 +181,7 @@ client.add_signal("manage", function (c, startup)
     local class = c.class and c.class:lower() or ""
     local name = c.name and c.name:lower() or ""
 
+    c:tags({ tags[1] })
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
             if name:match(m) or instance:match(m) or class:match(m) then
@@ -187,7 +190,7 @@ client.add_signal("manage", function (c, startup)
                     c:raise()
                 end
                 if v.tag then
-                    awful.client.movetotag(tags[c.screen][v.tag], c)
+                    awful.client.movetotag(tags[v.tag], c)
                 end
             end
         end
