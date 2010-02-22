@@ -124,8 +124,9 @@ tb_desktop:buttons(awful.util.table.join(
         if not c[1] then return end
         if c[1].minimized then val = false end
         for k, v in pairs(c) do
-            print(v.name)
-            v.minimized = val
+            if v.name ~= "rox" then
+                v.minimized = val
+            end
         end
     end)
 ))
