@@ -124,7 +124,7 @@ tb_desktop:buttons(awful.util.table.join(
         if not c[1] then return end
         if c[1].minimized then val = false end
         for k, v in pairs(c) do
-            if v.name ~= "rox" then
+            if awful.client.focus.filter(c) then
                 v.minimized = val
             end
         end
