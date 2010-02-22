@@ -47,7 +47,7 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = " 1 ", layout = config.layouts[1] },
-    { name = " 2 ", layout = awful.layout.suit.magnifier }
+    { name = " 2 ", layout = awful.layout.suit.magnifier, mwfact = 0.4 }
 }
 tags = { }
 for i, v in ipairs(config.tags) do
