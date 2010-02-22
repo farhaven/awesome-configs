@@ -18,6 +18,7 @@ local math     = {
 }
 local capi     = {
     widget     = widget,
+    mouse      = mouse,
     fake_input = root.fake_input
 }
 -- }}}
@@ -27,12 +28,13 @@ module("osk")
 
 -- {{{ settings
 local font = "Fixed 16"
+local dist = 25
 
 local keymaps = {
     letters = {
         { "q", "w", "e", "r", "t", "z", "u", "i", "o" },
         { "a", "s", "d", "f", "g", "h", "j", "k", "l" },
-        { "y", "x", "c", "v", "b", "n", "m", "p", "⏎" },
+        { "y", "x", "c", "v", "b", "n", "m", "p", "&" },
     },
     numbers = {
         { "1", "2", "3", "0", ":",  ";", "*", "?", "\"" },
@@ -48,7 +50,7 @@ local keymaps = {
 local active_keymap = "letters"
 
 local keycodes = {
-    q=24,     w=25, e=26, r=27, t=28, z=52, u=30, i=31, o=32, p=33, ["⏎"]=36,
+    q=24,     w=25, e=26, r=27, t=28, z=52, u=30, i=31, o=32, p=33, ["&"]=16,
     a=38,     s=39, d=40, f=41, g=42, h=43, j=44, k=45, l=46,
     ["<"]=94, y=29, x=53, c=54, v=55, b=56, n=57, m=58, [","]=59, ["."]=60, ["/"]=61,
     ['1']=10, ['2']=11, ['3']=12, ['4']=13, ['5']=14,
@@ -61,7 +63,7 @@ local keycodes = {
     ["Tab"]=23, ["PgUp"]=112, ["Next"]=117, ["Home"]=110, ["Ins"]=118, ["Del"]=119, ["End"]=115
 }
 
-local pressed_key = ""
+local pressed_key = { x = 0, y = 0 }
 
 local w = { }
 
@@ -70,24 +72,12 @@ local modifiers = { }
 for name, _ in pairs(keymaps) do table.insert(maps, name) end
 table.sort(maps)
 -- }}}
--- {{{ local function distance(k1, k2, map)
-local function distance(k1, k2, map)
-    local p1 = { }
-    local p2 = { }
-    if k1 == k2 then return { x = 0, y = 0 } end
-    for y, row in ipairs(map) do
-        for x, sym in ipairs(row) do
-            if k1 == sym then
-                p1 = { x = x, y = y }
-            end
-            if k2 == sym then
-                p2 = { x = x, y = y }
-            end
-            if p1.x and p2.x then break end
-        end
-        if p1.y and p2.y then break end
-    end
-    return { x = p1.x - p2.x, y = p1.y - p2.y }
+-- {{{ local function distance(k1, k2)
+local function distance(k1, k2)
+    local d = { x = 0, y = 0 }
+    d.x = k1.x - k2.x
+    d.y = k1.y - k2.y
+    return d
 end
 -- }}}
 -- {{{ local function fake_key(keycode)
@@ -148,19 +138,19 @@ end
 -- }}}
 -- {{{ local function keypress(keysym)
 local function keypress(keysym)
-    pressed_key = keysym
+    pressed_key = capi.mouse.coords()
 end
 -- }}}
 -- {{{ local function keyrelease(keysym)
 local function keyrelease(keysym)
-    local d = distance(keysym, pressed_key, keymaps[active_keymap])
-    if d.x < -1 then -- "BackSpace"
+    local d = distance(capi.mouse.coords(), pressed_key)
+    if d.x < -(dist) then -- "BackSpace"
         fake_key(22)
-    elseif d.x > 1 then -- "Space"
+    elseif d.x > dist then -- "Space"
         fake_key(65)
-    elseif d.y > 1 then -- "Return"
+    elseif d.y > dist then -- "Return"
         fake_key(36)
-    elseif d.y < -1 then -- Change layout
+    elseif d.y < -(dist) then -- Change layout
         change_keymap()
     else
         if not keycodes[keysym] then
@@ -169,7 +159,7 @@ local function keyrelease(keysym)
             fake_key(keysym)
         end
     end
-    pressed_key = ""
+    pressed_key = { x = 0, y = 0 }
 end
 -- }}}
 -- {{{ local function create_button_row(keys)
