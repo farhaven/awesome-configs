@@ -47,21 +47,19 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = " 1 ", layout = config.layouts[1] },
+    { name = " 2 ", layout = awful.layout.suit.floating }
 }
 tags = { }
-for s = 1, screen.count() do
-    tags[s] = { }
-    for i, v in ipairs(config.tags) do
-        tags[s][i] = tag({ name = v.name })
-        tags[s][i].screen = s
-        awful.tag.setproperty(tags[s][i], "layout", v.layout)
-        awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
-        awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
-        awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
-        awful.tag.setproperty(tags[s][i], "icon", v.icon)
-    end
-    tags[s][1].selected = true
+for i, v in ipairs(config.tags) do
+    tags[i] = tag({ name = v.name })
+    tags[i].screen = s
+    awful.tag.setproperty(tags[i], "layout", v.layout)
+    awful.tag.setproperty(tags[i], "mwfact", v.mwfact)
+    awful.tag.setproperty(tags[i], "nmaster", v.nmaster)
+    awful.tag.setproperty(tags[i], "ncols", v.ncols)
+    awful.tag.setproperty(tags[i], "icon", v.icon)
 end
+tags[1].selected = true
 -- }}}
 -- {{{ Clients
 config.apps = { }
@@ -116,18 +114,11 @@ tb_client_prev:buttons(awful.util.table.join(
 ))
 -- }}}
 tb_desktop = widget({ type = "textbox" })
-tb_desktop.text = "|D|"
+tb_desktop.text = " |D|"
 tb_desktop:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
-        local c = client.get()
-        local val = true
-        if not c[1] then return end
-        if c[1].minimized then val = false end
-        for k, v in pairs(c) do
-            if awful.client.focus.filter(c) then
-                v.minimized = val
-            end
-        end
+        tags[1].selected = not tags[1].selected
+        tags[2].selected = not tags[2].selected
     end)
 ))
 -- {{{ widget box
