@@ -47,7 +47,7 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = " 1 ", layout = config.layouts[1] },
-    { name = " 2 ", layout = awful.layout.suit.magnifier, mwfact = 0.4 }
+    { name = " 2 ", layout = awful.layout.suit.floating, mwfact = 0.4 }
 }
 tags = { }
 for i, v in ipairs(config.tags) do
@@ -206,6 +206,15 @@ client.add_signal("new", function (c)
     c:add_signal("mouse::enter", function (c)
         if awful.client.focus.filter(c) then
             client.focus = c
+        end
+    end)
+    c:add_signal("property::geometry", function (c)
+        if tags[2].selected then
+            local s = screen[1].workarea
+            local g = { width = s.width * 0.5, height = s.height * 0.5 }
+            g.x = s.x + ((s.width - (s.width * 0.5))/2)
+            g.y = s.y + ((s.height - (s.height * 0.5))/2)
+            c:geometry(g)
         end
     end)
 end)
