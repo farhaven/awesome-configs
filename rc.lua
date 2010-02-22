@@ -47,24 +47,24 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = " 1 ", layout = config.layouts[1] },
+    { name = " 2 ", layout = awful.layout.suit.floating, mwfact = 0.4 }
 }
 tags = { }
-for s = 1, screen.count() do
-    tags[s] = { }
-    for i, v in ipairs(config.tags) do
-        tags[s][i] = tag({ name = v.name })
-        tags[s][i].screen = s
-        awful.tag.setproperty(tags[s][i], "layout", v.layout)
-        awful.tag.setproperty(tags[s][i], "mwfact", v.mwfact)
-        awful.tag.setproperty(tags[s][i], "nmaster", v.nmaster)
-        awful.tag.setproperty(tags[s][i], "ncols", v.ncols)
-        awful.tag.setproperty(tags[s][i], "icon", v.icon)
-    end
-    tags[s][1].selected = true
+for i, v in ipairs(config.tags) do
+    tags[i] = tag({ name = v.name })
+    tags[i].screen = 1
+    awful.tag.setproperty(tags[i], "layout", v.layout)
+    awful.tag.setproperty(tags[i], "mwfact", v.mwfact)
+    awful.tag.setproperty(tags[i], "nmaster", v.nmaster)
+    awful.tag.setproperty(tags[i], "ncols", v.ncols)
+    awful.tag.setproperty(tags[i], "icon", v.icon)
 end
+tags[1].selected = true
 -- }}}
 -- {{{ Clients
-config.apps = { }
+config.apps = {
+    { match = { "rox" }, tag = 2 }
+}
 -- }}}
 -- {{{ Naughty
 naughty.config.bg           = beautiful.bg_normal
@@ -115,6 +115,14 @@ tb_client_prev:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.client.focus.byidx(1) end)
 ))
 -- }}}
+tb_desktop = widget({ type = "textbox" })
+tb_desktop.text = " |D|"
+tb_desktop:buttons(awful.util.table.join(
+    awful.button({ }, 1, function ()
+        tags[1].selected = not tags[1].selected
+        tags[2].selected = not tags[2].selected
+    end)
+))
 -- {{{ widget box
 wi_widgets = {}
 
@@ -127,21 +135,19 @@ for s = 1, screen.count() do
                                 })
 
     wi_widgets[s].widgets = {
-                                -- textbox(" "),
-                                -- obvious.volume_alsa(),
                                 {
                                     osk.widget(),
                                     tb_terminal,
                                     tb_kill,
                                     tb_client_prev,
                                     tb_client_next,
+                                    tb_desktop,
                                     layout = awful.widget.layout.horizontal.leftright
                                 },
                                 textbox(" "),
                                 obvious.clock(),
                                 textbox(" "),
                                 obvious.battery(),
-                                -- s == screen.count() and st_systray,
                                 ["layout"] = awful.widget.layout.horizontal.rightleft,
                             }
 end
@@ -175,6 +181,7 @@ client.add_signal("manage", function (c, startup)
     local class = c.class and c.class:lower() or ""
     local name = c.name and c.name:lower() or ""
 
+    c:tags({ tags[1] })
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
             if name:match(m) or instance:match(m) or class:match(m) then
@@ -183,7 +190,7 @@ client.add_signal("manage", function (c, startup)
                     c:raise()
                 end
                 if v.tag then
-                    awful.client.movetotag(tags[c.screen][v.tag], c)
+                    awful.client.movetotag(tags[v.tag], c)
                 end
             end
         end
@@ -202,6 +209,15 @@ client.add_signal("new", function (c)
     c:add_signal("mouse::enter", function (c)
         if awful.client.focus.filter(c) then
             client.focus = c
+        end
+    end)
+    c:add_signal("property::geometry", function (c)
+        if tags[2].selected then
+            local s = screen[1].workarea
+            local g = { width = s.width * 0.7, height = s.height * 0.7 }
+            c:geometry(g)
+            awful.placement.centered(c)
+            awful.placement.no_overlap(c)
         end
     end)
 end)
