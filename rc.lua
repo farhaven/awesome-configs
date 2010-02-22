@@ -211,7 +211,7 @@ client.add_signal("new", function (c)
     c:add_signal("property::geometry", function (c)
         if tags[2].selected then
             local s = screen[1].workarea
-            local g = { width = s.width * 0.5, height = s.height * 0.5 }
+            local g = { width = s.width * 0.7, height = s.height * 0.7 }
             c:geometry(g)
             awful.placement.centered(c)
         end
