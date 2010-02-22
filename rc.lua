@@ -212,8 +212,8 @@ client.add_signal("new", function (c)
         if tags[2].selected then
             local s = screen[1].workarea
             local g = { width = s.width * 0.5, height = s.height * 0.5 }
-            g.x = s.x + ((s.width - (s.width * 0.5))/2)
-            g.y = s.y + ((s.height - (s.height * 0.5))/2)
+            g.x = s.x + (s.width - (s.width * 0.5))
+            g.y = s.y + (s.height - (s.height * 0.5))
             c:geometry(g)
         end
     end)
