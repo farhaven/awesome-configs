@@ -131,9 +131,10 @@ local function change_keymap()
         end
     end
     idx = util.cycle(#maps, idx + 1)
+    w[maps[idx]].visible = true
     w[active_keymap].visible = false
     active_keymap = maps[idx]
-    w[active_keymap].visible = true
+    -- w[active_keymap].visible = true
 end
 -- }}}
 -- {{{ local function keypress(keysym)
