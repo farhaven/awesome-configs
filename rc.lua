@@ -195,7 +195,7 @@ client.add_signal("manage", function (c, startup)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
-    c.size_hints_honor = true
+    c.size_hints_honor = false
 
     local instance = c.instance and c.instance:lower() or ""
     local class = c.class and c.class:lower() or ""
