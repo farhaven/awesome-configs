@@ -6,6 +6,25 @@ require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 require('osk')     -- on screen keyboard
 
+-- {{{ Halftile
+local halftile = {
+	arrange = function(p)
+		if #(p.clients) == 1 then
+			local c = p.clients[1]
+			local g = {
+				x = p.workarea.x + math.floor(p.workarea.width / 2),
+				y = p.workarea.y,
+				width = math.floor(p.workarea.width / 2),
+				height = p.workarea.height
+			}
+			c:geometry(g)
+		else
+			awful.layout.suit.tile.arrange(p)
+		end
+	end,
+	name = "halftile"
+}
+-- }}}
 -- {{{ Functions
 -- {{{ textbox(content)
 textboxes = { }
@@ -38,7 +57,8 @@ beautiful.init(config.global.theme)
 -- }}}
 -- {{{ Layouts
 config.layouts = {
-    awful.layout.suit.max
+    awful.layout.suit.max,
+    halftile
 }
 config.layout_icons = {
     ["max"] = "[M]"
@@ -47,7 +67,7 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = " 1 ", layout = config.layouts[1] },
-    { name = " 2 ", layout = awful.layout.suit.floating, mwfact = 0.4 }
+    { name = " 2 ", layout = config.layouts[2], mwfact = 0.5 }
 }
 tags = { }
 for i, v in ipairs(config.tags) do
@@ -209,15 +229,6 @@ client.add_signal("new", function (c)
     c:add_signal("mouse::enter", function (c)
         if awful.client.focus.filter(c) then
             client.focus = c
-        end
-    end)
-    c:add_signal("property::geometry", function (c)
-        if tags[2].selected then
-            local s = screen[1].workarea
-            local g = { width = s.width * 0.7, height = s.height * 0.7 }
-            c:geometry(g)
-            awful.placement.centered(c)
-            awful.placement.no_overlap(c)
         end
     end)
 end)
