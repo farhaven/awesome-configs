@@ -2,7 +2,6 @@
 --   * Original by farhaven
 
 -- {{{ Grab the environment
-local dbg      = require("dbg")
 local wibox    = require("awful.wibox")
 local layout   = require("awful.widget.layout")
 local button   = require("awful.button")
@@ -82,7 +81,6 @@ end
 -- }}}
 -- {{{ local function fake_key(keycode)
 local function fake_key(keysym)
-    dbg.stderr("keysym: %s\n", keysym)
     if keysym == "Shift" or keysym == "Control" or keysym == "Alt" then
         table.insert(modifiers, keysym)
         return
@@ -111,7 +109,6 @@ local function fake_key(keysym)
             capi.fake_input("key_release", 50)
         end
     else
-        dbg.stderr("%d\n", keycodes[keysym])
         capi.fake_input("key_press", keycodes[keysym])
         capi.fake_input("key_release", keycodes[keysym])
     end
