@@ -220,6 +220,8 @@ client.add_signal("manage", function (c, startup)
     client.focus = c
     if c.fullscreen then
         wi_widgets.visible = false
+        c.fullscreen = false
+        c.fullscreen = true
     end
 end)
 -- }}}
