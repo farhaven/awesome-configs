@@ -218,6 +218,16 @@ client.add_signal("manage", function (c, startup)
     end
 
     client.focus = c
+    if c.fullscreen then
+        wi_widgets.visible = false
+    end
+end)
+-- }}}
+-- {{{ unmanage
+client.add_signal("unmanage", function (c)
+    if c.fullscreen then
+        wi_widgets.visible = true
+    end
 end)
 -- }}}
 -- {{{ mouse enter
