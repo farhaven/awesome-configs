@@ -201,6 +201,7 @@ for name, map in pairs(keymaps) do
         widgets  = { create_keymap(map), layout = layout.horizontal.leftright }
     })
     w[name].visible = false
+    w[name].ontop = true
 end
 -- }}}
 -- {{{ function show
