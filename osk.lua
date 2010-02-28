@@ -27,7 +27,7 @@ module("osk")
 
 -- {{{ settings
 local font = "Fixed 16"
-local dist = 40
+local dist = 25
 
 local keymaps = {
     letters = {
