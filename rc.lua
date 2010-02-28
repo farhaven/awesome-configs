@@ -144,33 +144,29 @@ tb_desktop:buttons(awful.util.table.join(
 ))
 -- }}}
 -- {{{ widget box
-wi_widgets = {}
+wi_widgets = awful.wibox({ position = "top",
+                           fg = beautiful.fg_normal,
+                           bg = beautiful.bg_normal,
+                           screen = 1,
+                           height = 48
+                         })
 
-for s = 1, screen.count() do
-    wi_widgets[s] = awful.wibox({ position = "top",
-                                  fg = beautiful.fg_normal,
-                                  bg = beautiful.bg_normal,
-                                  screen = s,
-                                  height = 48
-                                })
-
-    wi_widgets[s].widgets = {
-                                {
-                                    osk.widget(),
-                                    tb_terminal,
-                                    tb_kill,
-                                    tb_client_prev,
-                                    tb_client_next,
-                                    tb_desktop,
-                                    layout = awful.widget.layout.horizontal.leftright
-                                },
-                                textbox(" "),
-                                obvious.clock(),
-                                textbox(" "),
-                                obvious.battery(),
-                                ["layout"] = awful.widget.layout.horizontal.rightleft,
-                            }
-end
+wi_widgets.widgets = {
+                        {
+                            osk.widget(),
+                            tb_terminal,
+                            tb_kill,
+                            tb_client_prev,
+                            tb_client_next,
+                            tb_desktop,
+                            layout = awful.widget.layout.horizontal.leftright
+                        },
+                        textbox(" "),
+                        obvious.clock(),
+                        textbox(" "),
+                        obvious.battery(),
+                        ["layout"] = awful.widget.layout.horizontal.rightleft,
+                        }
 -- }}}
 -- }}}
 -- {{{ Signals
