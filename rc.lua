@@ -61,7 +61,8 @@ config.layouts = {
     halftile
 }
 config.layout_icons = {
-    ["max"] = "[M]"
+    ["max"] = "[M]",
+    ["halftile"] = "[H]"
 }
 -- }}}
 -- {{{ Tags
