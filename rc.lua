@@ -222,6 +222,7 @@ client.add_signal("manage", function (c, startup)
         wi_widgets.visible = false
         c.fullscreen = false
         c.fullscreen = true
+        tags[1].selected = true
     end
 end)
 -- }}}
