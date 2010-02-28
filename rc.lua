@@ -136,14 +136,13 @@ tb_client_prev:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.client.focus.byidx(1) end)
 ))
 -- }}}
+-- {{{ desktop widget
 tb_desktop = widget({ type = "textbox" })
 tb_desktop.text = " |D|"
 tb_desktop:buttons(awful.util.table.join(
-    awful.button({ }, 1, function ()
-        tags[1].selected = not tags[1].selected
-        tags[2].selected = not tags[2].selected
-    end)
+    awful.button({ }, 1, awful.tag.viewnext)
 ))
+-- }}}
 -- {{{ widget box
 wi_widgets = {}
 
