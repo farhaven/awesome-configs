@@ -172,6 +172,21 @@ wi_widgets.widgets = {
                         }
 -- }}}
 -- }}}
+-- {{{ Key bindings
+globalkeys = awful.util.table.join(
+    awful.key({ }, "XF86PowerOff", function ()
+        local c = client.get()
+        for _, v in ipairs(c) do
+            if v.name == "Quick-settings" then
+                v:kill()
+                return
+            end
+        end
+        awful.util.spawn("phoneui-quick-settings")
+    end)
+)
+root.keys(globalkeys)
+-- }}}
 -- {{{ Signals
 -- {{{ focus
 client.add_signal("focus", function (c)
