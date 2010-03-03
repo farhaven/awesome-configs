@@ -152,20 +152,20 @@ wi_widgets = awful.wibox({ position = "top",
                          })
 
 wi_widgets.widgets = {
-                        {
                             osk.widget(),
                             tb_terminal,
                             tb_kill,
                             tb_client_prev,
                             tb_client_next,
                             tb_desktop,
-                            layout = awful.widget.layout.horizontal.leftright
-                        },
-                        textbox(" "),
-                        obvious.clock(),
-                        textbox(" "),
-                        obvious.battery(),
-                        ["layout"] = awful.widget.layout.horizontal.rightleft,
+                            {
+                                obvious.battery(),
+                                textbox(" "),
+                                obvious.clock(),
+                                ["layout"] = awful.widget.layout.horizontal.rightleft,
+                            },
+                            ["layout"] = awful.widget.layout.horizontal.leftright,
+                            ["height"] = wi_widgets.height
                         }
 -- }}}
 -- }}}
