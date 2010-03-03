@@ -223,6 +223,7 @@ client.add_signal("manage", function (c, startup)
         c.fullscreen = false
         c.fullscreen = true
         tags[1].selected = true
+        osk.hide()
     end
 end)
 -- }}}
