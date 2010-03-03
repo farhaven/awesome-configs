@@ -5,6 +5,7 @@ require('beautiful')
 require('naughty') -- Naughtyfications
 require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 require('osk')     -- on screen keyboard
+require('desktop') -- desktop icons
 
 -- {{{ Halftile
 local halftile = {
@@ -254,3 +255,5 @@ client.add_signal("new", function (c)
 end)
 -- }}}
 -- }}}
+
+desktop.setup()
