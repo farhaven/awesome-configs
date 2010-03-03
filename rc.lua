@@ -84,7 +84,8 @@ tags[1].selected = true
 -- }}}
 -- {{{ Clients
 config.apps = {
-    { match = { "rox" }, tag = 2 }
+    { match = { "rox" }, tag = 2 },
+    { match = { "phoneuid" }, float = false }
 }
 -- }}}
 -- {{{ Naughty
