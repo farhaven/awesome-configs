@@ -86,7 +86,8 @@ tags[1].selected = true
 -- {{{ Clients
 config.apps = {
     { match = { "rox" }, tag = 2 },
-    { match = { "phoneuid" }, float = false }
+    { match = { "phoneuid" }, float = false },
+    { match = { "idle_screen" }, fullscreen = true }
 }
 -- }}}
 -- {{{ Naughty
@@ -209,6 +210,9 @@ client.add_signal("manage", function (c, startup)
                 end
                 if v.tag then
                     awful.client.movetotag(tags[v.tag], c)
+                end
+                if v.fullscreen ~= nil then
+                    c.fullscreen = v.fullscreen
                 end
             end
         end
