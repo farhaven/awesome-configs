@@ -56,7 +56,6 @@ config = { }
 config.global = {
     ["opacity_f" ] = 1,
     ["opacity_u" ] = 0.65,
-    -- ["theme"]      = awful.util.getdir("config") .. "/themes/zenburn/theme.lua",
     ["theme"]      = awful.util.getdir("config") .. "/themes/foo/foo.lua",
     ["terminal"]   = "urxvtc",
     ["editor"]     = "gvim",
