@@ -211,6 +211,7 @@ for s = 1, screen.count() do
                                   screen = s,
                                   height = 16
                                 })
+    wi_widgets[s].opacity = 0.7
 
     wi_widgets[s].widgets = {
                                 tl_taglist[s],
