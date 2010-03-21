@@ -161,13 +161,13 @@ end
 -- }}}
 -- {{{ Spit out warning messages if some libs are not found
 if not have_obvious then
-    naughty.notify({ text = "Obvious could not be loaded by 'require()'", title = "Obvious missing", timeout = 0 })
+    naughty.notify({ text = "Obvious could not be loaded by 'require()':\n" .. obvious, title = "Obvious missing", timeout = 0 })
 end
 if not have_tagger then
-    naughty.notify({ text = "Tagger could not be loaded by 'require()'", title = "Tagger missing", timeout = 0 })
+    naughty.notify({ text = "Tagger could not be loaded by 'require()':\n" .. tagger, title = "Tagger missing", timeout = 0 })
 end
 if not have_strict then
-    naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work.", title = "strict missing", timeout = 0 })
+    naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work:\n" .. strict, title = "strict missing", timeout = 0 })
 end
 -- }}}
 -- {{{ Widgets
