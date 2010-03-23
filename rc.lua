@@ -148,12 +148,12 @@ naughty.config.presets.normal.opacity       = 0.8
 if have_obvious then
     obvious.clock.set_editor(config.global.editor)
     obvious.clock.set_shortformat(function ()
-        local week = tonumber(os.date("%W")) + 1
-        return "%H%M ("..week..") "
+        local week = tonumber(os.date("%W"))
+        return obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%H%M (" .. week .. ") "
     end)
     obvious.clock.set_longformat(function ()
-        local week = tonumber(os.date("%W")) + 1
-        return "%d%m ("..week..") "
+        local week = tonumber(os.date("%W"))
+        return obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%d%m (" .. week .. ") "
     end)
 end
 -- }}}
