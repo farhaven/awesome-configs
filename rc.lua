@@ -432,7 +432,13 @@ client.add_signal("manage", function (c, startup)
     end
     if properties.tag then
         if have_tagger then
-            local t = config.tags[properties.tag] or { }
+            local t = { }
+            for _, v in pairs(config.tags) do
+                if v.name == properties.tag then
+                    t = v
+                    break
+                end
+            end
             awful.client.movetotag(tagger.apptag(properties.tag, t, c), c)
         else
             local t = screen[c.screen]:tags()
