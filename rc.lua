@@ -480,7 +480,6 @@ client.add_signal("manage", function (c, startup)
     else
         client.focus = c
     end
-
 end)
 -- }}}
 -- {{{ layout
