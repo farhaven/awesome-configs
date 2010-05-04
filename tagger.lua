@@ -51,7 +51,7 @@ end
 function add(scr, props) -- {{{
     scr = scr or capi.mouse.screen
     props = props or { }
-    local name = props.name or 'default'
+    local name = props.name or '.oO'
 
     local tags = capi.screen[scr]:tags()
     local t = capi.tag({ name = name })
