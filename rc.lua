@@ -127,8 +127,10 @@ config.apps = {
     { match = { "virtualbox" },            tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
     { match = { config.global.editor },    tag = "text" },
-    { match = { "urxvt.irssi" },           tag = "irc" },
+    { match = { "urxvt.irssi" },           tag = "chat" },
+    { match = { "pidgin" },                tag = "chat" },
     { match = { "urxvt.mutt" },            tag = "mail" },
+    { match = { "octave" },                tag = "math" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
@@ -408,6 +410,7 @@ client.add_signal("manage", function (c, startup)
     local instance = c.instance and c.instance:lower() or ""
     local class = c.class and c.class:lower() or ""
     local name = c.name and c.name:lower() or ""
+    local role = c.role and c.role:lower() or ""
 
     opacities_unfocus[c] = config.global.opacity_u or 1
     opacities_focus[c] = config.global.opacity_f or 1
@@ -415,7 +418,7 @@ client.add_signal("manage", function (c, startup)
     local properties = { }
     for k, v in pairs(config.apps) do
         for j, m in pairs(v.match) do
-            if name:match(m) or instance:match(m) or class:match(m) then
+            if name:match(m) or instance:match(m) or class:match(m) or role:match(m) then
                 for l, n in pairs(v) do
                     properties[l] = n
                 end
