@@ -464,6 +464,14 @@ client.add_signal("manage", function (c, startup)
 
     c:keys(clientkeys)
 
+    if instance == "gimp" and role ~= "gimp-image-window" then
+        local w_area = screen[c.screen].workarea
+		if c.role == "gimp-toolbox" then
+			c:struts({ left = c:geometry().width })
+			c:geometry({ x = w_area.x, y = w_area.y })
+		end
+    end
+
     if startup then
         local ch = awful.client.focus.history.get()
         if ch then
