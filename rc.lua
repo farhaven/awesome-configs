@@ -71,7 +71,7 @@ config.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
-    awful.layout.suit.spiral,
+    awful.layout.suit.max,
 }
 config.layout_icons = {
     ["tile"] = "[]=",
@@ -79,7 +79,7 @@ config.layout_icons = {
     ["tilebottom"] = "[v]",
     ["tiletop"] = "[^]",
     ["floating"] = "><>",
-    ["spiral"] = "[@]",
+    ["max"] = "[M]",
 }
 -- }}}
 -- {{{ Tags
@@ -88,8 +88,9 @@ config.tags = {
     { name = "www",  layout = config.layouts[1], mwfact = 0.8 },
     { name = "misc", layout = config.layouts[3] },
     { name = "text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "irc",  layout = config.layouts[1], mwfact = 0.28 },
-    { name = "mail", layout = config.layouts[6] },
+    { name = "chat",  layout = config.layouts[1], mwfact = 0.17 },
+    { name = "mail", layout = config.layouts[2] },
+    { name = "pdf", layout = config.layouts[6] },
 }
 for s = 1, screen.count() do
     if have_tagger then
@@ -122,7 +123,7 @@ config.apps = {
     { match = { "uzbl", "chrome" },        tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
     { match = { "gqview", "gimp" },        tag = "media" },
-    { match = { "^win$" },                 tag = "media" },
+    { match = { "^win$" },                 tag = "pdf" },
     { match = { "virtualbox" },            tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
     { match = { config.global.editor },    tag = "text" },
@@ -311,8 +312,18 @@ globalkeys = awful.util.table.join(
 -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
-    awful.key({ config.global.modkey }, "Up", function () awful.client.focus.byidx(-1) end),
-    awful.key({ config.global.modkey }, "Down", function () awful.client.focus.byidx(1) end),
+    awful.key({ config.global.modkey }, "Up", function ()
+        awful.client.focus.byidx(-1)
+        if awful.layout.getname(awful.layout.get(client.focus.screen)) == "max" then
+            client.focus:raise()
+        end
+    end),
+    awful.key({ config.global.modkey }, "Down", function ()
+        awful.client.focus.byidx(1)
+        if awful.layout.getname(awful.layout.get(client.focus.screen)) == "max" then
+            client.focus:raise()
+        end
+    end),
     awful.key({ config.global.modkey }, "Left", function ()
         if not client.focus then return end
         client.focus:swap(awful.client.getmaster(client.focus.screen))
