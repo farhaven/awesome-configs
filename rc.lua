@@ -304,11 +304,8 @@ globalkeys = awful.util.table.join(
     -- {{{ Run prompt
     awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("xrun") end),
     -- }}}
-    -- {{{ Lua prompt
-    awful.key({ config.global.modkey, "Mod1" }, "Return", function () awful.util.spawn("xrun awesome-client -v") end),
-    -- }}}
     -- {{{ Program read prompt
-    awful.key({ config.global.modkey, "Mod4" }, "Return", function() awful.util.spawn("xrun -v") end),
+    awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("xrun -v") end),
     -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
