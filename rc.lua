@@ -122,7 +122,7 @@ config.apps = {
     { match = { "firefox", "dillo" },      tag = "www" },
     { match = { "uzbl", "chrome" },        tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
-    { match = { "gqview", "gimp" },        tag = "media" },
+    { match = { "geeqie", "gimp" },        tag = "media" },
     { match = { "^win$" },                 tag = "pdf" },
     { match = { "virtualbox" },            tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
