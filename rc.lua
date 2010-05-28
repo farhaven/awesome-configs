@@ -123,7 +123,7 @@ config.apps = {
     { match = { "uzbl", "chrome" },        tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
     { match = { "geeqie", "gimp" },        tag = "media" },
-    { match = { "^win$" },                 tag = "pdf" },
+    { match = { "^win$", "evince" },       tag = "pdf" },
     { match = { "virtualbox" },            tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
     { match = { config.global.editor },    tag = "text" },
