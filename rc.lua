@@ -225,6 +225,8 @@ for s = 1, screen.count() do
                                 lb_layout[s],
                                 have_obvious and {
                                     textbox(" "),
+                                    obvious.wlan("wlan0").widget,
+                                    textbox(" "),
                                     obvious.volume_alsa(),
                                     textbox(" "),
                                     obvious.battery(),
