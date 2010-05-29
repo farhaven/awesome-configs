@@ -135,6 +135,10 @@ config.apps = {
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
+    { match = { "vlc" },                    opacity_u = 1 },
+    -- }}}
+    -- {{{ border settings
+    { match = { "vlc" }, border_width = 0 },
     -- }}}
 }
 -- }}}
