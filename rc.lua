@@ -372,21 +372,20 @@ clientkeys = awful.util.table.join(
 root.keys(globalkeys)
 -- }}}
 -- {{{ Signals
-opacities_focus   = { }
-opacities_unfocus = { }
+cprops = { }
 -- {{{ focus
 client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = opacities_focus[c]
+    c.opacity = cprops[c].opacity_f
 end)
 -- }}}
 -- {{{ unfocus
 client.add_signal("unfocus", function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = opacities_unfocus[c]
+    c.opacity = cprops[c].opacity_u
 end)
 -- }}}
--- {{{ manage
+-- {{{ manage generic stuff
 client.add_signal("manage", function (c, startup)
     if not startup and awful.client.focus.filter(c) then
         c.maximized_horizontal = false
@@ -398,75 +397,15 @@ client.add_signal("manage", function (c, startup)
         awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
         awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
     ))
+    c:keys(clientkeys)
 
-    c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
     c.size_hints_honor = true
 
-    local instance = c.instance and c.instance:lower() or ""
-    local class = c.class and c.class:lower() or ""
-    local name = c.name and c.name:lower() or ""
-    local role = c.role and c.role:lower() or ""
-
-    opacities_unfocus[c] = config.global.opacity_u or 1
-    opacities_focus[c] = config.global.opacity_f or 1
-
-    local properties = { }
-    for k, v in pairs(config.apps) do
-        for j, m in pairs(v.match) do
-            if name:match(m) or instance:match(m) or class:match(m) or role:match(m) then
-                for l, n in pairs(v) do
-                    properties[l] = n
-                end
-            end
-        end
-    end
-
-    if properties.float ~= nil then
-        awful.client.floating.set(c, properties.float)
-        c:raise()
-    end
-    if properties.tag then
-        if have_tagger then
-            local t = { }
-            for _, v in pairs(config.tags) do
-                if v.name == properties.tag then
-                    t = v
-                    break
-                end
-            end
-            awful.client.movetotag(tagger.apptag(properties.tag, t, c), c)
-        else
-            local t = screen[c.screen]:tags()
-            for k, v in pairs(t) do
-                if v.name == properties.tag then
-                    awful.client.movetotag(v)
-                    break
-                end
-            end
-        end
-    end
-    if properties.opacity_u then
-        opacities_unfocus[c] = properties.opacity_u
-    end
-    if properties.opacity_f then
-        opacities_focus[c] = properties.opacity_f
-    end
-
     if not startup and awful.client.floating.get(c) then
         awful.placement.centered(c, c.transient_for)
         awful.placement.no_offscreen(c)
-    end
-
-    c:keys(clientkeys)
-
-    if instance == "gimp" and role ~= "gimp-image-window" then
-        local w_area = screen[c.screen].workarea
-		if c.role == "gimp-toolbox" then
-			c:struts({ left = c:geometry().width })
-			c:geometry({ x = w_area.x, y = w_area.y })
-		end
     end
 
     if startup then
@@ -476,6 +415,66 @@ client.add_signal("manage", function (c, startup)
         end
     else
         client.focus = c
+    end
+end)
+-- }}}
+-- {{{ manage stuff on per-client base
+client.add_signal("manage", function (c, startup)
+    cprops[c] = {
+        border_width = beautiful.border_width,
+        opacity_f = config.global.opacity_f or 1,
+        opacity_u = config.global.opacity_u or 1
+    }
+
+    local instance = c.instance and c.instance:lower() or ""
+    local class = c.class and c.class:lower() or ""
+    local name = c.name and c.name:lower() or ""
+    local role = c.role and c.role:lower() or ""
+
+    for k, v in pairs(config.apps) do
+        for j, m in pairs(v.match) do
+            if name:match(m) or instance:match(m) or class:match(m) or role:match(m) then
+                for l, n in pairs(v) do
+                    cprops[c][l] = n
+                end
+            end
+        end
+    end
+
+    if cprops[c].float ~= nil then
+        awful.client.floating.set(c, cprops[c].float)
+        c:raise()
+    end
+    if cprops[c].tag then
+        if have_tagger then
+            local t = { }
+            for _, v in pairs(config.tags) do
+                if v.name == cprops[c].tag then
+                    t = v
+                    break
+                end
+            end
+            awful.client.movetotag(tagger.apptag(cprops[c].tag, t, c), c)
+        else
+            local t = screen[c.screen]:tags()
+            for k, v in pairs(t) do
+                if v.name == cprops[c].tag then
+                    awful.client.movetotag(v)
+                    break
+                end
+            end
+        end
+    end
+    if cprops[c].border_width then
+        c.border_width = cprops[c].border_width
+    end
+
+    if instance == "gimp" and role ~= "gimp-image-window" then
+        local w_area = screen[c.screen].workarea
+		if c.role == "gimp-toolbox" then
+			c:struts({ left = c:geometry().width })
+			c:geometry({ x = w_area.x, y = w_area.y })
+		end
     end
 end)
 -- }}}
