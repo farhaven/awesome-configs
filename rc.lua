@@ -131,7 +131,6 @@ config.apps = {
     { match = { "urxvt.irssi" },           tag = "chat" },
     { match = { "pidgin" },                tag = "chat" },
     { match = { "urxvt.mutt" },            tag = "mail" },
-    { match = { "octave" },                tag = "math" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
