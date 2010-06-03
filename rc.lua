@@ -382,45 +382,16 @@ cprops = { }
 -- {{{ focus
 client.add_signal("focus", function (c)
     c.border_color = beautiful.border_focus
-    c.opacity = cprops[c].opacity_f
+    if cprops[c] then
+        c.opacity = cprops[c].opacity_f
+    end
 end)
 -- }}}
 -- {{{ unfocus
 client.add_signal("unfocus", function (c)
     c.border_color = beautiful.border_normal
-    c.opacity = cprops[c].opacity_u
-end)
--- }}}
--- {{{ manage generic stuff
-client.add_signal("manage", function (c, startup)
-    if not startup and awful.client.focus.filter(c) then
-        c.maximized_horizontal = false
-        c.maximized_vertical = false
-    end
-
-    c:buttons(awful.util.table.join(
-        awful.button({ }, 1, function (c) client.focus = c end),
-        awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
-        awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
-    ))
-    c:keys(clientkeys)
-
-    c.border_color = beautiful.border_normal
-
-    c.size_hints_honor = true
-
-    if not startup and awful.client.floating.get(c) then
-        awful.placement.centered(c, c.transient_for)
-        awful.placement.no_offscreen(c)
-    end
-
-    if startup then
-        local ch = awful.client.focus.history.get()
-        if ch then
-            client.focus = ch
-        end
-    else
-        client.focus = c
+    if cprops[c] then
+        c.opacity = cprops[c].opacity_u
     end
 end)
 -- }}}
@@ -481,6 +452,39 @@ client.add_signal("manage", function (c, startup)
 			c:struts({ left = c:geometry().width })
 			c:geometry({ x = w_area.x, y = w_area.y })
 		end
+    end
+end)
+-- }}}
+-- {{{ manage generic stuff
+client.add_signal("manage", function (c, startup)
+    if not startup and awful.client.focus.filter(c) then
+        c.maximized_horizontal = false
+        c.maximized_vertical = false
+    end
+
+    c:buttons(awful.util.table.join(
+        awful.button({ }, 1, function (c) client.focus = c end),
+        awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
+        awful.button({ config.global.modkey }, 3, awful.mouse.client.resize)
+    ))
+    c:keys(clientkeys)
+
+    c.border_color = beautiful.border_normal
+
+    c.size_hints_honor = true
+
+    if not startup and awful.client.floating.get(c) then
+        awful.placement.centered(c, c.transient_for)
+        awful.placement.no_offscreen(c)
+    end
+
+    if startup then
+        local ch = awful.client.focus.history.get()
+        if ch then
+            client.focus = ch
+        end
+    else
+        client.focus = c
     end
 end)
 -- }}}
