@@ -9,21 +9,21 @@ require('desktop') -- desktop icons
 
 -- {{{ Halftile
 local halftile = {
-	arrange = function(p)
-		if #(p.clients) == 1 then
-			local c = p.clients[1]
-			local g = {
-				x = p.workarea.x + math.floor(p.workarea.width / 2),
-				y = p.workarea.y,
-				width = math.floor(p.workarea.width / 2),
-				height = p.workarea.height
-			}
-			c:geometry(g)
-		else
-			awful.layout.suit.tile.arrange(p)
-		end
-	end,
-	name = "halftile"
+    arrange = function(p)
+        if #(p.clients) == 1 then
+            local c = p.clients[1]
+            local g = {
+                x = p.workarea.x + math.floor(p.workarea.width / 2),
+                y = p.workarea.y,
+                width = math.floor(p.workarea.width / 2),
+                height = p.workarea.height
+            }
+            c:geometry(g)
+        else
+            awful.layout.suit.tile.arrange(p)
+        end
+    end,
+    name = "halftile"
 }
 -- }}}
 -- {{{ Functions
