@@ -455,7 +455,9 @@ client.add_signal("manage", function (c, startup)
             end
         end
     end
-    if cprops[c].border_width then
+    if c.fullscreen then
+        c.border_width = 0
+    elseif cprops[c].border_width then
         c.border_width = cprops[c].border_width
     end
 
