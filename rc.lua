@@ -88,9 +88,10 @@ config.tags = {
     { name = "www",  layout = config.layouts[1], mwfact = 0.8 },
     { name = "misc", layout = config.layouts[3] },
     { name = "text", layout = config.layouts[1], mwfact = 0.57 },
-    { name = "chat",  layout = config.layouts[1], mwfact = 0.17 },
+    { name = "chat", layout = config.layouts[1], mwfact = 0.17 },
     { name = "mail", layout = config.layouts[2] },
-    { name = "pdf", layout = config.layouts[6] },
+    { name = "pdf",  layout = config.layouts[6] },
+    { name = "todo", layout = config.layouts[4], mwfact = 0.7 },
 }
 for s = 1, screen.count() do
     if have_tagger then
@@ -131,6 +132,7 @@ config.apps = {
     { match = { "urxvt.irssi" },           tag = "chat" },
     { match = { "pidgin" },                tag = "chat" },
     { match = { "urxvt.mutt" },            tag = "mail" },
+    { match = { "urxvt.todo" },            tag = "todo" },
     -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
