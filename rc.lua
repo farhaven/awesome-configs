@@ -318,6 +318,9 @@ globalkeys = awful.util.table.join(
     -- {{{ Program read prompt
     awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("xrun -v") end),
     -- }}}
+    -- {{{
+    awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("/home/gregor/sourcecode/fdb/fdb.sh") end),
+    -- }}}
 -- }}}
 -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
