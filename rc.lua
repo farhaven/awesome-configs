@@ -134,6 +134,9 @@ config.apps = {
     { match = { "urxvt.mutt" },            tag = "mail" },
     { match = { "urxvt.todo" },            tag = "todo" },
     -- }}}
+    -- {{{ master/slave
+    { match = { "todo cli" },   master = false },
+    -- }}}
     -- {{{ opacity
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
@@ -420,6 +423,11 @@ client.add_signal("manage", function (c, startup)
         end
     end
 
+    if cprops[c].master == false then
+        awful.client.setslave(c)
+    elseif cprops[c].master == true then
+        awful.client.getmaster(c.screen):swap(c)
+    end
     if cprops[c].float ~= nil then
         awful.client.floating.set(c, cprops[c].float)
         c:raise()
