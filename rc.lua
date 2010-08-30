@@ -103,7 +103,7 @@ for s = 1, screen.count() do
             awful.tag.setproperty(t, "layout", v.layout)
             awful.tag.setproperty(t, "mwfact", v.mwfact)
             awful.tag.setproperty(t, "nmaster", v.nmaster)
-            awful.tag.setproperty(t, "ncols", v.ncols)
+            awful.tag.setproperty(t, "ncol", v.ncol)
             awful.tag.setproperty(t, "icon", v.icon)
         end
     end
