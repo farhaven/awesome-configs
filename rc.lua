@@ -120,12 +120,11 @@ config.apps = {
     -- }}}
     -- {{{ apptags
     { match = { "urxvt" },                 tag = "term" },
-    { match = { "firefox", "dillo" },      tag = "www" },
-    { match = { "uzbl", "chrome" },        tag = "www" },
+    { match = { "dillo", "chrome" },       tag = "www" },
     { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
     { match = { "geeqie", "gimp" },        tag = "media" },
     { match = { "vlc" },                   tag = "media" },
-    { match = { "^win$", "evince" },       tag = "pdf" },
+    { match = { "evince" },                tag = "pdf" },
     { match = { "virtualbox" },            tag = "emulation" },
     { match = { "yadex" },                 tag = "misc" },
     { match = { config.global.editor },    tag = "text" },
@@ -133,6 +132,8 @@ config.apps = {
     { match = { "pidgin" },                tag = "chat" },
     { match = { "urxvt.mutt" },            tag = "mail" },
     { match = { "urxvt.todo" },            tag = "todo" },
+    { match = { "audacity" },              tag = "media" },
+    { match = { "^rox%-filer$" },          tag = "files" },
     -- }}}
     -- {{{ master/slave
     { match = { "todo cli" },   master = false },
@@ -141,9 +142,6 @@ config.apps = {
     { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
-    -- }}}
-    -- {{{ border settings
-    { match = { "vlc" }, border_width = 0 },
     -- }}}
 }
 -- }}}
