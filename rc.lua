@@ -309,18 +309,15 @@ globalkeys = awful.util.table.join(
         w.visible = not w.visible
     end),
 -- }}}
--- {{{ Prompts
+    -- {{{ Prompts
     -- {{{ Run prompt
     awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("fdb") end),
     -- }}}
     -- {{{ Program read prompt
     awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("fdb -v") end),
     -- }}}
-    -- {{{
-    awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("/home/gregor/sourcecode/fdb/fdb.sh") end),
     -- }}}
--- }}}
--- {{{ Client / Focus manipulation
+    -- {{{ Client / Focus manipulation
     awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
 
     awful.key({ config.global.modkey }, "Up", function ()
@@ -342,21 +339,20 @@ globalkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod4" }, "Up", function () awful.client.swap.byidx(-1) end),
     awful.key({ config.global.modkey, "Mod4" }, "Down", function () awful.client.swap.byidx(1) end),
     awful.key({ config.global.modkey }, "Right", function () awful.client.movetoscreen() end),
--- }}}
--- {{{ Layout manipulation
+    -- }}}
+    -- {{{ Layout manipulation
     awful.key({ config.global.modkey, "Mod1" }, "Down", function () awful.tag.incmwfact(0.01) end),
     awful.key({ config.global.modkey, "Mod1" }, "Up", function () awful.tag.incmwfact(-0.01) end),
     awful.key({ config.global.modkey }, " ", function () awful.layout.inc(config.layouts, 1) end),
 
     awful.key({ config.global.modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
     awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
--- }}}
--- {{{ Audio
--- Volume control
+    -- }}}
+    -- {{{ Audio
     have_obvious and awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
     have_obvious and awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
     have_obvious and awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
--- }}}
+    -- }}}
 )
 -- {{{ Tags
 for i = 1, 9 do
