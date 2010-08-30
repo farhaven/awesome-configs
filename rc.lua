@@ -311,10 +311,10 @@ globalkeys = awful.util.table.join(
 -- }}}
 -- {{{ Prompts
     -- {{{ Run prompt
-    awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("xrun") end),
+    awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("fdb") end),
     -- }}}
     -- {{{ Program read prompt
-    awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("xrun -v") end),
+    awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("fdb -v") end),
     -- }}}
     -- {{{
     awful.key({ config.global.modkey }, "\\", function () awful.util.spawn("/home/gregor/sourcecode/fdb/fdb.sh") end),
