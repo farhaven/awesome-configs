@@ -230,7 +230,7 @@ for s = 1, screen.count() do
                                     textbox(" "),
                                     obvious.wlan("wlan0").widget,
                                     textbox(" "),
-                                    obvious.volume_alsa(),
+                                    obvious.volume_alsa():set_term("xterm"),
                                     textbox(" "),
                                     obvious.battery(),
                                     s == screen.count() and st_systray,
