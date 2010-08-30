@@ -386,7 +386,7 @@ root.keys(globalkeys)
 -- {{{ Signals
 cprops = { }
 -- {{{ focus
-client.add_signal("focus", function (c)
+client.connect_signal("focus", function (c)
     c.border_color = beautiful.border_focus
     if cprops[c] then
         c.opacity = cprops[c].opacity_f
@@ -394,7 +394,7 @@ client.add_signal("focus", function (c)
 end)
 -- }}}
 -- {{{ unfocus
-client.add_signal("unfocus", function (c)
+client.connect_signal("unfocus", function (c)
     c.border_color = beautiful.border_normal
     if cprops[c] then
         c.opacity = cprops[c].opacity_u
@@ -402,7 +402,7 @@ client.add_signal("unfocus", function (c)
 end)
 -- }}}
 -- {{{ manage stuff on per-client base
-client.add_signal("manage", function (c, startup)
+client.connect_signal("manage", function (c, startup)
     cprops[c] = {
         border_width = beautiful.border_width,
         opacity_f = config.global.opacity_f or 1,
@@ -469,7 +469,7 @@ client.add_signal("manage", function (c, startup)
 end)
 -- }}}
 -- {{{ manage generic stuff
-client.add_signal("manage", function (c, startup)
+client.connect_signal("manage", function (c, startup)
     if not startup and awful.client.focus.filter(c) then
         c.maximized_horizontal = false
         c.maximized_vertical = false
@@ -507,17 +507,15 @@ function layout_update(t)
 end
 
 for s = 1, screen.count() do
-    awful.tag.attached_add_signal(s, "property::layout", layout_update)
-    awful.tag.attached_add_signal(s, "property::selected", layout_update)
+    awful.tag.attached_connect_signal(s, "property::layout", layout_update)
+    awful.tag.attached_connect_signal(s, "property::selected", layout_update)
 end
 -- }}}
 -- {{{ mouse enter
-client.add_signal("new", function (c)
-    c:add_signal("mouse::enter", function (c)
-        if awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+client.connect_signal("mouse::enter", function (c)
+    if awful.client.focus.filter(c) then
+        client.focus = c
+    end
 end)
 -- }}}
 -- }}}
