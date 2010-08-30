@@ -64,7 +64,7 @@ function add(scr, props) -- {{{
     awful.tag.setproperty(t, "layout", props.layout or awful.layout.suit.tile)
     awful.tag.setproperty(t, "mwfact", props.mwfact)
     awful.tag.setproperty(t, "nmaster", props.nmaster)
-    awful.tag.setproperty(t, "ncols", props.ncols)
+    awful.tag.setproperty(t, "ncol", props.ncol)
     awful.tag.setproperty(t, "icon", props.icon)
 
     if #(capi.screen[scr]:tags()) == 1 or props.switch then
