@@ -84,7 +84,7 @@ config.layout_icons = {
 -- }}}
 -- {{{ Tags
 config.tags = {
-    { name = "term", layout = config.layouts[3], nmaster = 2 },
+    { name = "term", layout = config.layouts[1], nmaster = 2 },
     { name = "www",  layout = config.layouts[1], mwfact = 0.8 },
     { name = "misc", layout = config.layouts[3] },
     { name = "text", layout = config.layouts[1], mwfact = 0.57 },
@@ -116,30 +116,31 @@ config.apps = {
     { match = { "xcalc", "xdialog", "event tester" },   float = true },
     { match = { "zsnes", "xmessage", "pinentry" },      float = true },
     { match = { "sauerbraten engine", "gnuplot" },      float = true },
-    { match = { "mplayer", "Open File", "dclock" },     float = true },
+    { match = { "Open File", "dclock", "qemu" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "urxvt" },                 tag = "term" },
-    { match = { "dillo", "chrome" },       tag = "www" },
-    { match = { "urxvt.cmus", "mplayer" }, tag = "media" },
-    { match = { "geeqie", "gimp" },        tag = "media" },
-    { match = { "vlc" },                   tag = "media" },
-    { match = { "evince" },                tag = "pdf" },
-    { match = { "virtualbox" },            tag = "emulation" },
-    { match = { "yadex" },                 tag = "misc" },
-    { match = { config.global.editor },    tag = "text" },
-    { match = { "urxvt.irssi" },           tag = "chat" },
-    { match = { "pidgin" },                tag = "chat" },
-    { match = { "urxvt.mutt" },            tag = "mail" },
-    { match = { "urxvt.todo" },            tag = "todo" },
-    { match = { "audacity" },              tag = "media" },
-    { match = { "^rox%-filer$" },          tag = "files" },
+    { match = { "term" },  tag = "term" },
+    { match = { "dillo", "chrome" },    tag = "www" },
+    { match = { "cmus", "mplayer" },    tag = "media" },
+    { match = { "geeqie", "gimp" },     tag = "media" },
+    { match = { "vlc" },                tag = "media" },
+    { match = { "evince" },             tag = "pdf" },
+    { match = { "virtualbox" },         tag = "emulation" },
+    { match = { "yadex" },              tag = "misc" },
+    { match = { config.global.editor }, tag = "text" },
+    { match = { "irssi" },              tag = "chat" },
+    { match = { "pidgin" },             tag = "chat" },
+    { match = { "mutt" },               tag = "mail" },
+    { match = { "todo" },               tag = "todo" },
+    { match = { "audacity" },           tag = "media" },
+    { match = { "^rox%-filer$" },       tag = "files" },
+    { match = { "calibre", "ebook" },   tag = "calibre" },
     -- }}}
     -- {{{ master/slave
     { match = { "todo cli" },   master = false },
     -- }}}
     -- {{{ opacity
-    { match = { "xterm", "urxvt" },         opacity_f = 0.9 },
+    { match = { "term" },      opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
