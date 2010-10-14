@@ -176,7 +176,7 @@ end
 if not have_tagger then
     naughty.notify({ text = "Tagger could not be loaded by 'require()':\n" .. tagger, title = "Tagger missing", timeout = 0 })
 end
-if not have_strict then
+if not have_strict and strict ~= nil then
     naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work:\n" .. strict, title = "strict missing", timeout = 0 })
 end
 -- }}}
