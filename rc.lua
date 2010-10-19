@@ -1,8 +1,9 @@
-local have_strict, strict = pcall(require, 'strict') -- strict checking for unassigned variables, like perl's use strict;
+-- local have_strict, strict = pcall(require, 'strict') -- strict checking for unassigned variables, like perl's use strict
 require('awful')
 require('awful.autofocus')
 require('beautiful')
 require('naughty') -- Naughtyfications
+require('wibox')
 local have_obvious, obvious = pcall(require, 'obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
 local have_tagger, tagger = pcall(require, 'tagger')  -- Dynamic Tagging
 
@@ -10,10 +11,10 @@ local have_tagger, tagger = pcall(require, 'tagger')  -- Dynamic Tagging
 -- {{{ getlayouticon(layout)
 function getlayouticon(s)
     if type(s) == "string" then
-        return " " .. awful.util.escape(config.layout_icons[s]) .. " "
+        return " " .. config.layout_icons[s] .. " "
     end
     if not awful.layout.get(s) then return "     " end
-    return " " .. awful.util.escape(config.layout_icons[awful.layout.getname(awful.layout.get(s))]) .. " "
+    return " " .. config.layout_icons[awful.layout.getname(awful.layout.get(s))] .. " "
 end
 -- }}}
 -- {{{ textbox(content)
@@ -24,8 +25,8 @@ function textbox(content)
             return v
         end
     end
-    local w = widget({ type = "textbox" })
-    w.text = content
+    local w = wibox.widget.textbox()
+    w:set_text(content)
     table.insert(textboxes, w)
     return w
 end
@@ -200,17 +201,19 @@ end
 -- {{{ layout box
 lb_layout = { }
 for s = 1, screen.count() do
-    lb_layout[s] = widget({ type  = "textbox" })
+    local w = wibox.widget.textbox()
+    lb_layout[s] = wibox.widget.base.make_widget(w)
+    lb_layout[s].widget = w
     lb_layout[s]:buttons(awful.util.table.join(
         awful.button({ }, 1, function () awful.layout.inc(config.layouts, 1) end),
         awful.button({ }, 3, function () awful.layout.inc(config.layouts, -1) end)
     ))
-    lb_layout[s].text = getlayouticon(s)
+    lb_layout[s].widget:set_text(getlayouticon(s))
     lb_layout[s].bg = beautiful.bg_normal
 end
 -- }}}
 -- {{{ systray
-st_systray = widget({ type  = "systray" })
+st_systray = wibox.widget.systray()
 -- }}}
 -- {{{ widget box
 wi_widgets = {}
@@ -224,28 +227,32 @@ for s = 1, screen.count() do
                                 })
     wi_widgets[s].opacity = 0.85
 
-    wi_widgets[s].widgets = {
-                                tl_taglist[s],
-                                lb_layout[s],
-                                have_obvious and {
-                                    textbox(" "),
-                                    obvious.wlan("wlan0").widget,
-                                    textbox(" "),
-                                    obvious.volume_alsa():set_term("xterm"),
-                                    textbox(" "),
-                                    obvious.battery(),
-                                    s == screen.count() and st_systray,
-                                    textbox(" "),
-                                    obvious.clock(),
-                                    ["layout"] = awful.widget.layout.horizontal.rightleft,
-                                },
-                                {
-                                    tl_tasklist[s],
-                                    ["layout"] = awful.widget.layout.horizontal.flex
-                                },
-                                ["layout"] = awful.widget.layout.horizontal.leftright,
-                                ["height"] = wi_widgets[s].height
-                            }
+    local left_layout = wibox.layout.fixed.horizontal()
+    left_layout:add(tl_taglist[s])
+    left_layout:add(lb_layout[s])
+
+    local right_layout = wibox.layout.fixed.horizontal()
+    if have_obvious then
+        right_layout:add(textbox(" "))
+        right_layout:add(obvious.wlan("wlan0").widget)
+        right_layout:add(textbox(" "))
+        right_layout:add(obvious.volume_alsa())
+        right_layout:add(textbox(" "))
+        right_layout:add(obvious.battery())
+        right_layout:add(textbox(" "))
+        right_layout:add(obvious.clock())
+    end
+
+    if s == screen.count() then
+        right_layout:add(st_systray)
+    end
+
+    local layout = wibox.layout.align.horizontal()
+    layout:set_left(left_layout)
+    layout:set_middle(tl_tasklist[s])
+    layout:set_right(right_layout)
+
+    wi_widgets[s]:set_widget(layout)
 end
 -- }}}
 -- }}}
@@ -500,7 +507,7 @@ end)
 -- }}}
 -- {{{ layout
 function layout_update(t)
-    lb_layout[t.screen].text = getlayouticon(awful.layout.getname(awful.layout.get(t.screen)))
+    lb_layout[t.screen].widget:set_text(getlayouticon(awful.layout.getname(awful.layout.get(t.screen))))
 end
 
 for s = 1, screen.count() do
