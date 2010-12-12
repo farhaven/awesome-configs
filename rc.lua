@@ -137,9 +137,6 @@ config.apps = {
     { match = { "^rox%-filer$", "thunar" }, tag = "files" },
     { match = { "calibre", "ebook" },   tag = "calibre" },
     -- }}}
-    -- {{{ master/slave
-    { match = { "todo cli" },   master = false },
-    -- }}}
     -- {{{ opacity
     { match = { "term", "^st$" },             opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
