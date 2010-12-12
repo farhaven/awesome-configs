@@ -120,7 +120,7 @@ config.apps = {
     { match = { "Open File", "dclock", "qemu" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "term" },  tag = "term" },
+    { match = { "term", "st" },         tag = "term" },
     { match = { "dillo", "chrome" },    tag = "www" },
     { match = { "cmus", "mplayer" },    tag = "media" },
     { match = { "geeqie", "gimp" },     tag = "media" },
@@ -141,7 +141,7 @@ config.apps = {
     { match = { "todo cli" },   master = false },
     -- }}}
     -- {{{ opacity
-    { match = { "term" },      opacity_f = 0.9 },
+    { match = { "term", "^st$" },             opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
