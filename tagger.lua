@@ -105,6 +105,10 @@ function remove(scr, idx) -- {{{
     table.remove(t, idx)
     capi.screen[scr]:tags(t)
 
+    local ct = awful.tag.selected()
+    ct.selected = false
+    ct.selected = true
+
     update_names(scr)
 end
 -- }}}
