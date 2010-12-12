@@ -306,6 +306,7 @@ globalkeys = awful.util.table.join(
     -- }}}
     -- {{{ Misc
     awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
+    awful.key({ }, "XF86Sleep", function () awful.util.spawn("sudo " .. os.getenv("HOME") .. "/bin/s2disk", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
     -- hide / unhide current screens wibox
@@ -317,6 +318,7 @@ globalkeys = awful.util.table.join(
     -- {{{ Prompts
     -- {{{ Run prompt
     awful.key({ config.global.modkey }, "Return", function () awful.util.spawn("fdb") end),
+    awful.key({ }, "XF86Launch0", function () awful.util.spawn("fdb") end),
     -- }}}
     -- {{{ Program read prompt
     awful.key({ config.global.modkey, "Mod1" }, "Return", function() awful.util.spawn("fdb -v") end),
