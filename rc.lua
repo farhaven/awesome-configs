@@ -134,7 +134,7 @@ config.apps = {
     { match = { "mutt" },               tag = "mail" },
     { match = { "todo" },               tag = "todo" },
     { match = { "audacity" },           tag = "media" },
-    { match = { "^rox%-filer$" },       tag = "files" },
+    { match = { "^rox%-filer$", "thunar" }, tag = "files" },
     { match = { "calibre", "ebook" },   tag = "calibre" },
     -- }}}
     -- {{{ master/slave
