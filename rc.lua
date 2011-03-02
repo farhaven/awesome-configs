@@ -479,11 +479,6 @@ end)
 -- }}}
 -- {{{ manage generic stuff
 client.connect_signal("manage", function (c, startup)
-    if not startup and awful.client.focus.filter(c) then
-        c.maximized_horizontal = false
-        c.maximized_vertical = false
-    end
-
     c:buttons(awful.util.table.join(
         awful.button({ }, 1, function (c) client.focus = c end),
         awful.button({ config.global.modkey }, 1, awful.mouse.client.move),
