@@ -381,8 +381,11 @@ end
 -- }}}
 clientkeys = awful.util.table.join(
     awful.key({ config.global.modkey, "Mod1" }, "c",  function (c) c:kill() end),
-    awful.key({ config.global.modkey }, "f",  awful.client.floating.toggle),
-
+    awful.key({ config.global.modkey }, "f", awful.client.floating.toggle),
+    awful.key({ config.global.modkey, "Shift" }, "f", function (c)
+        c.maximized_horizontal = not c.maximized_horizontal
+        c.maximized_vertical   = not c.maximized_vertical
+    end),
     awful.key({ config.global.modkey }, "a", function (c) c.sticky = not c.sticky end),
     awful.key({ config.global.modkey }, "j", function (c) c:lower() end),
     awful.key({ config.global.modkey }, "k", function (c) c:raise() end)
