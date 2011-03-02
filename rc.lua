@@ -86,6 +86,8 @@ config.layout_icons = {
 -- {{{ Tags
 config.tags = {
     { name = "term", layout = config.layouts[1], nmaster = 2 },
+    { name = "files", layout = config.layouts[1], nmaster = 2 },
+    { name = "cssh", layout = config.layouts[1], nmaster = 2 },
     { name = "www",  layout = config.layouts[1], mwfact = 0.8 },
     { name = "misc", layout = config.layouts[3] },
     { name = "text", layout = config.layouts[1], mwfact = 0.57 },
