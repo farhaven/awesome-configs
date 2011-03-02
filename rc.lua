@@ -236,7 +236,7 @@ for s = 1, screen.count() do
         right_layout:add(textbox(" "))
         right_layout:add(obvious.wlan("wlan0").widget)
         right_layout:add(textbox(" "))
-        right_layout:add(obvious.volume_alsa())
+        right_layout:add(obvious.volume_alsa(0, 'Master', '☊'))
         right_layout:add(textbox(" "))
         right_layout:add(obvious.battery())
         right_layout:add(textbox(" "))
