@@ -123,21 +123,22 @@ config.apps = {
     -- }}}
     -- {{{ apptags
     { match = { "term", "st" },         tag = "term" },
-    { match = { "dillo", "chrome" },    tag = "www" },
+    { match = { "dillo", "chrome", "chromium%-browser" }, tag = "www" },
     { match = { "cmus", "mplayer" },    tag = "media" },
     { match = { "geeqie", "gimp" },     tag = "media" },
     { match = { "vlc" },                tag = "media" },
-    { match = { "evince" },             tag = "pdf" },
+    { match = { "evince", "xpdf" },     tag = "pdf" },
     { match = { "virtualbox" },         tag = "emulation" },
     { match = { "yadex" },              tag = "misc" },
     { match = { config.global.editor }, tag = "text" },
     { match = { "irssi" },              tag = "chat" },
     { match = { "pidgin" },             tag = "chat" },
     { match = { "mutt" },               tag = "mail" },
-    { match = { "todo" },               tag = "todo" },
+    { match = { "^todo$" },             tag = "todo" },
     { match = { "audacity" },           tag = "media" },
     { match = { "^rox%-filer$", "thunar" }, tag = "files" },
     { match = { "calibre", "ebook" },   tag = "calibre" },
+    { match = { "cssh" },               tag = "cssh" },
     -- }}}
     -- {{{ opacity
     { match = { "term", "^st$" },             opacity_f = 0.9 },
