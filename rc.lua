@@ -127,7 +127,7 @@ config.apps = {
     { match = { "Open File", "dclock", "qemu" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "term", "st" },         tag = "term" },
+    { match = { "term", "^st$" },         tag = "term" },
     { match = { "dillo", "chrome", "chromium%-browser" }, tag = "www" },
     { match = { "cmus", "mplayer" },    tag = "media" },
     { match = { "geeqie", "gimp" },     tag = "media" },
