@@ -31,7 +31,7 @@ function name2idx(name, screen) -- {{{
     screen = screen or capi.mouse.screen
     local tags = capi.screen[screen]:tags()
     for i, v in ipairs(tags) do
-        if v.name == name or v.name:match("^%d+:" .. name .. "$") then
+        if v.name == name or v.name:match("^%d+/%d+:" .. name .. "$") then
             return i
         end
     end
@@ -116,10 +116,10 @@ end
 function update_names(scr) -- {{{
     local t = capi.screen[scr]:tags()
     for i, v in ipairs(t) do
-        if not v.name:match("^%d+:") then
-            v.name = i .. ":" .. v.name
+        if not v.name:match("^%d+/%d+:") then
+            v.name = i .. "/" .. #t .. ":" .. v.name
         else
-            v.name = v.name:gsub("^(%d+):", i..":")
+            v.name = v.name:gsub("^(%d+/%d+):", i .. "/" .. #t ..":")
         end
     end
 end
