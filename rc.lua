@@ -73,6 +73,8 @@ config.layouts = {
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
     awful.layout.suit.max,
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal
 }
 config.layout_icons = {
     ["tile"] = "[]=",
@@ -81,6 +83,8 @@ config.layout_icons = {
     ["tiletop"] = "[^]",
     ["floating"] = "><>",
     ["max"] = "[M]",
+    ["fairh"] = "|H|",
+    ["fairv"] = "|V|",
 }
 -- }}}
 -- {{{ Tags
