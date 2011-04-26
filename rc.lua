@@ -99,6 +99,7 @@ config.tags = {
     { name = "mail", layout = config.layouts[2] },
     { name = "pdf",  layout = config.layouts[6] },
     { name = "todo", layout = config.layouts[4], mwfact = 0.7 },
+    { name = "media", mwfact = 0.15, nmaster = 2 }
 }
 for s = 1, screen.count() do
     if have_tagger then
@@ -130,7 +131,7 @@ config.apps = {
     { match = { "dillo", "chrome", "chromium%-browser" }, tag = "www" },
     { match = { "cmus", "mplayer" },    tag = "media" },
     { match = { "geeqie", "gimp" },     tag = "media" },
-    { match = { "vlc" },                tag = "media" },
+    { match = { "vlc", "mirage" },      tag = "media" },
     { match = { "evince", "xpdf" },     tag = "pdf" },
     { match = { "virtualbox" },         tag = "emulation" },
     { match = { "yadex" },              tag = "misc" },
