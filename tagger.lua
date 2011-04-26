@@ -9,6 +9,7 @@ local capi = {
 }
 local ipairs = ipairs
 local pairs = pairs
+local pcall = pcall
 local table = table
 
 module('tagger')
@@ -221,5 +222,46 @@ end
 function movescreenright(t) -- {{{
     t = t or awful.tag.selected(capi.mouse.screen)
     movescreenrel(t, 1)
+end
+-- }}}
+function match_names(scr, txtbox) -- {{{
+    local t = capi.screen[scr]:tags()
+    local txt = "_"
+    local txt_old = txtbox._text
+    capi.keygrabber.run(function(mod, key, action)
+        local rv = true
+        txtbox:set_text(txt)
+        if action ~= "press" then return true end
+        if key:len() == 1 and txt:len() <= 20 then
+            txt = txt:sub(1, txt:len() - 1) .. key .. "_"
+        elseif key == "BackSpace" and txt:len() > 1 then
+            txt = txt:sub(1, txt:len() - 2) .. "_"
+        elseif key == "Return" then
+            rv = false
+        elseif key == "Escape" then
+            txt = "_"
+            rv = false
+        end
+        for i, v in ipairs(t) do
+            if v.name:match(txt:sub(1, txt:len() - 1)) then
+                awful.tag.setproperty(v, "hide", false)
+            else
+                awful.tag.setproperty(v, "hide", true)
+            end
+        end
+        for i, v in ipairs(t) do
+            if not awful.tag.getproperty(v, "hide") then
+                awful.tag.viewonly(v)
+                break
+            end
+        end
+        if not rv then
+            local ok = pcall(function() txtbox:set_markup(txt_old) end)
+            if not ok then
+                txtbox:set_text(txt_old)
+            end
+        end
+        return rv
+    end)
 end
 -- }}}

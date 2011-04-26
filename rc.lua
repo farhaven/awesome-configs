@@ -306,6 +306,7 @@ globalkeys = awful.util.table.join(
     have_tagger and awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
     have_tagger and awful.key({ config.global.modkey }, "w", tagger.remove),
     have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
+    have_tagger and awful.key({ config.global.modkey }, "t", function () tagger.match_names(mouse.screen, lb_layout[mouse.screen].widget) end),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left", tagger.moveleft),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", tagger.moveright),
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Back", tagger.movescreenleft),
