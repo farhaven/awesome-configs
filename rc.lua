@@ -472,14 +472,6 @@ client.connect_signal("manage", function (c, startup)
     elseif cprops[c].border_width then
         c.border_width = cprops[c].border_width
     end
-
-    if instance == "gimp" and role ~= "gimp-image-window" then
-        local w_area = screen[c.screen].workarea
-		if c.role == "gimp-toolbox" then
-			c:struts({ left = c:geometry().width })
-			c:geometry({ x = w_area.x, y = w_area.y })
-		end
-    end
 end)
 -- }}}
 -- {{{ manage generic stuff
