@@ -228,6 +228,16 @@ function match_names(scr, txtbox) -- {{{
     local t = capi.screen[scr]:tags()
     local txt = "_"
     local txt_old = txtbox._text
+    local apply_regex = function(r)
+        for i, v in ipairs(t) do
+            if v.name:match(r) then
+                awful.tag.setproperty(v, "hide", false)
+            else
+                awful.tag.setproperty(v, "hide", true)
+            end
+        end
+    end
+    apply_regex("")
     capi.keygrabber.run(function(mod, key, action)
         local rv = true
         txtbox:set_text(txt)
@@ -242,13 +252,7 @@ function match_names(scr, txtbox) -- {{{
             txt = "_"
             rv = false
         end
-        for i, v in ipairs(t) do
-            if v.name:match(txt:sub(1, txt:len() - 1)) then
-                awful.tag.setproperty(v, "hide", false)
-            else
-                awful.tag.setproperty(v, "hide", true)
-            end
-        end
+        apply_regex(txt:sub(1, txt:len() - 1))
         for i, v in ipairs(t) do
             if not awful.tag.getproperty(v, "hide") then
                 awful.tag.viewonly(v)
