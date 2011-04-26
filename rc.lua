@@ -142,7 +142,6 @@ config.apps = {
     { match = { "^todo$" },             tag = "todo" },
     { match = { "audacity" },           tag = "media" },
     { match = { "^rox%-filer$", "thunar" }, tag = "files" },
-    { match = { "calibre", "ebook" },   tag = "calibre" },
     { match = { "cssh" },               tag = "cssh" },
     -- }}}
     -- {{{ opacity
