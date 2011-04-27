@@ -11,8 +11,31 @@ local ipairs = ipairs
 local pairs = pairs
 local pcall = pcall
 local table = table
+local string = string
 
 module('tagger')
+
+function string:split(delimiter)
+    local result = { }
+    local from  = 1
+    local delim_from, delim_to = string.find( self, delimiter, from  )
+    while delim_from do
+        table.insert( result, string.sub( self, from , delim_from-1 ) )
+        from  = delim_to + 1
+        delim_from, delim_to = string.find( self, delimiter, from  )
+    end
+    table.insert( result, string.sub( self, from  ) )
+    return result
+end
+
+function string:find_any(patterns)
+    for _, p in pairs(patterns) do
+        if self:find(p) then
+            return true
+        end
+    end
+    return false
+end
 
 function tag2idx(tag) -- {{{
     if not tag then return nil end
@@ -231,7 +254,7 @@ function match_names(scr, txtbox) -- {{{
     local tag_old = awful.tag.selected(scr)
     local apply_regex = function(r)
         for i, v in ipairs(t) do
-            if v.name:match(r) then
+            if v.name:find_any(r:split(" ")) then
                 awful.tag.setproperty(v, "hide", false)
             else
                 awful.tag.setproperty(v, "hide", true)
