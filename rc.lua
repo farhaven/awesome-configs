@@ -274,11 +274,11 @@ if config.global.hostname == "hydrogen" then
         awful.key({ config.global.modkey }, "XF86Back", function () screenfocus(1) end),
         awful.key({ config.global.modkey }, "XF86Forward", function () screenfocus(-1) end),
         -- }}}
-        -- {{{ CMUS control
-        awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("cmus-remote -r", false) end),
-        awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("cmus-remote -u", false) end),
-        awful.key({ }, "XF86AudioNext", function () awful.util.spawn("cmus-remote -n", false) end),
-        awful.key({ }, "XF86AudioStop", function () awful.util.spawn("cmus-remote -s", false) end)
+        -- {{{ Rhythmbox control
+        awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("rhythmbox-client --previous", false) end),
+        awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("rhythmbox-client --play-pause", false) end),
+        awful.key({ }, "XF86AudioNext", function () awful.util.spawn("rhythmbox-client --next", false) end),
+        awful.key({ }, "XF86AudioStop", function () awful.util.spawn("rhythmbox-client --notify", false) end)
         -- }}}
     )
 elseif config.global.hostname == "beryllium" then
