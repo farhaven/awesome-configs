@@ -132,6 +132,7 @@ config.apps = {
     { match = { "cmus", "mplayer" },    tag = "media" },
     { match = { "geeqie", "gimp" },     tag = "media" },
     { match = { "vlc", "mirage" },      tag = "media" },
+    { match = { "rhythmbox" },          tag = "media" },
     { match = { "evince", "xpdf" },     tag = "pdf" },
     { match = { "virtualbox" },         tag = "emulation" },
     { match = { "yadex" },              tag = "misc" },
