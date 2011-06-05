@@ -146,7 +146,7 @@ config.apps = {
     { match = { "cssh" },               tag = "cssh" },
     -- }}}
     -- {{{ opacity
-    { match = { "term", "^st$" },             opacity_f = 0.9 },
+    { match = { "term", "^st$" },           opacity_f = 0.98 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
