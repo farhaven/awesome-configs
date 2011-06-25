@@ -10,6 +10,7 @@ local capi = {
 local ipairs = ipairs
 local pairs = pairs
 local pcall = pcall
+local print = print
 local table = table
 local string = string
 
@@ -276,7 +277,10 @@ function match_names(scr, txtbox) -- {{{
             txt = "_"
             rv = false
         end
-        apply_regex(txt:sub(1, txt:len() - 1))
+        local ok, r = pcall(function() apply_regex(txt:sub(1, txt:len() - 1)) end)
+        if not ok then
+            print(r)
+        end
         if not rv then
             local ok = pcall(function() txtbox:set_markup(txt_old) end)
             if not ok then
