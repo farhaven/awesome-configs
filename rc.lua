@@ -127,29 +127,30 @@ config.apps = {
     { match = { "Open File", "dclock", "qemu" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "term", "^st$" },         tag = "term" },
+    { match = { "term", "^st$", "tabbed" }, tag = "term" },
     { match = { "dillo", "chrome", "chromium%-browser" }, tag = "www" },
-    { match = { "cmus", "mplayer" },    tag = "media" },
-    { match = { "geeqie", "gimp" },     tag = "media" },
-    { match = { "vlc", "mirage" },      tag = "media" },
-    { match = { "rhythmbox" },          tag = "media" },
-    { match = { "evince", "xpdf" },     tag = "pdf" },
-    { match = { "virtualbox" },         tag = "emulation" },
-    { match = { "yadex" },              tag = "misc" },
-    { match = { config.global.editor }, tag = "text" },
-    { match = { "irssi" },              tag = "chat" },
-    { match = { "pidgin" },             tag = "chat" },
-    { match = { "mutt" },               tag = "mail" },
-    { match = { "^todo$" },             tag = "todo" },
-    { match = { "audacity" },           tag = "media" },
+    { match = { "cmus", "mplayer" },        tag = "media" },
+    { match = { "geeqie", "gimp" },         tag = "media" },
+    { match = { "vlc", "mirage" },          tag = "media" },
+    { match = { "rhythmbox" },              tag = "media" },
+    { match = { "evince", "xpdf" },         tag = "pdf" },
+    { match = { "virtualbox" },             tag = "emulation" },
+    { match = { "yadex" },                  tag = "misc" },
+    { match = { config.global.editor },     tag = "text" },
+    { match = { "irssi" },                  tag = "chat" },
+    { match = { "pidgin" },                 tag = "chat" },
+    { match = { "mutt" },                   tag = "mail" },
+    { match = { "^todo$" },                 tag = "todo" },
+    { match = { "audacity" },               tag = "media" },
     { match = { "^rox%-filer$", "thunar" }, tag = "files" },
-    { match = { "cssh" },               tag = "cssh" },
+    { match = { "cssh" },                   tag = "cssh" },
     -- }}}
     -- {{{ opacity
-    { match = { "term", "^st$" },           opacity_f = 0.98 },
+    { match = { "term", "^st$", "tabbed" }, opacity_f = 0.98 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
+    { match = { "conversation", "irssi" }, slave = true },
 }
 -- }}}
 -- {{{ Naughty
@@ -439,10 +440,8 @@ client.connect_signal("manage", function (c, startup)
         end
     end
 
-    if cprops[c].master == false then
+    if cprops[c].slave == true then
         awful.client.setslave(c)
-    elseif cprops[c].master == true then
-        awful.client.getmaster(c.screen):swap(c)
     end
     if cprops[c].float ~= nil then
         awful.client.floating.set(c, cprops[c].float)
