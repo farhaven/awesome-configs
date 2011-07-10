@@ -1,6 +1,7 @@
 -- local have_strict, strict = pcall(require, 'strict') -- strict checking for unassigned variables, like perl's use strict
 require('awful')
 require('awful.autofocus')
+require('awful.util')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('wibox')
@@ -240,9 +241,9 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if have_obvious then
         right_layout:add(textbox(" "))
-        right_layout:add(obvious.wlan("wlan0").widget)
-        right_layout:add(textbox(" "))
-        right_layout:add(obvious.volume_alsa(0, 'Master', '☊'))
+        right_layout:add(obvious.wlan("wpi0").widget)
+        -- right_layout:add(textbox(" "))
+        -- right_layout:add(obvious.volume_alsa(0, 'Master', '☊'))
         right_layout:add(textbox(" "))
         right_layout:add(obvious.battery())
         right_layout:add(textbox(" "))
@@ -265,7 +266,7 @@ end
 -- {{{ Key bindings
 -- {{{ System specific keybindings (decided upon based on hostname)
 systemkeys = { }
-if config.global.hostname == "hydrogen" then
+if config.global.hostname:find("hydrogen") then
     systemkeys = awful.util.table.join(
         -- {{{ Tags
         awful.key({ }, "XF86Back", awful.tag.viewprev),
