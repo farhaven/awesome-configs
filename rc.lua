@@ -316,8 +316,7 @@ globalkeys = awful.util.table.join(
     have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Forward", tagger.movescreenright),
     -- }}}
     -- {{{ Misc
-    awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xtrlock", false) end),
-    awful.key({ }, "XF86Sleep", function () awful.util.spawn("sudo " .. os.getenv("HOME") .. "/bin/s2disk", false) end),
+    awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xscreensaver-command -lock", false) end),
     awful.key({ config.global.modkey, "Mod1" }, "r", awesome.restart),
 
     -- hide / unhide current screens wibox
