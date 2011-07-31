@@ -128,8 +128,8 @@ config.apps = {
     { match = { "Open File", "dclock", "qemu" },     float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "term", "^st$", "tabbed" }, tag = "term" },
-    { match = { "dillo", "chrome", "chromium%-browser" }, tag = "www" },
+    { match = { "term", "^st$", "tabbed", "urxvt" }, tag = "term" },
+    { match = { "dillo", "chrome", "chromium%-browser", "firefox" }, tag = "www" },
     { match = { "cmus", "mplayer" },        tag = "media" },
     { match = { "geeqie", "gimp" },         tag = "media" },
     { match = { "vlc", "mirage" },          tag = "media" },
@@ -147,7 +147,7 @@ config.apps = {
     { match = { "cssh" },                   tag = "cssh" },
     -- }}}
     -- {{{ opacity
-    { match = { "term", "^st$", "tabbed" }, opacity_f = 0.98 },
+    { match = { "urxvt", "^st$", "tabbed" }, opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
