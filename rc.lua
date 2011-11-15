@@ -122,19 +122,20 @@ end
 -- {{{ Clients
 config.apps = {
     -- {{{ floating setup
-    { match = { "xcalc", "xdialog", "event tester" },   float = true },
-    { match = { "zsnes", "xmessage", "pinentry" },      float = true },
-    { match = { "sauerbraten engine", "gnuplot" },      float = true },
+    { match = { "xcalc", "xdialog", "event tester" },float = true },
+    { match = { "zsnes", "xmessage", "pinentry" },   float = true },
+    { match = { "sauerbraten engine", "gnuplot" },   float = true },
     { match = { "Open File", "dclock", "qemu" },     float = true },
+    { match = { "xclock" },                          float = true },
     -- }}}
     -- {{{ apptags
-    { match = { "term", "^st$", "tabbed", "urxvt" }, tag = "term" },
-    { match = { "dillo", "chrome", "chromium%-browser", "firefox" }, tag = "www" },
+    { match = { "term", "^st$", "urxvt" }, tag = "term" },
+    { match = { "dillo", "chrome", "chromium%-browser", "firefox", "surf" }, tag = "www" },
     { match = { "cmus", "mplayer" },        tag = "media" },
     { match = { "geeqie", "gimp" },         tag = "media" },
     { match = { "vlc", "mirage" },          tag = "media" },
     { match = { "rhythmbox" },              tag = "media" },
-    { match = { "evince", "xpdf" },         tag = "pdf" },
+    { match = { "evince", "xpdf", "zathura" }, tag = "pdf" },
     { match = { "virtualbox" },             tag = "emulation" },
     { match = { "yadex" },                  tag = "misc" },
     { match = { config.global.editor },     tag = "text" },
@@ -147,7 +148,7 @@ config.apps = {
     { match = { "cssh" },                   tag = "cssh" },
     -- }}}
     -- {{{ opacity
-    { match = { "urxvt", "^st$", "tabbed" }, opacity_f = 0.9 },
+    { match = { "urxvt", "^st$" }, opacity_f = 0.9 },
     { match = { "gimp", "^xv", "mplayer" }, opacity_u = 1 },
     { match = { "vlc" },                    opacity_u = 1 },
     -- }}}
