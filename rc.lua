@@ -236,8 +236,6 @@ for s = 1, screen.count() do
     if have_obvious then
         right_layout:add(textbox(" "))
         right_layout:add(obvious.wlan("wpi0"):set_format(obvious.wlan.format_decibel).widget)
-        -- right_layout:add(textbox(" "))
-        -- right_layout:add(obvious.volume_alsa(0, 'Master', '☊'))
         right_layout:add(textbox(" "))
         right_layout:add(obvious.battery())
         right_layout:add(textbox(" "))
