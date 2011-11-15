@@ -327,7 +327,7 @@ globalkeys = awful.util.table.join(
     -- }}}
     -- }}}
     -- {{{ Client / Focus manipulation
-    awful.key({ config.global.modkey, "Mod1" }, "c", function () if client.focus then client.focus:kill() end end),
+    awful.key({ config.global.modkey }, "c", function () if client.focus then client.focus:kill() end end),
 
     awful.key({ config.global.modkey }, "Up", function ()
         awful.client.focus.byidx(-1)
