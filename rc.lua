@@ -479,7 +479,7 @@ client.connect_signal("manage", function (c, startup)
 
     c.size_hints_honor = true
 
-    if not startup and awful.client.floating.get(c) then
+    if not startup and awful.client.floating.get(c) and not c.fullscreen then
         awful.placement.centered(c, c.transient_for)
         awful.placement.no_offscreen(c)
     end
