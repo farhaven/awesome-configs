@@ -203,7 +203,7 @@ end
 -- {{{ task list
 tl_tasklist = { }
 for s = 1, screen.count() do
-    tl_tasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, { })
+    tl_tasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.focused, { })
 end
 -- }}}
 -- {{{ layout box
