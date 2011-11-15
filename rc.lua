@@ -227,14 +227,7 @@ st_systray = wibox.widget.systray()
 wi_widgets = {}
 
 for s = 1, screen.count() do
-    wi_widgets[s] = awful.wibox({ position = "top",
-                                  fg = beautiful.fg_normal,
-                                  bg = beautiful.bg_normal,
-                                  screen = s,
-                                  height = 16
-                                })
-    wi_widgets[s].opacity = 0.85
-
+    wi_widgets[s] = awful.wibox({ position = "top", screen = s })
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(tl_taglist[s])
     left_layout:add(lb_layout[s])
