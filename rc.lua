@@ -67,16 +67,17 @@ config.global = {
 beautiful.init(config.global.theme)
 -- }}}
 -- {{{ Layouts
+-- {{{ layout table
 config.layouts = {
 	awful.layout.suit.tile,
 	awful.layout.suit.tile.left,
 	awful.layout.suit.tile.top,
 	awful.layout.suit.tile.bottom,
-	awful.layout.suit.floating,
 	awful.layout.suit.max,
-	awful.layout.suit.fair,
-	awful.layout.suit.fair.horizontal
+	awful.layout.suit.spiral
 }
+-- }}}
+-- {{{ layout icons
 config.layout_icons = {
 	["tile"] = "[]=",
 	["tileleft"] = "=[]",
@@ -86,19 +87,20 @@ config.layout_icons = {
 	["max"] = "[M]",
 	["fairh"] = "|H|",
 	["fairv"] = "|V|",
+	["spiral"] = "|@|",
 }
+-- }}}
 -- }}}
 -- {{{ Tags
 config.tags = {
-	{ name = "term", layout = config.layouts[1], nmaster = 2 },
-	{ name = "files", layout = config.layouts[1], nmaster = 2 },
-	{ name = "cssh", layout = config.layouts[1], nmaster = 2 },
-	{ name = "www",  layout = config.layouts[4], mwfact = 0.8 },
+	{ name = "term", nmaster = 2 },
+	{ name = "cssh", nmaster = 2 },
+	{ name = "www",  mwfact = 0.8 },
 	{ name = "misc", layout = config.layouts[3] },
-	{ name = "text", layout = config.layouts[1], mwfact = 0.57 },
-	{ name = "chat", layout = config.layouts[1], mwfact = 0.17 },
+	{ name = "text", mwfact = 0.57 },
+	{ name = "chat", mwfact = 0.17 },
 	{ name = "mail", layout = config.layouts[2] },
-	{ name = "pdf",  layout = config.layouts[6] },
+	{ name = "pdf",  layout = config.layouts[5] },
 	{ name = "todo", layout = config.layouts[4], mwfact = 0.7 },
 	{ name = "media", mwfact = 0.15, nmaster = 2 }
 }
@@ -143,9 +145,8 @@ config.apps = {
 	{ match = { "transmission" },			tag = "trnt" },
 	-- }}}
 	-- {{{ opacity
-	{ match = { "urxvt", "^st$" },			opacity_f = 0.9 },
-	{ match = { "gimp", "^xv", "mplayer" },	opacity_u = 1 },
-	{ match = { "vlc" },					opacity_u = 1 },
+	{ match = { "urxvt", "^st$", "^xterm$" },	opacity_f = 0.9 },
+	{ match = { "gimp", "^xv", "mplayer" },		opacity_u = 1 },
 	-- }}}
 }
 -- }}}
@@ -352,12 +353,7 @@ globalkeys = awful.util.table.join(
 	awful.key({ config.global.modkey }, " ", function () awful.layout.inc(config.layouts, 1) end),
 
 	awful.key({ config.global.modkey, "Mod1" }, "Left", function () awful.client.incwfact(0.05) end),
-	awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end),
-	-- }}}
-	-- {{{ Audio
-	have_obvious and awful.key({ }, "XF86AudioRaiseVolume", function () obvious.volume_alsa.raise(0, "Master") end),
-	have_obvious and awful.key({ }, "XF86AudioLowerVolume", function () obvious.volume_alsa.lower(0, "Master") end),
-	have_obvious and awful.key({ }, "XF86AudioMute", function () obvious.volume_alsa.mute(0, "Master") end)
+	awful.key({ config.global.modkey, "Mod1" }, "Right", function () awful.client.incwfact(-0.05) end)
 	-- }}}
 )
 -- {{{ Tags
