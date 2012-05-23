@@ -266,29 +266,6 @@ if config.global.hostname:find("hydrogen") then
 		awful.key({ config.global.modkey }, "XF86Back", function () screenfocus(1) end),
 		awful.key({ config.global.modkey }, "XF86Forward", function () screenfocus(-1) end),
 		-- }}}
-		-- {{{ Rhythmbox control
-		awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("rhythmbox-client --previous", false) end),
-		awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("rhythmbox-client --play-pause", false) end),
-		awful.key({ }, "XF86AudioNext", function () awful.util.spawn("rhythmbox-client --next", false) end),
-		awful.key({ }, "XF86AudioStop", function () awful.util.spawn("rhythmbox-client --notify", false) end)
-		-- }}}
-	)
-elseif config.global.hostname == "beryllium" then
-	systemkeys = awful.util.table.join(
-		-- {{{ Tags
-		awful.key({ config.global.modkey }, "Page_Up", awful.tag.viewprev),
-		awful.key({ config.global.modkey }, "Page_Down", awful.tag.viewnext),
-		-- }}}
-		-- {{{ Screen focus
-		awful.key({ config.global.modkey, "Mod1" }, "Page_Up", function () screenfocus(1) end),
-		awful.key({ config.global.modkey, "Mod1" }, "Page_Down", function () screenfocus(-1) end),
-		-- }}}
-		-- {{{ CMUS control
-		awful.key({ "Mod4" }, "Left", function () awful.util.spawn("cmus-remote -r", false) end),
-		awful.key({ "Mod4" }, "Down", function () awful.util.spawn("cmus-remote -u", false) end),
-		awful.key({ "Mod4" }, "Right", function () awful.util.spawn("cmus-remote -n", false) end),
-		awful.key({ "Mod4" }, "Up", function () awful.util.spawn("cmus-remote -s", false) end)
-		-- }}}
 	)
 end
 -- }}}
