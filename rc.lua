@@ -95,7 +95,7 @@ config.layout_icons = {
 config.tags = {
 	{ name = "term", nmaster = 2 },
 	{ name = "cssh", nmaster = 2 },
-	{ name = "www",  mwfact = 0.8 },
+	{ name = "www",  mwfact = 0.81 },
 	{ name = "misc", layout = config.layouts[3] },
 	{ name = "text", mwfact = 0.57 },
 	{ name = "chat", mwfact = 0.17 },
