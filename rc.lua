@@ -58,11 +58,10 @@ config = { }
 config.global = {
 	["opacity_f" ]	= 1,
 	["opacity_u" ]	= 0.65,
-  ["theme"]		= awful.util.getdir("config") .. "/themes/plan9/plan9.lua",
+	["theme"]			= awful.util.getdir("config") .. "/themes/plan9/plan9.lua",
 	["editor"]		= "gvim",
 	["modkey"]		= "Mod3",
-	["hostname"]	= "hydrogen"
-	-- ["hostname"]   = awful.util.pread("hostname"):gsub("\n", ""),
+	["hostname"]		= "hydrogen"
 }
 beautiful.init(config.global.theme)
 -- }}}
@@ -79,29 +78,29 @@ config.layouts = {
 -- }}}
 -- {{{ layout icons
 config.layout_icons = {
-	["tile"] = "[]=",
-	["tileleft"] = "=[]",
-	["tilebottom"] = "[v]",
-	["tiletop"] = "[^]",
-	["floating"] = "><>",
-	["max"] = "[M]",
-	["fairh"] = "|H|",
-	["fairv"] = "|V|",
-	["spiral"] = "|@|",
+	["tile"]			= "[]=",
+	["tileleft"]	= "=[]",
+	["tilebottom"]	= "[v]",
+	["tiletop"]		= "[^]",
+	["floating"]	= "><>",
+	["max"]			= "[M]",
+	["fairh"]		= "|H|",
+	["fairv"]		= "|V|",
+	["spiral"]		= "|@|",
 }
 -- }}}
 -- }}}
 -- {{{ Tags
 config.tags = {
-	{ name = "term", nmaster = 2 },
-	{ name = "cssh", nmaster = 2 },
-	{ name = "www",  mwfact = 0.81 },
-	{ name = "misc", layout = config.layouts[3] },
-	{ name = "text", mwfact = 0.57 },
-	{ name = "chat", mwfact = 0.17 },
-	{ name = "mail", layout = config.layouts[2] },
-	{ name = "pdf",  layout = config.layouts[5] },
-	{ name = "todo", layout = config.layouts[4], mwfact = 0.7 },
+	{ name = "term", nmaster	= 2 },
+	{ name = "cssh", nmaster	= 2 },
+	{ name = "www",  mwfact	= 0.81 },
+	{ name = "misc", layout	= config.layouts[3] },
+	{ name = "text", mwfact	= 0.57 },
+	{ name = "chat", mwfact	= 0.17 },
+	{ name = "mail", layout	= config.layouts[2] },
+	{ name = "pdf",  layout	= config.layouts[5] },
+	{ name = "todo", layout	= config.layouts[4], mwfact = 0.7 },
 	{ name = "media", mwfact = 0.15, nmaster = 2 }
 }
 for s = 1, screen.count() do
@@ -127,34 +126,35 @@ config.apps = {
 	{ match = { "xcalc", "xdialog", "event tester" },	float = true },
 	{ match = { "zsnes", "xmessage", "pinentry" },		float = true },
 	{ match = { "sauerbraten engine", "gnuplot" },		float = true },
-	{ match = { "Open File", "dclock", "qemu" },		float = true },
-	{ match = { "xclock" },								float = true },
+	{ match = { "Open File", "dclock", "qemu" },			float = true },
+	{ match = { "xclock" },										float = true },
 	-- }}}
 	-- {{{ apptags
 	{ match = { "term", "^st$", "urxvt" },	tag = "term" },
-	{ match = { "firefox", "surf" },		tag = "www" },
+	{ match = { "firefox", "surf" },			tag = "www" },
 	{ match = { "mplayer", "vlc" },			tag = "media" },
 	{ match = { "geeqie", "gimp" },			tag = "media" },
-	{ match = { "audacity" },				tag = "media" },
+	{ match = { "audacity" },					tag = "media" },
 	{ match = { "evince", "xpdf" },			tag = "pdf" },
-	{ match = { "yadex" },					tag = "misc" },
+	{ match = { "yadex" },						tag = "misc" },
 	{ match = { config.global.editor },		tag = "text" },
-	{ match = { "irssi" },					tag = "chat" },
-	{ match = { "mutt" },					tag = "mail" },
-	{ match = { "cssh" },					tag = "cssh" },
-	{ match = { "transmission" },			tag = "trnt" },
+	{ match = { "irssi" },						tag = "chat" },
+	{ match = { "mutt" },						tag = "mail" },
+	{ match = { "cssh" },						tag = "cssh" },
+	{ match = { "transmission" },				tag = "trnt" },
+	{ match = { "ebook%-viewer" },			tag = "ebook" },
 	-- }}}
 	-- {{{ opacity
-	{ match = { "urxvt", "^st$", "^xterm$" },	opacity_f = 0.9 },
-	{ match = { "gimp", "^xv", "mplayer" },		opacity_u = 1 },
+	{ match = { "urxvt", "^st$", "^xterm$" },			opacity_f = 0.9 },
+	{ match = { "gimp", "^xv", "mplayer", "vlc" },	opacity_u = 1 },
 	-- }}}
 }
 -- }}}
 -- {{{ Naughty
-naughty.config.bg						= beautiful.bg_normal
-naughty.config.fg						= beautiful.fg_normal
-naughty.config.presets.normal.screen	= screen.count()
-naughty.config.border_width				= beautiful.border_width or 2
+naughty.config.bg					= beautiful.bg_normal
+naughty.config.fg					= beautiful.fg_normal
+naughty.config.border_width	= beautiful.border_width or 2
+naughty.config.presets.normal.screen			= screen.count()
 naughty.config.presets.normal.border_color	= beautiful.fg_normal
 naughty.config.presets.normal.hover_timeout	= 0.3
 naughty.config.presets.normal.opacity	= 0.8
@@ -164,11 +164,11 @@ if have_obvious then
 	obvious.clock.set_editor(config.global.editor)
 	obvious.clock.set_shortformat(function ()
 		local week = tonumber(os.date("%W"))
-		return obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%H%M (" .. week .. ") "
+		return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%H%M (" .. week .. ") ")
 	end)
 	obvious.clock.set_longformat(function ()
 		local week = tonumber(os.date("%W"))
-		return obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%d%m (" .. week .. ") "
+		return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%d%m (" .. week .. ") ")
 	end)
 end
 -- }}}
@@ -234,8 +234,8 @@ for s = 1, screen.count() do
 	if have_obvious then
 		right_layout:add(textbox(" "))
 		right_layout:add(obvious.wlan("wpi0"):set_format(obvious.wlan.format_decibel).widget)
-		right_layout:add(textbox(" "))
-		right_layout:add(obvious.battery())
+		-- right_layout:add(textbox(" "))
+		-- right_layout:add(obvious.battery())
 		right_layout:add(textbox(" "))
 		right_layout:add(obvious.clock())
 	end
@@ -462,6 +462,12 @@ client.connect_signal("manage", function (c, startup)
 	else
 		client.focus = c
 	end
+  c:connect_signal("property::urgent", function (c, prop)
+    if not c.urgent then
+      return
+    end
+    naughty.notify({ text = c.name .. " on " .. c:tags()[1].name , title = "Alert" })
+  end)
 end)
 -- }}}
 -- {{{ layout
