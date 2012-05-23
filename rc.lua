@@ -35,8 +35,8 @@ end
 -- {{{ screenfocus(idx)
 function screenfocus(idx)
 	awful.screen.focus_relative(idx)
-	local x = mouse.coords().x + 1
-	local y = mouse.coords().y + 1
+	local x = mouse.coords().x + 3
+	local y = mouse.coords().y + 3
 	mouse.coords({ x = x, y = y })
 end
 -- }}}
