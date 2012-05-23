@@ -1,12 +1,12 @@
--- local have_strict, strict = pcall(require, 'strict') -- strict checking for unassigned variables, like perl's use strict
 require('awful')
 require('awful.autofocus')
 require('awful.util')
 require('beautiful')
 require('naughty') -- Naughtyfications
 require('wibox')
-local have_obvious, obvious = pcall(require, 'obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
-local have_tagger, tagger = pcall(require, 'tagger')  -- Dynamic Tagging
+
+require('obvious') -- Obvious widget library, get it from git://git.mercenariesguild.net/obvious.git
+require('tagger')  -- Dynamic Tagging
 
 -- {{{ Functions
 -- {{{ getlayouticon(layout)
@@ -104,19 +104,7 @@ config.tags = {
 	{ name = "media", mwfact	= 0.15, nmaster = 2 }
 }
 for s = 1, screen.count() do
-	if have_tagger then
-		tagger.add(s, awful.util.table.join(config.tags[1], { switch = true }))
-	else
-		for i, v in ipairs(config.tags) do
-			local t = tag({ name = v.name })
-			t.screen = s
-			awful.tag.setproperty(t, "layout", v.layout)
-			awful.tag.setproperty(t, "mwfact", v.mwfact)
-			awful.tag.setproperty(t, "nmaster", v.nmaster)
-			awful.tag.setproperty(t, "ncol", v.ncol)
-			awful.tag.setproperty(t, "icon", v.icon)
-		end
-	end
+	tagger.add(s, awful.util.table.join(config.tags[1], { switch = true }))
 	awful.tag.viewonly(screen[s]:tags()[1])
 end
 -- }}}
@@ -160,32 +148,16 @@ naughty.config.presets.normal.hover_timeout	= 0.3
 naughty.config.presets.normal.opacity	= 0.8
 -- }}}
 -- {{{ Obvious
-if have_obvious then
-	obvious.clock.set_editor(config.global.editor)
-	obvious.clock.set_shortformat(function ()
-		local week = tonumber(os.date("%W"))
-		return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%H%M (" .. week .. ") ")
-	end)
-	obvious.clock.set_longformat(function ()
-		local week = tonumber(os.date("%W"))
-		return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%d%m (" .. week .. ") ")
-	end)
-end
+obvious.clock.set_editor(config.global.editor)
+obvious.clock.set_shortformat(function ()
+	local week = tonumber(os.date("%W"))
+	return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%H%M (" .. week .. ") ")
+end)
+obvious.clock.set_longformat(function ()
+	local week = tonumber(os.date("%W"))
+	return obvious.lib.markup.font(beautiful.get().font, obvious.lib.markup.fg.color("#009000", "⚙ ") .. "%d%m (" .. week .. ") ")
+end)
 -- }}}
--- }}}
--- {{{ Spit out warning messages if some libs are not found
-if not have_obvious then
-	naughty.notify({ text = "Obvious could not be loaded by 'require()':\n" .. obvious,
-							title = "Obvious missing", timeout = 0 })
-end
-if not have_tagger then
-	naughty.notify({ text = "Tagger could not be loaded by 'require()':\n" .. tagger,
-							title = "Tagger missing", timeout = 0 })
-end
-if not have_strict and strict ~= nil then
-	naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work:\n" .. strict,
-							title = "strict missing", timeout = 0 })
-end
 -- }}}
 -- {{{ Widgets
 -- {{{ tag list
@@ -231,12 +203,10 @@ for s = 1, screen.count() do
 	left_layout:add(lb_layout[s])
 
 	local right_layout = wibox.layout.fixed.horizontal()
-	if have_obvious then
-		right_layout:add(textbox(" "))
-		right_layout:add(obvious.wlan("wpi0"):set_format(obvious.wlan.format_decibel).widget)
-		right_layout:add(textbox(" "))
-		right_layout:add(obvious.clock())
-	end
+	right_layout:add(textbox(" "))
+	right_layout:add(obvious.wlan("wpi0"):set_format(obvious.wlan.format_decibel).widget)
+	right_layout:add(textbox(" "))
+	right_layout:add(obvious.clock())
 
 	if s == screen.count() then
 		right_layout:add(st_systray)
@@ -271,14 +241,14 @@ globalkeys = awful.util.table.join(
 	systemkeys,
 	-- {{{ Tags
 	awful.key({ config.global.modkey }, "r", awful.tag.history.restore),
-	have_tagger and awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
-	have_tagger and awful.key({ config.global.modkey }, "w", tagger.remove),
-	have_tagger and awful.key({ config.global.modkey }, "e", tagger.rename),
-	have_tagger and awful.key({ config.global.modkey }, "t", function () tagger.match_names(mouse.screen, lb_layout[mouse.screen].widget) end),
-	have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Left", tagger.moveleft),
-	have_tagger and awful.key({ config.global.modkey, "Mod4" }, "Right", tagger.moveright),
-	have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Back", tagger.movescreenleft),
-	have_tagger and awful.key({ config.global.modkey, "Mod4" }, "XF86Forward", tagger.movescreenright),
+	awful.key({ config.global.modkey }, "q", function () tagger.add(mouse.screen, { switch = true }) end),
+	awful.key({ config.global.modkey }, "w", tagger.remove),
+	awful.key({ config.global.modkey }, "e", tagger.rename),
+	awful.key({ config.global.modkey }, "t", function () tagger.match_names(mouse.screen, lb_layout[mouse.screen].widget) end),
+	awful.key({ config.global.modkey, "Mod4" }, "Left", tagger.moveleft),
+	awful.key({ config.global.modkey, "Mod4" }, "Right", tagger.moveright),
+	awful.key({ config.global.modkey, "Mod4" }, "XF86Back", tagger.movescreenleft),
+	awful.key({ config.global.modkey, "Mod4" }, "XF86Forward", tagger.movescreenright),
 	-- }}}
 	-- {{{ Misc
 	awful.key({ config.global.modkey }, "l", nil, function () awful.util.spawn("xscreensaver-command -lock", false) end),
@@ -408,24 +378,14 @@ client.connect_signal("manage", function (c, startup)
 		c:raise()
 	end
 	if cprops[c].tag then
-		if have_tagger then
-			local t = { }
-			for _, v in pairs(config.tags) do
-				if v.name == cprops[c].tag then
-					t = v
-					break
-				end
-			end
-			awful.client.movetotag(tagger.apptag(cprops[c].tag, t, c), c)
-		else
-			local t = screen[c.screen]:tags()
-			for k, v in pairs(t) do
-				if v.name == cprops[c].tag then
-					awful.client.movetotag(v)
-					break
-				end
+		local t = { }
+		for _, v in pairs(config.tags) do
+			if v.name == cprops[c].tag then
+				t = v
+				break
 			end
 		end
+		awful.client.movetotag(tagger.apptag(cprops[c].tag, t, c), c)
 	end
 	if c.fullscreen then
 		c.border_width = 0
