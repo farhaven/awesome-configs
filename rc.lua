@@ -58,10 +58,10 @@ config = { }
 config.global = {
 	["opacity_f" ]	= 1,
 	["opacity_u" ]	= 0.65,
-	["theme"]			= awful.util.getdir("config") .. "/themes/plan9/plan9.lua",
+	["theme"]		= awful.util.getdir("config") .. "/themes/plan9/plan9.lua",
 	["editor"]		= "gvim",
 	["modkey"]		= "Mod3",
-	["hostname"]		= "hydrogen"
+	["hostname"]	= "hydrogen"
 }
 beautiful.init(config.global.theme)
 -- }}}
@@ -94,14 +94,14 @@ config.layout_icons = {
 config.tags = {
 	{ name = "term", nmaster	= 2 },
 	{ name = "cssh", nmaster	= 2 },
-	{ name = "www",  mwfact	= 0.81 },
-	{ name = "misc", layout	= config.layouts[3] },
-	{ name = "text", mwfact	= 0.57 },
-	{ name = "chat", mwfact	= 0.17 },
-	{ name = "mail", layout	= config.layouts[2] },
-	{ name = "pdf",  layout	= config.layouts[5] },
-	{ name = "todo", layout	= config.layouts[4], mwfact = 0.7 },
-	{ name = "media", mwfact = 0.15, nmaster = 2 }
+	{ name = "www",  mwfact		= 0.81 },
+	{ name = "misc", layout		= config.layouts[3] },
+	{ name = "text", mwfact		= 0.57 },
+	{ name = "chat", mwfact		= 0.17 },
+	{ name = "mail", layout		= config.layouts[2] },
+	{ name = "pdf",  layout		= config.layouts[5] },
+	{ name = "todo", layout		= config.layouts[4], mwfact = 0.7 },
+	{ name = "media", mwfact	= 0.15, nmaster = 2 }
 }
 for s = 1, screen.count() do
 	if have_tagger then
@@ -176,15 +176,15 @@ end
 -- {{{ Spit out warning messages if some libs are not found
 if not have_obvious then
 	naughty.notify({ text = "Obvious could not be loaded by 'require()':\n" .. obvious,
-					 title = "Obvious missing", timeout = 0 })
+							title = "Obvious missing", timeout = 0 })
 end
 if not have_tagger then
 	naughty.notify({ text = "Tagger could not be loaded by 'require()':\n" .. tagger,
-					 title = "Tagger missing", timeout = 0 })
+							title = "Tagger missing", timeout = 0 })
 end
 if not have_strict and strict ~= nil then
 	naughty.notify({ text = "strict could not be loaded by 'require()', some checks for code quality won't work:\n" .. strict,
-					 title = "strict missing", timeout = 0 })
+							title = "strict missing", timeout = 0 })
 end
 -- }}}
 -- {{{ Widgets
@@ -192,10 +192,10 @@ end
 tl_taglist = { }
 for s = 1, screen.count() do
 	tl_taglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all,
-										 awful.util.table.join(
-											awful.button({ }, 1, awful.tag.viewonly),
-											awful.button({ }, 5, awful.tag.viewnext),
-											awful.button({ }, 4, awful.tag.viewprev) ))
+		awful.util.table.join(
+			awful.button({ }, 1, awful.tag.viewonly),
+			awful.button({ }, 5, awful.tag.viewnext),
+			awful.button({ }, 4, awful.tag.viewprev) ))
 end
 -- }}}
 -- {{{ task list
@@ -234,8 +234,6 @@ for s = 1, screen.count() do
 	if have_obvious then
 		right_layout:add(textbox(" "))
 		right_layout:add(obvious.wlan("wpi0"):set_format(obvious.wlan.format_decibel).widget)
-		-- right_layout:add(textbox(" "))
-		-- right_layout:add(obvious.battery())
 		right_layout:add(textbox(" "))
 		right_layout:add(obvious.clock())
 	end
@@ -462,12 +460,12 @@ client.connect_signal("manage", function (c, startup)
 	else
 		client.focus = c
 	end
-  c:connect_signal("property::urgent", function (c, prop)
-    if not c.urgent then
-      return
-    end
-    naughty.notify({ text = c.name .. " on " .. c:tags()[1].name , title = "Alert" })
-  end)
+	c:connect_signal("property::urgent", function (c, prop)
+		if not c.urgent then
+			return
+		end
+		naughty.notify({ text = c.name .. " on " .. c:tags()[1].name , title = "Alert" })
+	end)
 end)
 -- }}}
 -- {{{ layout
